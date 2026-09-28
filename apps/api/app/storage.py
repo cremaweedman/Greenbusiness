@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from pathlib import Path, PurePosixPath
 from typing import Protocol
 
@@ -36,16 +37,16 @@ class LocalFilesystemStorage:
     async def put(self, key: str, data: bytes, *, content_type: str | None = None) -> None:
         del content_type
         target = self._path(key)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(data)
+        await asyncio.to_thread(target.parent.mkdir, parents=True, exist_ok=True)
+        await asyncio.to_thread(target.write_bytes, data)
 
     async def get(self, key: str) -> bytes:
-        return self._path(key).read_bytes()
+        return await asyncio.to_thread(self._path(key).read_bytes)
 
     async def delete(self, key: str) -> None:
         path = self._path(key)
         if path.exists():
-            path.unlink()
+            await asyncio.to_thread(path.unlink)
 
 
 class S3ObjectStorage:
@@ -71,14 +72,22 @@ class S3ObjectStorage:
         params = {"Bucket": self.bucket, "Key": _safe_key(key), "Body": data}
         if content_type:
             params["ContentType"] = content_type
-        self.client.put_object(**params)
+        await asyncio.to_thread(self.client.put_object, **params)
 
     async def get(self, key: str) -> bytes:
-        response = self.client.get_object(Bucket=self.bucket, Key=_safe_key(key))
-        return response["Body"].read()
+        response = await asyncio.to_thread(
+            self.client.get_object,
+            Bucket=self.bucket,
+            Key=_safe_key(key),
+        )
+        return await asyncio.to_thread(response["Body"].read)
 
     async def delete(self, key: str) -> None:
-        self.client.delete_object(Bucket=self.bucket, Key=_safe_key(key))
+        await asyncio.to_thread(
+            self.client.delete_object,
+            Bucket=self.bucket,
+            Key=_safe_key(key),
+        )
 
 
 def build_object_storage() -> ObjectStorage:
