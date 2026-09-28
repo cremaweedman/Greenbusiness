@@ -5,6 +5,7 @@ Revises:
 """
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision = "0001_foundation"
