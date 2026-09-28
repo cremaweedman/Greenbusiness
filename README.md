@@ -7,6 +7,7 @@ Canonical project repository for GreenBusiness.
 - [GREENBUSINESS_CANON_v1.1.zip](./GREENBUSINESS_CANON_v1.1.zip)
 - [06_IMPLEMENTATION_ROADMAP.md](./06_IMPLEMENTATION_ROADMAP.md)
 - [07_BUILD_HANDOFF.md](./07_BUILD_HANDOFF.md)
+- [Phase 0 architecture](./docs/PHASE_0_ARCHITECTURE.md)
 
 ## Current development state
 
@@ -29,6 +30,7 @@ Open:
 - App: http://localhost:8080
 - API liveness: http://localhost:8080/api/health/live
 - API readiness: http://localhost:8080/api/health/ready
+- API v1 ping: http://localhost:8080/api/v1/system/ping
 - FastAPI docs: http://localhost:8080/api/docs
 
 ## Migrations
@@ -47,12 +49,23 @@ docker compose run --rm web npm run typecheck
 docker compose run --rm web npm test
 ```
 
+## Object storage
+
+Development defaults to the local persistent Docker volume:
+
+```dotenv
+STORAGE_BACKEND=local
+STORAGE_LOCAL_PATH=/data/greenbusiness
+```
+
+Production can use any S3-compatible object store by setting `STORAGE_BACKEND=s3` plus the S3 environment variables in `.env.example`.
+
 ## Stop
 
 ```bash
 docker compose down
 ```
 
-Use `docker compose down -v` only when intentionally deleting the local database volume.
+Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-P0-M1 is complete. Continue from `07_BUILD_HANDOFF.md` with P0-M2; do not implement later phases early.
+P0-M1 is complete. P0-M2 is being validated before Phase 1 starts.
