@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Documentation/canon prepared. Product implementation has not yet reached Phase 0 completion.
+**Current state:** P0-M1 foundation implemented and validated. Phase 0 continues with P0-M2 hardening.
 
 ---
 
@@ -138,17 +138,19 @@ Do not build in MVP:
 
 # 6. Current repository state
 
-At the time this handoff is created:
+Current repository status:
 
-- repository exists;
-- `main` exists;
-- canonical ZIP exists:
-  - `GREENBUSINESS_CANON_v1.1.zip`
-- ZIP integrity has been verified in GitHub Actions;
-- repository still needs real source-code implementation;
-- next development target is Phase 0.
+- repository and `main` exist;
+- canonical ZIP exists and has passed integrity verification;
+- executable source foundation exists under `apps/api`, `apps/web`, `packages/contracts` and `infra`;
+- FastAPI + async SQLAlchemy + PostgreSQL + Alembic boot through Docker Compose;
+- Next.js + TypeScript web shell boots behind Nginx;
+- liveness/readiness endpoints are implemented;
+- CI runs backend lint/tests/migration sanity, frontend lint/typecheck/tests/build and full Docker-stack smoke tests;
+- P0-M1 passed all acceptance criteria on the feature branch;
+- Next.js is pinned to the patched 15.5.26 Maintenance LTS line.
 
-Do not mistake documentation completeness for implementation completeness.
+Implementation is now active. Documentation completeness must not be confused with full game completeness.
 
 ---
 
@@ -181,81 +183,41 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P0-M1**
+**P0-M2**
 
 ## Goal
-Create the executable repository foundation.
+Finish Phase 0 foundation hardening so Phase 1 can start on a stable base.
 
-## Required output structure
+## Deliverables
+- canonical API error envelope and exception handlers;
+- base audit-event table/model/service;
+- S3-compatible object-storage interface with a local development adapter;
+- explicit API version prefix `/v1` while keeping health endpoints operational;
+- DB integration test against PostgreSQL;
+- security/dependency audit step in CI where it is deterministic;
+- finalized Phase 0 documentation and architecture notes.
 
-```text
-/
-├── apps/
-│   ├── api/
-│   └── web/
-├── packages/
-│   └── contracts/
-├── infra/
-│   └── nginx/
-├── docs/
-├── docker-compose.yml
-├── .env.example
-├── .gitignore
-└── README.md
-```
-
-## Backend requirements
-- FastAPI
-- async SQLAlchemy
-- PostgreSQL
-- Alembic
-- settings module
-- `GET /health/live`
-- `GET /health/ready`
-- base structured logging
-- request ID middleware
-- pytest baseline
-
-## Frontend requirements
-- Next.js
-- TypeScript
-- responsive app shell
-- health/status page or API health indicator
-- lint/typecheck/test baseline
-
-## Infra requirements
-- API Dockerfile
-- Web Dockerfile
-- PostgreSQL
-- reverse proxy
-- named volumes
-- health checks
-- no embedded secrets
-
-## CI requirements
-- backend lint/tests
-- frontend lint/typecheck/build
-- migration sanity
-- minimal E2E smoke path
+## Constraints
+- do not add gameplay domain tables yet;
+- do not implement auth/business/crop/economy systems early;
+- Redis may remain unused until a measured need appears;
+- all new infrastructure must boot in the existing Docker stack.
 
 ---
 
-# 9. P0-M1 acceptance criteria
+# 9. P0-M2 acceptance criteria
 
-Do not mark P0-M1 done unless all are true:
+Do not mark P0-M2 done unless all are true:
 
-- clean clone boots with `docker compose up --build`;
-- PostgreSQL becomes healthy;
-- Alembic migrates a fresh DB;
-- API liveness returns 200;
-- API readiness verifies DB connectivity;
-- web loads;
-- web can reach API through configured base URL;
-- backend test suite passes;
-- frontend checks pass;
-- GitHub Actions passes;
-- `.env.example` contains placeholders only;
-- README has exact run/test/migration commands.
+- API returns the canonical error envelope for an intentional application error;
+- audit-event infrastructure persists an append-only event in PostgreSQL;
+- object-storage abstraction can write/read/delete through the local development adapter;
+- API application routes are versioned under `/v1`;
+- PostgreSQL integration test passes in CI or the full-stack smoke job;
+- backend/frontend/full-stack CI remains green;
+- no high/critical dependency issue is knowingly introduced;
+- Phase 0 Definition of Done in `06_IMPLEMENTATION_ROADMAP.md` is satisfied;
+- handoff advances to Phase 1 only after these checks pass.
 
 ---
 
@@ -360,21 +322,26 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 0 — Foundation`
 
 ## Current milestone
-`P0-M1 — Repository & Production Foundation`
+`P0-M2 — Foundation Hardening`
 
 ## Completed
 - research and product reconstruction;
 - original successor direction established;
 - GDD/TDD/production/art canon prepared;
 - canonical ZIP v1.1 uploaded and integrity checked;
-- implementation roadmap prepared;
-- build handoff prepared.
+- implementation roadmap and build handoff prepared;
+- P0-M1 repository foundation implemented;
+- FastAPI/PostgreSQL/Alembic foundation implemented;
+- Next.js/TypeScript frontend shell implemented;
+- Docker Compose + Nginx stack implemented;
+- backend/frontend/full-stack CI validated;
+- Next.js upgraded to patched 15.5.26.
 
 ## In progress
-- none yet.
+- P0-M2 Phase 0 hardening.
 
 ## Next action
-Implement P0-M1 exactly as specified in this handoff and `06_IMPLEMENTATION_ROADMAP.md`.
+Execute P0-M2 exactly as specified above, then verify the full Phase 0 Definition of Done before advancing to Phase 1.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
