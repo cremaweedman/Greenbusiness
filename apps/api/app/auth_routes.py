@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from typing import Annotated
 
 from fastapi import APIRouter, Cookie, Depends, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,6 +20,13 @@ from app.schemas import LoginRequest, PlayerResponse, RegisterRequest, TokenResp
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 player_router = APIRouter(tags=["player"])
+
+DbSession = Annotated[AsyncSession, Depends(get_db)]
+CurrentUserId = Annotated[uuid.UUID, Depends(get_current_user_id)]
+RefreshCookie = Annotated[
+    str | None,
+    Cookie(default=None, alias=settings.refresh_cookie_name),
+]
 
 
 def _set_refresh_cookie(response: Response, token: str) -> None:
@@ -42,7 +50,7 @@ async def register(
     body: RegisterRequest,
     request: Request,
     response: Response,
-    session: AsyncSession = Depends(get_db),
+    session: DbSession,
 ) -> TokenResponse:
     _, access_token, refresh_token = await register_user(
         session,
@@ -60,7 +68,7 @@ async def login(
     body: LoginRequest,
     request: Request,
     response: Response,
-    session: AsyncSession = Depends(get_db),
+    session: DbSession,
 ) -> TokenResponse:
     _, access_token, refresh_token = await login_user(
         session,
@@ -76,8 +84,8 @@ async def login(
 async def refresh(
     request: Request,
     response: Response,
-    session: AsyncSession = Depends(get_db),
-    refresh_token: str | None = Cookie(default=None, alias=settings.refresh_cookie_name),
+    session: DbSession,
+    refresh_token: RefreshCookie,
 ) -> TokenResponse:
     if not refresh_token:
         raise AppError("AUTH_REFRESH_REQUIRED", "Refresh token is required.", status_code=401)
@@ -94,8 +102,8 @@ async def refresh(
 async def logout(
     request: Request,
     response: Response,
-    session: AsyncSession = Depends(get_db),
-    refresh_token: str | None = Cookie(default=None, alias=settings.refresh_cookie_name),
+    session: DbSession,
+    refresh_token: RefreshCookie,
 ) -> Response:
     await revoke_refresh_token(
         session,
@@ -109,7 +117,7 @@ async def logout(
 
 @player_router.get("/player", response_model=PlayerResponse)
 async def player(
-    user_id: uuid.UUID = Depends(get_current_user_id),
-    session: AsyncSession = Depends(get_db),
+    user_id: CurrentUserId,
+    session: DbSession,
 ) -> PlayerResponse:
     return await get_player_state(session, user_id)
