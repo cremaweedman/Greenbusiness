@@ -37,8 +37,29 @@ jobs:
       - run: npm test
       - run: npm run build
 
-  compose:
+  compose-smoke:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker compose config
+      - name: Validate Compose
+        run: docker compose config
+      - name: Build and start stack
+        run: docker compose up -d --build
+      - name: Wait for API and web
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in {1..60}; do
+            if curl -fsS http://localhost:8080/api/health/ready >/tmp/ready.json &&                curl -fsS http://localhost:8080 >/tmp/web.html; then
+              cat /tmp/ready.json
+              grep -q "GreenBusiness" /tmp/web.html
+              exit 0
+            fi
+            sleep 2
+          done
+          docker compose ps
+          docker compose logs
+          exit 1
+      - name: Teardown
+        if: always()
+        run: docker compose down -v
