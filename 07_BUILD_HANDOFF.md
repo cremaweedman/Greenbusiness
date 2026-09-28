@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** P0-M1 foundation implemented and validated. Phase 0 continues with P0-M2 hardening.
+**Current state:** Phase 0 completed and validated. Phase 1 begins with identity, persistence and core domain state.
 
 ---
 
@@ -147,7 +147,13 @@ Current repository status:
 - Next.js + TypeScript web shell boots behind Nginx;
 - liveness/readiness endpoints are implemented;
 - CI runs backend lint/tests/migration sanity, frontend lint/typecheck/tests/build and full Docker-stack smoke tests;
-- P0-M1 passed all acceptance criteria on the feature branch;
+- P0-M1 and P0-M2 passed all acceptance criteria;
+- canonical API error envelope and request IDs are implemented;
+- append-only audit-event infrastructure persists in PostgreSQL;
+- local + S3-compatible object storage abstraction is implemented;
+- application API routes are versioned under `/v1`;
+- real PostgreSQL integration tests run in CI;
+- dependency security audits run in CI;
 - Next.js is pinned to the patched 15.5.26 Maintenance LTS line.
 
 Implementation is now active. Documentation completeness must not be confused with full game completeness.
@@ -183,41 +189,79 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P0-M2**
+**P1-M1**
 
 ## Goal
-Finish Phase 0 foundation hardening so Phase 1 can start on a stable base.
+Implement identity and persistent player bootstrap so a new user can create an account, receive the canonical starter state, sign back in and recover exactly the same state.
 
 ## Deliverables
-- canonical API error envelope and exception handlers;
-- base audit-event table/model/service;
-- S3-compatible object-storage interface with a local development adapter;
-- explicit API version prefix `/v1` while keeping health endpoints operational;
-- DB integration test against PostgreSQL;
-- security/dependency audit step in CI where it is deterministic;
-- finalized Phase 0 documentation and architecture notes.
 
-## Constraints
-- do not add gameplay domain tables yet;
-- do not implement auth/business/crop/economy systems early;
-- Redis may remain unused until a measured need appears;
-- all new infrastructure must boot in the existing Docker stack.
+### Auth
+- email/password registration;
+- login;
+- access token + refresh token;
+- refresh rotation;
+- logout/revocation;
+- password hashing with Argon2id;
+- session persistence table;
+- canonical auth errors.
+
+### Player bootstrap
+On first registration create, in one transaction:
+- user;
+- player profile;
+- starter business;
+- starter room;
+- initial production slots;
+- progression record;
+- starter inventory container;
+- audit event.
+
+### Core domain tables
+Create only the Phase 1 entities required for persistence:
+- users;
+- player_profiles;
+- auth_sessions / refresh_tokens;
+- businesses;
+- rooms;
+- production_slots;
+- progression;
+- inventory containers / starter inventory representation.
+
+Do **not** create crops, contracts, skills, economy ledger or club tables yet unless explicitly required by a foreign-key boundary.
+
+### API
+Minimum:
+- `POST /v1/auth/register`
+- `POST /v1/auth/login`
+- `POST /v1/auth/refresh`
+- `POST /v1/auth/logout`
+- `GET /v1/player`
+
+### Frontend
+- registration form;
+- login form;
+- authenticated shell;
+- session restore on reload;
+- visible starter profile/business summary.
 
 ---
 
-# 9. P0-M2 acceptance criteria
+# 9. P1-M1 acceptance criteria
 
-Do not mark P0-M2 done unless all are true:
+Do not mark P1-M1 done unless all are true:
 
-- API returns the canonical error envelope for an intentional application error;
-- audit-event infrastructure persists an append-only event in PostgreSQL;
-- object-storage abstraction can write/read/delete through the local development adapter;
-- API application routes are versioned under `/v1`;
-- PostgreSQL integration test passes in CI or the full-stack smoke job;
-- backend/frontend/full-stack CI remains green;
-- no high/critical dependency issue is knowingly introduced;
-- Phase 0 Definition of Done in `06_IMPLEMENTATION_ROADMAP.md` is satisfied;
-- handoff advances to Phase 1 only after these checks pass.
+- registration creates the complete starter state transactionally;
+- duplicate email is rejected with canonical error envelope;
+- password is never stored in plaintext;
+- login returns valid access + refresh credentials;
+- refresh rotation invalidates the previous refresh token;
+- logout revokes the active session;
+- `GET /v1/player` returns the same persistent starter state after app/browser restart;
+- account bootstrap is idempotent against duplicate registration retries;
+- auth/session/audit integration tests pass against PostgreSQL;
+- frontend registration/login/session-restore flow passes E2E;
+- backend/frontend/full-stack CI remains green.
 
 ---
 
@@ -319,10 +363,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 0 — Foundation`
+`Phase 1 — Identity, Save State & Core Domain`
 
 ## Current milestone
-`P0-M2 — Foundation Hardening`
+`P1-M1 — Identity & Persistent Bootstrap`
 
 ## Completed
 - research and product reconstruction;
@@ -335,13 +379,16 @@ Future agents/sessions must update this section after meaningful implementation.
 - Next.js/TypeScript frontend shell implemented;
 - Docker Compose + Nginx stack implemented;
 - backend/frontend/full-stack CI validated;
-- Next.js upgraded to patched 15.5.26.
+- Next.js upgraded to patched 15.5.26;
+- P0-M2 canonical errors, audit events, object storage and API versioning implemented;
+- PostgreSQL integration tests and dependency audits added;
+- Phase 0 Definition of Done fully satisfied with backend, frontend and full-stack Docker CI green.
 
 ## In progress
-- P0-M2 Phase 0 hardening.
+- P1-M1 identity and persistent player bootstrap.
 
 ## Next action
-Execute P0-M2 exactly as specified above, then verify the full Phase 0 Definition of Done before advancing to Phase 1.
+Implement P1-M1 exactly as specified above. Do not start the crop loop until its acceptance criteria are green and the handoff is advanced.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
