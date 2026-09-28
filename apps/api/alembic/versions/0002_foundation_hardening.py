@@ -5,8 +5,9 @@ Revises: 0001_foundation
 """
 
 import sqlalchemy as sa
-from alembic import op
 from sqlalchemy.dialects import postgresql
+
+from alembic import op
 
 revision = "0002_foundation_hardening"
 down_revision = "0001_foundation"
