@@ -11,7 +11,7 @@ Canonical project repository for GreenBusiness.
 ## Current development state
 
 **Phase:** Phase 0 — Foundation  
-**Milestone:** P0-M1 — Repository & Production Foundation
+**Milestone:** P0-M2 — Foundation Hardening
 
 ## Requirements
 
@@ -55,4 +55,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting the local database volume.
 
-Continue from `07_BUILD_HANDOFF.md`; do not implement later phases early.
+P0-M1 is complete. Continue from `07_BUILD_HANDOFF.md` with P0-M2; do not implement later phases early.
