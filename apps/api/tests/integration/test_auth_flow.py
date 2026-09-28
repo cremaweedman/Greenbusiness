@@ -4,7 +4,7 @@ import uuid
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import delete, func, select
+from sqlalchemy import func, select
 
 from app.db.models import (
     AuthSession,
