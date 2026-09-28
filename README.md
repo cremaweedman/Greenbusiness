@@ -11,6 +11,48 @@ Canonical project repository for GreenBusiness.
 ## Current development state
 
 **Phase:** Phase 0 — Foundation  
-**Milestone:** P0-M1 — Repository & Production Foundation
+**Milestone:** P0-M2 — Foundation Hardening
 
-Continue development from the current milestone in `07_BUILD_HANDOFF.md`. Do not implement later phases early.
+## Requirements
+
+- Docker
+- Docker Compose
+
+## Start
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+Open:
+- App: http://localhost:8080
+- API liveness: http://localhost:8080/api/health/live
+- API readiness: http://localhost:8080/api/health/ready
+- FastAPI docs: http://localhost:8080/api/docs
+
+## Migrations
+
+```bash
+docker compose exec api alembic upgrade head
+```
+
+## Tests
+
+```bash
+docker compose exec api pytest -q
+docker compose exec api ruff check .
+docker compose run --rm web npm run lint
+docker compose run --rm web npm run typecheck
+docker compose run --rm web npm test
+```
+
+## Stop
+
+```bash
+docker compose down
+```
+
+Use `docker compose down -v` only when intentionally deleting the local database volume.
+
+P0-M1 is complete. Continue from `07_BUILD_HANDOFF.md` with P0-M2; do not implement later phases early.
