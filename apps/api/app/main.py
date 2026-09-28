@@ -9,7 +9,6 @@ from app.api import router as v1_router
 from app.db.session import engine
 from app.errors import AppError, app_error_handler
 
-
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 logger = logging.getLogger("greenbusiness.api")
 
