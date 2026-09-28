@@ -25,7 +25,7 @@ DbSession = Annotated[AsyncSession, Depends(get_db)]
 CurrentUserId = Annotated[uuid.UUID, Depends(get_current_user_id)]
 RefreshCookie = Annotated[
     str | None,
-    Cookie(default=None, alias=settings.refresh_cookie_name),
+    Cookie(alias=settings.refresh_cookie_name),
 ]
 
 
@@ -85,7 +85,7 @@ async def refresh(
     request: Request,
     response: Response,
     session: DbSession,
-    refresh_token: RefreshCookie,
+    refresh_token: RefreshCookie = None,
 ) -> TokenResponse:
     if not refresh_token:
         raise AppError("AUTH_REFRESH_REQUIRED", "Refresh token is required.", status_code=401)
@@ -103,7 +103,7 @@ async def logout(
     request: Request,
     response: Response,
     session: DbSession,
-    refresh_token: RefreshCookie,
+    refresh_token: RefreshCookie = None,
 ) -> Response:
     await revoke_refresh_token(
         session,
