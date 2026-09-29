@@ -114,6 +114,11 @@ function tutorialObjective(player: Player): string {
   return "Set the first crop";
 }
 
+function slotState(slot: Slot, now: number): "available" | "planted" | "ready" {
+  if (!slot.crop) return "available";
+  return new Date(slot.crop.ready_at).getTime() <= now ? "ready" : "planted";
+}
+
 export default function AuthApp() {
   const [mode, setMode] = useState<Mode>("register");
   const [player, setPlayer] = useState<Player | null>(null);
@@ -341,58 +346,77 @@ export default function AuthApp() {
           </aside>
 
           <div className="room-board" aria-label="Starter production slots">
-            {player.slots.map((slot) => {
-              const busy = actionSlotId === slot.id;
-              const remaining = slot.crop ? formatRemaining(slot.crop.ready_at, now) : null;
-              const isReady = slot.crop ? new Date(slot.crop.ready_at).getTime() <= now : false;
-              return (
-                <article key={slot.id} className={`slot-card ${slot.status}`}>
-                  <div className="slot-head">
-                    <span>Slot {slot.slot_index + 1}</span>
-                    <strong>{slot.crop ? slot.crop.variety_name : "Available"}</strong>
-                  </div>
+            <div className="room-scene" aria-hidden="true">
+              <div className="room-wall" />
+              <div className="room-floor">
+                {player.slots.map((slot) => {
+                  const state = slotState(slot, now);
+                  return (
+                    <span
+                      key={slot.id}
+                      className={`iso-plot slot-${slot.slot_index} ${state}`}
+                    >
+                      <span />
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
 
-                  {slot.crop ? (
-                    <>
-                      <div className="crop-meter" aria-hidden="true">
-                        <span style={{ width: isReady ? "100%" : "48%" }} />
-                      </div>
-                      <div className="slot-meta">
-                        <span>{remaining}</span>
-                        <span>{slot.crop.cared_at ? "Cared" : "Care optional"}</span>
-                      </div>
-                      <div className="slot-actions">
-                        <button
-                          className="secondary"
-                          onClick={() => void runProductionAction(slot, "care")}
-                          disabled={busy || Boolean(slot.crop.cared_at)}
-                        >
-                          Care
-                        </button>
+            <div className="slot-list">
+              {player.slots.map((slot) => {
+                const busy = actionSlotId === slot.id;
+                const remaining = slot.crop ? formatRemaining(slot.crop.ready_at, now) : null;
+                const isReady = slotState(slot, now) === "ready";
+                return (
+                  <article key={slot.id} className={`slot-card ${slot.status}`}>
+                    <div className="slot-head">
+                      <span>Slot {slot.slot_index + 1}</span>
+                      <strong>{slot.crop ? slot.crop.variety_name : "Available"}</strong>
+                    </div>
+
+                    {slot.crop ? (
+                      <>
+                        <div className="crop-meter" aria-hidden="true">
+                          <span style={{ width: isReady ? "100%" : "48%" }} />
+                        </div>
+                        <div className="slot-meta">
+                          <span>{remaining}</span>
+                          <span>{slot.crop.cared_at ? "Cared" : "Care optional"}</span>
+                        </div>
+                        <div className="slot-actions">
+                          <button
+                            className="secondary"
+                            onClick={() => void runProductionAction(slot, "care")}
+                            disabled={busy || Boolean(slot.crop.cared_at)}
+                          >
+                            Care
+                          </button>
+                          <button
+                            className="primary"
+                            onClick={() => void runProductionAction(slot, "harvest")}
+                            disabled={busy || !isReady}
+                          >
+                            Harvest
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className="empty-state">Ready for the next fictional starter crop.</p>
                         <button
                           className="primary"
-                          onClick={() => void runProductionAction(slot, "harvest")}
-                          disabled={busy || !isReady}
+                          onClick={() => void runProductionAction(slot, "plant")}
+                          disabled={busy || !selectedVariety}
                         >
-                          Harvest
+                          Plant {chosenVariety?.name ?? "variety"}
                         </button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <p className="empty-state">Ready for the next fictional starter crop.</p>
-                      <button
-                        className="primary"
-                        onClick={() => void runProductionAction(slot, "plant")}
-                        disabled={busy || !selectedVariety}
-                      >
-                        Plant {chosenVariety?.name ?? "variety"}
-                      </button>
-                    </>
-                  )}
-                </article>
-              );
-            })}
+                      </>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </div>
 
