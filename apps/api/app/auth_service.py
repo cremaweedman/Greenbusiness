@@ -19,6 +19,7 @@ from app.db.models import (
     Room,
     User,
 )
+from app.economy_service import bootstrap_wallet, economy_state
 from app.errors import AppError
 from app.production_service import (
     get_active_crops_by_slot,
@@ -73,6 +74,7 @@ async def register_user(
 
     session.add_all([profile, business, progression, inventory])
     await session.flush()
+    await bootstrap_wallet(session, user.id)
 
     room = Room(business_id=business.id, slug="starter-growroom", level=1)
     session.add(room)
@@ -244,6 +246,9 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         )
     ).all()
     crops_by_slot = await get_active_crops_by_slot(session, [slot.id for slot in slots])
+    cash, contract_offers, active_contract, upgrade_offers, owned_upgrade_keys = (
+        await economy_state(session, user_id)
+    )
 
     return PlayerResponse(
         server_time=now,
@@ -264,6 +269,11 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         inventory_container_id=inventory.id,
         inventory=await inventory_responses(session, inventory.id),
         starter_varieties=starter_variety_responses(),
+        cash=cash,
+        contract_offers=contract_offers,
+        active_contract=active_contract,
+        upgrade_offers=upgrade_offers,
+        owned_upgrade_keys=owned_upgrade_keys,
     )
 
 
