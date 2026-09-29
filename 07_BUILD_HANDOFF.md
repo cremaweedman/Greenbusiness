@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 0 completed and validated. Phase 1 begins with identity, persistence and core domain state.
+**Current state:** Phase 1 P1-M1 completed and validated. Repository is intentionally stopped before P2; the core vertical slice has not started.
 
 ---
 
@@ -189,79 +189,68 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P1-M1**
+**P2-M1 — READY, NOT STARTED**
 
-## Goal
-Implement identity and persistent player bootstrap so a new user can create an account, receive the canonical starter state, sign back in and recover exactly the same state.
+## Stop point
+This repository is intentionally stopped immediately before Phase 2 implementation.
 
-## Deliverables
+Do **not** start P2 in the current handoff-closing task.
 
-### Auth
-- email/password registration;
-- login;
-- access token + refresh token;
-- refresh rotation;
-- logout/revocation;
-- password hashing with Argon2id;
-- session persistence table;
-- canonical auth errors.
+## Next goal when development resumes
+Implement the first playable core vertical slice:
 
-### Player bootstrap
-On first registration create, in one transaction:
-- user;
-- player profile;
-- starter business;
-- starter room;
-- initial production slots;
-- progression record;
-- starter inventory container;
-- audit event.
+```text
+Authenticated player
+  -> starter room
+    -> choose one of 3 fictional varieties
+      -> plant in an available slot
+        -> server-authoritative timer
+          -> optional care action
+            -> ready state
+              -> harvest
+                -> inventory + quality result
+                  -> persisted state after reload
+```
 
-### Core domain tables
-Create only the Phase 1 entities required for persistence:
-- users;
-- player_profiles;
-- auth_sessions / refresh_tokens;
-- businesses;
-- rooms;
-- production_slots;
-- progression;
-- inventory containers / starter inventory representation.
+## Planned P2-M1 deliverables
+- 3 fictional starter varieties;
+- crop/production instance model;
+- plant endpoint;
+- computed server-side `ready_at` timer;
+- optional care action;
+- harvest endpoint;
+- idempotent harvest protection;
+- server-side quality/yield calculation;
+- inventory quantity representation;
+- starter room UI with 2 existing production slots;
+- reconnect/reload state restoration;
+- vertical-slice E2E.
 
-Do **not** create crops, contracts, skills, economy ledger or club tables yet unless explicitly required by a foreign-key boundary.
-
-### API
-Minimum:
-- `POST /v1/auth/register`
-- `POST /v1/auth/login`
-- `POST /v1/auth/refresh`
-- `POST /v1/auth/logout`
-- `GET /v1/player`
-
-### Frontend
-- registration form;
-- login form;
-- authenticated shell;
-- session restore on reload;
-- visible starter profile/business summary.
+## Explicitly excluded from P2-M1
+- contracts;
+- Cash ledger/economy;
+- skills;
+- employees;
+- clubs;
+- monetization;
+- LiveOps beyond static/versioned config required by the slice.
 
 ---
 
-# 9. P1-M1 acceptance criteria
+# 9. P2-M1 acceptance criteria — for the next session
 
-Do not mark P1-M1 done unless all are true:
+P2-M1 must not be marked complete until:
+- an authenticated player can plant into an available starter slot;
+- the server, not the browser clock, determines readiness;
+- reload/reconnect preserves the crop state;
+- optional care cannot block baseline completion;
+- harvest can succeed only once;
+- duplicate/replayed harvest does not duplicate inventory/rewards;
+- harvested output persists in inventory;
+- at least 3 starter fictional varieties are data-driven;
+- backend/frontend/full-stack E2E is green.
 
-- registration creates the complete starter state transactionally;
-- duplicate email is rejected with canonical error envelope;
-- password is never stored in plaintext;
-- login returns valid access + refresh credentials;
-- refresh rotation invalidates the previous refresh token;
-- logout revokes the active session;
-- `GET /v1/player` returns the same persistent starter state after app/browser restart;
-- account bootstrap is idempotent against duplicate registration retries;
-- auth/session/audit integration tests pass against PostgreSQL;
-- frontend registration/login/session-restore flow passes E2E;
-- backend/frontend/full-stack CI remains green.
+**Current status:** not started.
 
 ---
 
@@ -363,10 +352,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 1 — Identity, Save State & Core Domain`
+`Phase 1 complete — stopped before Phase 2`
 
 ## Current milestone
-`P1-M1 — Identity & Persistent Bootstrap`
+`P2-M1 — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -382,13 +371,24 @@ Future agents/sessions must update this section after meaningful implementation.
 - Next.js upgraded to patched 15.5.26;
 - P0-M2 canonical errors, audit events, object storage and API versioning implemented;
 - PostgreSQL integration tests and dependency audits added;
-- Phase 0 Definition of Done fully satisfied with backend, frontend and full-stack Docker CI green.
+- Phase 0 Definition of Done fully satisfied with backend, frontend and full-stack Docker CI green;
+- P1-M1 identity and persistent bootstrap implemented;
+- email/password registration and login implemented;
+- passwords use Argon2id hashing;
+- access JWT + HttpOnly refresh-cookie flow implemented;
+- refresh-token rotation and replay invalidation implemented;
+- logout/revocation implemented;
+- starter player/profile/business/room/two production slots/progression/inventory container bootstrap transaction implemented;
+- `GET /v1/player` persistent state implemented;
+- registration/login/session-restore frontend implemented;
+- PostgreSQL integration tests and full Docker auth E2E pass;
+- final P1-M1 branch CI is green: backend, frontend and compose-smoke.
 
 ## In progress
-- P1-M1 identity and persistent player bootstrap.
+- none.
 
 ## Next action
-Implement P1-M1 exactly as specified above. Do not start the crop loop until its acceptance criteria are green and the handoff is advanced.
+**STOP HERE.** When development resumes, begin P2-M1 as specified above. No P2 code has been started in this closing task.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;

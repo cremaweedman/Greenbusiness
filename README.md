@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 1 — Identity, Save State & Core Domain  
-**Milestone:** P1-M1 — Identity & Persistent Bootstrap
+**Phase:** Phase 1 complete — stopped before Phase 2  
+**Milestone:** P2-M1 — READY, NOT STARTED
 
 ## Requirements
 
@@ -68,4 +68,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 is complete. Continue from `07_BUILD_HANDOFF.md` with P1-M1; do not implement the crop/economy phases early.
+Phase 0 and P1-M1 are complete. The repository is intentionally stopped before P2. Resume from `07_BUILD_HANDOFF.md` only when ready to begin the core vertical slice.
