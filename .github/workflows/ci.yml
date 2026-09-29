@@ -110,7 +110,7 @@ jobs:
           assert player["email"] == "ci-auth@example.com"
           assert player["display_name"] == "CI Owner"
           assert player["room_slug"] == "starter-growroom"
-          assert len(player["slots"]) == 2
+          assert len(player["slots"]) == 3
           PY
 
           cp /tmp/cookies.txt /tmp/old-cookies.txt
