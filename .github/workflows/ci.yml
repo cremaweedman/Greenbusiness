@@ -88,10 +88,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          EMAIL="ci-auth@example.com"
-          PASSWORD="CI-strong-password-123"
 
-          curl -fsS             -c /tmp/cookies.txt             -H "Content-Type: application/json"             -d "{"email":"$EMAIL","password":"$PASSWORD","display_name":"CI Owner"}"             http://localhost:8080/api/v1/auth/register             > /tmp/register.json
+          python - <<'PY' > /tmp/register-payload.json
+          import json
+          print(json.dumps({
+              "email": "ci-auth@example.com",
+              "password": "CI-strong-password-123",
+              "display_name": "CI Owner",
+          }))
+          PY
+
+          curl -fsS             -c /tmp/cookies.txt             -H "Content-Type: application/json"             --data-binary @/tmp/register-payload.json             http://localhost:8080/api/v1/auth/register             > /tmp/register.json
 
           ACCESS_TOKEN="$(python -c 'import json; print(json.load(open("/tmp/register.json"))["access_token"])')"
 
