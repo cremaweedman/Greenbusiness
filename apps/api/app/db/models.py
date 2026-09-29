@@ -4,7 +4,17 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, UniqueConstraint, func
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    UniqueConstraint,
+    func,
+    text,
+)
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -133,6 +143,14 @@ class ProductionSlot(Base):
 
 class CropProduction(Base):
     __tablename__ = "crop_productions"
+    __table_args__ = (
+        Index(
+            "uq_crop_productions_active_slot",
+            "slot_id",
+            unique=True,
+            postgresql_where=text("harvested_at IS NULL"),
+        ),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     slot_id: Mapped[uuid.UUID] = mapped_column(

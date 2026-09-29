@@ -34,6 +34,13 @@ def upgrade():
         sa.Column("quality", sa.String(24), nullable=True),
     )
     op.create_index("ix_crop_productions_slot_id", "crop_productions", ["slot_id"])
+    op.create_index(
+        "uq_crop_productions_active_slot",
+        "crop_productions",
+        ["slot_id"],
+        unique=True,
+        postgresql_where=sa.text("harvested_at IS NULL"),
+    )
     op.create_index("ix_crop_productions_ready_at", "crop_productions", ["ready_at"])
     op.create_index("ix_crop_productions_harvested_at", "crop_productions", ["harvested_at"])
 
@@ -76,5 +83,6 @@ def downgrade():
     op.drop_table("inventory_items")
     op.drop_index("ix_crop_productions_harvested_at", table_name="crop_productions")
     op.drop_index("ix_crop_productions_ready_at", table_name="crop_productions")
+    op.drop_index("uq_crop_productions_active_slot", table_name="crop_productions")
     op.drop_index("ix_crop_productions_slot_id", table_name="crop_productions")
     op.drop_table("crop_productions")

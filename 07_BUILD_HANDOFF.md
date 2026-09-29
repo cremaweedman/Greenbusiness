@@ -387,6 +387,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - 3 fictional starter varieties implemented: Aurora Drift, Ember Leaf and Moon Sprout;
 - plant/care/harvest endpoints implemented under `/v1/production`;
 - server-authoritative `ready_at`, readiness checks, care bonus, quality and yield implemented;
+- partial unique database index prevents more than one active crop per production slot;
 - harvest marks crop history and releases the slot so rewards cannot be duplicated by replay;
 - inventory item quantities persist per user inventory container;
 - `GET /v1/player` returns starter varieties, active crop state and inventory;
