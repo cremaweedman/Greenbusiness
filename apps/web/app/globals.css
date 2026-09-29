@@ -461,3 +461,58 @@ input:focus {
     grid-template-columns: 1fr;
   }
 }
+
+
+.topbar-actions {
+  display: grid;
+  gap: 10px;
+  justify-items: end;
+}
+
+.cash-chip {
+  min-width: 112px;
+  padding: 10px 12px;
+  border: 1px solid #6d6540;
+  border-radius: 8px;
+  background: #211f14;
+  color: #d9cf9b;
+  text-align: center;
+  font-size: 0.84rem;
+}
+
+.cash-chip strong {
+  margin-left: 6px;
+  color: #f4e9a8;
+  font-size: 1rem;
+}
+
+.economy-list {
+  display: grid;
+  gap: 10px;
+}
+
+.economy-card {
+  display: grid;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid #3b493e;
+  border-radius: 8px;
+  background: #101712;
+}
+
+.economy-card span {
+  color: #94a49a;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.economy-card.complete {
+  border-color: #547a5d;
+  background: #142018;
+}
+
+@media (max-width: 520px) {
+  .topbar-actions {
+    justify-items: stretch;
+  }
+}
