@@ -1,0 +1,20 @@
+[
+  {
+    "key": "aurora-drift",
+    "name": "Aurora Drift",
+    "grow_seconds": 90,
+    "base_yield": 3
+  },
+  {
+    "key": "ember-leaf",
+    "name": "Ember Leaf",
+    "grow_seconds": 120,
+    "base_yield": 4
+  },
+  {
+    "key": "moon-sprout",
+    "name": "Moon Sprout",
+    "grow_seconds": 150,
+    "base_yield": 5
+  }
+]

@@ -4,7 +4,17 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, UniqueConstraint, func
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    UniqueConstraint,
+    func,
+    text,
+)
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -131,6 +141,33 @@ class ProductionSlot(Base):
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="available")
 
 
+class CropProduction(Base):
+    __tablename__ = "crop_productions"
+    __table_args__ = (
+        Index(
+            "uq_crop_productions_active_slot",
+            "slot_id",
+            unique=True,
+            postgresql_where=text("harvested_at IS NULL"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    slot_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("production_slots.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    variety_key: Mapped[str] = mapped_column(String(64), nullable=False)
+    planted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    ready_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    cared_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    harvested_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)
+    yield_quantity: Mapped[int | None] = mapped_column(Integer)
+    quality: Mapped[str | None] = mapped_column(String(24))
+
+
 class Progression(Base):
     __tablename__ = "progression"
 
@@ -157,3 +194,20 @@ class InventoryContainer(Base):
         unique=True,
     )
     kind: Mapped[str] = mapped_column(String(24), nullable=False, default="main")
+
+
+class InventoryItem(Base):
+    __tablename__ = "inventory_items"
+    __table_args__ = (
+        UniqueConstraint("inventory_container_id", "item_key", name="uq_inventory_item_container_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    inventory_container_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("inventory_containers.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    item_key: Mapped[str] = mapped_column(String(96), nullable=False)
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

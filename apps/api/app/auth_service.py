@@ -20,7 +20,13 @@ from app.db.models import (
     User,
 )
 from app.errors import AppError
-from app.schemas import PlayerResponse, ProductionSlotResponse
+from app.production_service import (
+    get_active_crops_by_slot,
+    inventory_responses,
+    slot_response,
+    starter_variety_responses,
+)
+from app.schemas import PlayerResponse
 from app.security import (
     create_access_token,
     hash_password,
@@ -76,6 +82,7 @@ async def register_user(
         [
             ProductionSlot(room_id=room.id, slot_index=0, status="available"),
             ProductionSlot(room_id=room.id, slot_index=1, status="available"),
+            ProductionSlot(room_id=room.id, slot_index=2, status="available"),
         ]
     )
 
@@ -211,6 +218,7 @@ async def revoke_refresh_token(
 
 
 async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerResponse:
+    now = datetime.now(UTC)
     user = await session.get(User, user_id)
     if user is None:
         raise AppError("PLAYER_NOT_FOUND", "Player not found.", status_code=404)
@@ -235,8 +243,10 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
             .order_by(ProductionSlot.slot_index)
         )
     ).all()
+    crops_by_slot = await get_active_crops_by_slot(session, [slot.id for slot in slots])
 
     return PlayerResponse(
+        server_time=now,
         user_id=user.id,
         email=user.email,
         display_name=profile.display_name,
@@ -245,14 +255,15 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         room_id=room.id,
         room_slug=room.slug,
         room_level=room.level,
-        slots=[
-            ProductionSlotResponse(id=slot.id, slot_index=slot.slot_index, status=slot.status)
-            for slot in slots
-        ],
+        slots=[slot_response(slot, crops_by_slot.get(slot.id), now) for slot in slots],
         level=progression.level,
         xp=progression.xp,
         reputation=progression.reputation,
+        tutorial_step=profile.tutorial_step,
+        tutorial_completed=profile.tutorial_completed,
         inventory_container_id=inventory.id,
+        inventory=await inventory_responses(session, inventory.id),
+        starter_varieties=starter_variety_responses(),
     )
 
 

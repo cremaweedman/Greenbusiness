@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 
 from pydantic import BaseModel, Field
 
@@ -22,13 +23,51 @@ class TokenResponse(BaseModel):
     expires_in: int
 
 
+class StarterVarietyResponse(BaseModel):
+    key: str
+    name: str
+    grow_seconds: int
+    base_yield: int
+
+
+class CropProductionResponse(BaseModel):
+    id: uuid.UUID
+    variety_key: str
+    variety_name: str
+    planted_at: datetime
+    ready_at: datetime
+    cared_at: datetime | None
+    is_ready: bool
+
+
 class ProductionSlotResponse(BaseModel):
     id: uuid.UUID
     slot_index: int
     status: str
+    crop: CropProductionResponse | None = None
+
+
+class InventoryItemResponse(BaseModel):
+    item_key: str
+    display_name: str
+    quantity: int
+
+
+class PlantRequest(BaseModel):
+    variety_key: str = Field(min_length=1, max_length=64)
+
+
+class HarvestResponse(BaseModel):
+    slot: ProductionSlotResponse
+    inventory: list[InventoryItemResponse]
+    harvested_item: InventoryItemResponse
+    yield_quantity: int
+    quality: str
+    xp_reward: int
 
 
 class PlayerResponse(BaseModel):
+    server_time: datetime
     user_id: uuid.UUID
     email: str
     display_name: str
@@ -41,4 +80,8 @@ class PlayerResponse(BaseModel):
     level: int
     xp: int
     reputation: int
+    tutorial_step: int
+    tutorial_completed: bool
     inventory_container_id: uuid.UUID
+    inventory: list[InventoryItemResponse]
+    starter_varieties: list[StarterVarietyResponse]
