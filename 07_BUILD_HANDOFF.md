@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** P2-M1 core production vertical slice is completed and validated. P3-M1 economic loop implementation is the active milestone.
+**Current state:** P3-M1 economic loop is completed and validated. P3-M2 is ready but not started.
 
 ---
 
@@ -189,58 +189,50 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P3-M1 — Economic Loop Playable**
+**P3-M2 — Contracts & Progression Expansion — READY, NOT STARTED**
 
 ## Goal
-Close the first complete business loop on top of the validated P2 production slice:
+Expand the proven P3-M1 economic loop into a repeatable management layer without jumping to later phases.
 
-```text
-plant -> wait/care -> harvest -> inventory
-  -> complete contract
-    -> Cash ledger reward
-      -> purchase first upgrade
-        -> improved future production outcome
-```
+## Planned deliverables
+- contract pool with quick / standard / premium archetypes;
+- 3 simultaneous standard offers plus 1 specialized offer;
+- server-authoritative 4-hour offer refresh;
+- trait and quality requirements;
+- reputation rewards and gates;
+- 20-level progression curve foundation;
+- unlock table for varieties / slots / upgrades;
+- upgrade tiers using the canonical exponential cost curve;
+- first compact skill-point progression hooks for Botany / Commerce / Operations;
+- player-state/API/UI support for rotating offers and progression;
+- economy simulation checks for obvious inflation/exploit paths;
+- backend/frontend/full-stack E2E for repeated contract cycles.
 
-## Deliverables
-- Cash wallet starting at 500;
-- append-only economy ledger with balance_before / balance_after;
-- idempotent economic mutations;
-- static/versioned starter contract catalog;
-- accept + complete one starter contract using harvested inventory;
-- contract completion consumes inventory transactionally and grants Cash;
-- first purchasable business upgrade;
-- upgrade purchase recorded in ledger;
-- first upgrade visibly changes a production result;
-- player state exposes wallet, offers, active contract and owned upgrade;
-- frontend supports contract completion and upgrade purchase;
-- PostgreSQL integration tests for replay/concurrency/balance invariants;
-- full Docker E2E: plant -> harvest -> contract -> cash -> upgrade -> changed result.
-
-## Explicitly excluded from P3-M1
-- full 20–25 level curve;
-- complete 3 skill trees;
-- 10–12 variety catalog expansion;
-- market simulation;
+## Explicitly excluded from P3-M2
+- missions/narrative engine;
 - employees;
 - clubs;
 - monetization;
-- seasons/LiveOps.
+- seasons/LiveOps;
+- P2P marketplace;
+- open chat.
 
 ---
 
-# 9. P3-M1 acceptance criteria
+# 9. P3-M2 acceptance criteria
 
-Do not mark P3-M1 complete until:
-- new users start with exactly 500 Cash;
-- every Cash mutation has an append-only ledger entry;
-- wallet balance cannot become negative;
-- replaying contract completion cannot mint Cash twice;
-- contract completion consumes the required inventory exactly once;
-- upgrade purchase cannot charge twice for the same ownership state;
-- upgrade changes a measurable production outcome server-side;
-- player state persists wallet/contract/upgrade after reload;
+Do not mark P3-M2 complete until:
+- contract offers refresh deterministically from server state;
+- no more than the configured active/offer limits can be bypassed;
+- all Cash rewards and sinks remain ledger-backed;
+- progression/unlocks persist across sessions;
+- level/reputation changes are server-authoritative;
+- upgrade prices follow versioned configuration;
+- repeated contract cycles cannot duplicate inventory or Cash;
+- economy simulation shows no obvious infinite-money exploit;
 - backend/frontend/full-stack CI is green.
+
+**Current status:** ready, not started.
 
 ---
 
@@ -345,7 +337,7 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 3 — Economy, Contracts & Progression`
 
 ## Current milestone
-`P3-M1 — Economic Loop Playable`
+`P3-M2 — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -385,12 +377,20 @@ Future agents/sessions must update this section after meaningful implementation.
 - P2-M1 integration tests added for persistence, early-harvest rejection, care, single harvest, tutorial progress, XP reward and invalid variety;
 - P2-M1 merged to main and full backend/frontend/compose-smoke CI validated;
 - CI hotfix aligned the auth bootstrap expectation with the 3-slot P2 starter state.
+- P3-M1 wallet starts at 500 Cash and all Cash mutations use an append-only ledger;
+- starter contract Neighborhood Sampler consumes 3 Aurora Drift and rewards 150 Cash transactionally;
+- economic mutations use Idempotency-Key replay protection;
+- Efficient Racks costs 600 Cash and adds +1 yield server-side;
+- player state and frontend expose Cash, contract and upgrade state;
+- PostgreSQL integration test covers harvest -> contract -> Cash -> upgrade -> improved harvest;
+- full Docker E2E covers the same economic loop;
+- final P3-M1 backend, frontend and compose-smoke CI are green.
 
 ## In progress
-- P3-M1 Cash wallet, ledger, starter contract and first upgrade.
+- none.
 
 ## Next action
-Implement P3-M1 exactly as specified above. Do not expand into full skills, employees, clubs or monetization until the economic loop passes all acceptance criteria.
+Begin P3-M2 exactly as specified above when development resumes. Do not start Phase 4 or later systems early.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
