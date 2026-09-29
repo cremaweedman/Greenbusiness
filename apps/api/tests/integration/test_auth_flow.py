@@ -57,6 +57,7 @@ async def test_register_bootstrap_refresh_rotation_and_logout(client: AsyncClien
         )
         assert player.status_code == 200
         state = player.json()
+        assert state["server_time"]
         assert state["email"] == email
         assert state["display_name"] == "Starter"
         assert state["room_slug"] == "starter-growroom"

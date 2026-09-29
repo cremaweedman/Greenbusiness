@@ -14,6 +14,8 @@ test("production shell exists", () => {
   assert.match(auth, /\/api\/v1\/auth\/refresh/);
   assert.match(auth, /\/api\/health\/live/);
   assert.match(auth, /\/api\/v1\/production\/slots/);
+  assert.match(auth, /server_time/);
+  assert.match(auth, /serverClockOffsetMs/);
   assert.match(auth, /Starter varieties/);
   assert.match(auth, /room-scene/);
   assert.match(auth, /API offline/);

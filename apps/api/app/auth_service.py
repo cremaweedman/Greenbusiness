@@ -218,6 +218,7 @@ async def revoke_refresh_token(
 
 
 async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerResponse:
+    now = datetime.now(UTC)
     user = await session.get(User, user_id)
     if user is None:
         raise AppError("PLAYER_NOT_FOUND", "Player not found.", status_code=404)
@@ -245,6 +246,7 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
     crops_by_slot = await get_active_crops_by_slot(session, [slot.id for slot in slots])
 
     return PlayerResponse(
+        server_time=now,
         user_id=user.id,
         email=user.email,
         display_name=profile.display_name,
@@ -253,7 +255,7 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         room_id=room.id,
         room_slug=room.slug,
         room_level=room.level,
-        slots=[slot_response(slot, crops_by_slot.get(slot.id)) for slot in slots],
+        slots=[slot_response(slot, crops_by_slot.get(slot.id), now) for slot in slots],
         level=progression.level,
         xp=progression.xp,
         reputation=progression.reputation,

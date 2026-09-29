@@ -50,6 +50,7 @@ async def test_production_loop_persists_harvests_once_and_updates_inventory(clie
         player = await client.get("/v1/player", headers=auth)
         assert player.status_code == 200
         state = player.json()
+        assert state["server_time"]
         assert [variety["key"] for variety in state["starter_varieties"]] == [
             "aurora-drift",
             "ember-leaf",

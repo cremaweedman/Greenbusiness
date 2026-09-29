@@ -41,6 +41,7 @@ type InventoryItem = {
 };
 
 type Player = {
+  server_time: string;
   user_id: string;
   email: string;
   display_name: string;
@@ -133,6 +134,7 @@ export default function AuthApp() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
+  const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
 
   const chosenVariety = useMemo(
     () => player?.starter_varieties.find((variety) => variety.key === selectedVariety) ?? null,
@@ -149,6 +151,11 @@ export default function AuthApp() {
     setSelectedVariety(player.starter_varieties[0]?.key ?? null);
   }, [player, selectedVariety]);
 
+  function applyPlayerState(nextPlayer: Player) {
+    setServerClockOffsetMs(new Date(nextPlayer.server_time).getTime() - Date.now());
+    setPlayer(nextPlayer);
+  }
+
   useEffect(() => {
     let mounted = true;
 
@@ -163,7 +170,7 @@ export default function AuthApp() {
         const restored = await getPlayer(token.access_token);
         if (!mounted) return;
         setAccessToken(token.access_token);
-        setPlayer(restored);
+        applyPlayerState(restored);
       } catch {
         // A missing/expired session is a normal anonymous state.
       } finally {
@@ -205,7 +212,7 @@ export default function AuthApp() {
 
   async function refreshPlayer(token = accessToken) {
     if (!token) return;
-    setPlayer(await getPlayer(token));
+    applyPlayerState(await getPlayer(token));
   }
 
   async function authenticate(endpoint: "login" | "register", payload: object) {
@@ -227,7 +234,7 @@ export default function AuthApp() {
       const token = (await response.json()) as TokenResponse;
       const currentPlayer = await getPlayer(token.access_token);
       setAccessToken(token.access_token);
-      setPlayer(currentPlayer);
+      applyPlayerState(currentPlayer);
       setSelectedVariety(currentPlayer.starter_varieties[0]?.key ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
@@ -317,6 +324,8 @@ export default function AuthApp() {
   }
 
   if (player && accessToken) {
+    const serverNow = now + serverClockOffsetMs;
+
     return (
       <section className="workspace">
         <header className="topbar">
@@ -382,7 +391,7 @@ export default function AuthApp() {
               <div className="room-wall" />
               <div className="room-floor">
                 {player.slots.map((slot) => {
-                  const state = slotState(slot, now);
+                  const state = slotState(slot, serverNow);
                   return (
                     <span
                       key={slot.id}
@@ -398,8 +407,8 @@ export default function AuthApp() {
             <div className="slot-list">
               {player.slots.map((slot) => {
                 const busy = actionSlotId === slot.id;
-                const remaining = slot.crop ? formatRemaining(slot.crop.ready_at, now) : null;
-                const isReady = slotState(slot, now) === "ready";
+                const remaining = slot.crop ? formatRemaining(slot.crop.ready_at, serverNow) : null;
+                const isReady = slotState(slot, serverNow) === "ready";
                 return (
                   <article key={slot.id} className={`slot-card ${slot.status}`}>
                     <div className="slot-head">

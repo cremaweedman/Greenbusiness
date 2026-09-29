@@ -67,6 +67,7 @@ class HarvestResponse(BaseModel):
 
 
 class PlayerResponse(BaseModel):
+    server_time: datetime
     user_id: uuid.UUID
     email: str
     display_name: str
