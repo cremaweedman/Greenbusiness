@@ -14,11 +14,13 @@ from app.db.models import (
     InventoryContainer,
     InventoryItem,
     PlayerProfile,
+    PlayerUpgrade,
     ProductionSlot,
     Progression,
     Room,
 )
 from app.errors import AppError
+from app.game_data.economy_catalog import STARTER_UPGRADE
 from app.game_data.production_catalog import STARTER_VARIETIES, STARTER_VARIETY_BY_KEY
 from app.schemas import (
     CropProductionResponse,
@@ -299,8 +301,17 @@ async def harvest_crop(
 
     variety = STARTER_VARIETY_BY_KEY[crop.variety_key]
     care_bonus = 1 if crop.cared_at is not None else 0
+    has_yield_upgrade = (
+        await session.scalar(
+            select(PlayerUpgrade.id)
+            .where(PlayerUpgrade.user_id == user_id)
+            .where(PlayerUpgrade.upgrade_key == STARTER_UPGRADE.key)
+        )
+        is not None
+    )
+    upgrade_bonus = STARTER_UPGRADE.yield_bonus if has_yield_upgrade else 0
     quality = "cared" if crop.cared_at is not None else "standard"
-    yield_quantity = variety.base_yield + care_bonus
+    yield_quantity = variety.base_yield + care_bonus + upgrade_bonus
     xp_reward = yield_quantity * XP_PER_HARVEST_UNIT
     item_key = variety.item_key
 
@@ -340,6 +351,7 @@ async def harvest_crop(
             "yield_quantity": yield_quantity,
             "quality": quality,
             "xp_reward": xp_reward,
+            "upgrade_bonus": upgrade_bonus,
         },
     )
     await session.commit()
