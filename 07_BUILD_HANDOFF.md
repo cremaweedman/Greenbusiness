@@ -384,7 +384,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - PostgreSQL integration tests and full Docker auth E2E pass;
 - final P1-M1 branch CI is green: backend, frontend and compose-smoke;
 - P2-M1 production loop models, migration, service and routes implemented;
-- 3 fictional starter varieties implemented: Aurora Drift, Ember Leaf and Moon Sprout;
+- 3 fictional starter varieties implemented as versioned backend data: Aurora Drift, Ember Leaf and Moon Sprout;
 - plant/care/harvest endpoints implemented under `/v1/production`;
 - server-authoritative `ready_at`, readiness checks, care bonus, quality and yield implemented;
 - partial unique database index prevents more than one active crop per production slot;
