@@ -20,7 +20,13 @@ from app.db.models import (
     User,
 )
 from app.errors import AppError
-from app.schemas import PlayerResponse, ProductionSlotResponse
+from app.production_service import (
+    get_active_crops_by_slot,
+    inventory_responses,
+    slot_response,
+    starter_variety_responses,
+)
+from app.schemas import PlayerResponse
 from app.security import (
     create_access_token,
     hash_password,
@@ -235,6 +241,7 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
             .order_by(ProductionSlot.slot_index)
         )
     ).all()
+    crops_by_slot = await get_active_crops_by_slot(session, [slot.id for slot in slots])
 
     return PlayerResponse(
         user_id=user.id,
@@ -245,14 +252,13 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         room_id=room.id,
         room_slug=room.slug,
         room_level=room.level,
-        slots=[
-            ProductionSlotResponse(id=slot.id, slot_index=slot.slot_index, status=slot.status)
-            for slot in slots
-        ],
+        slots=[slot_response(slot, crops_by_slot.get(slot.id)) for slot in slots],
         level=progression.level,
         xp=progression.xp,
         reputation=progression.reputation,
         inventory_container_id=inventory.id,
+        inventory=await inventory_responses(session, inventory.id),
+        starter_varieties=starter_variety_responses(),
     )
 
 
