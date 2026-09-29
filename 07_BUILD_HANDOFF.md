@@ -189,15 +189,13 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P2-M1 — READY, NOT STARTED**
+**P2-M1 — IMPLEMENTED, PENDING DOCKER E2E VALIDATION**
 
 ## Stop point
-This repository is intentionally stopped immediately before Phase 2 implementation.
-
-Do **not** start P2 in the current handoff-closing task.
+P2-M1 implementation has been committed on `codex/p2-m1-production-loop`.
 
 ## Next goal when development resumes
-Implement the first playable core vertical slice:
+Validate and review the first playable core vertical slice:
 
 ```text
 Authenticated player
@@ -213,18 +211,18 @@ Authenticated player
 ```
 
 ## Planned P2-M1 deliverables
-- 3 fictional starter varieties;
-- crop/production instance model;
-- plant endpoint;
-- computed server-side `ready_at` timer;
-- optional care action;
-- harvest endpoint;
-- idempotent harvest protection;
-- server-side quality/yield calculation;
-- inventory quantity representation;
-- starter room UI with 2 existing production slots;
-- reconnect/reload state restoration;
-- vertical-slice E2E.
+- 3 fictional starter varieties implemented;
+- crop/production instance model implemented;
+- plant endpoint implemented;
+- computed server-side `ready_at` timer implemented;
+- optional care action implemented;
+- harvest endpoint implemented;
+- idempotent harvest protection implemented;
+- server-side quality/yield calculation implemented;
+- inventory quantity representation implemented;
+- starter room UI with 2 existing production slots implemented;
+- reconnect/reload state restoration implemented through `GET /v1/player`;
+- vertical-slice integration test added, pending Docker execution in a running Docker Desktop environment.
 
 ## Explicitly excluded from P2-M1
 - contracts;
@@ -250,7 +248,7 @@ P2-M1 must not be marked complete until:
 - at least 3 starter fictional varieties are data-driven;
 - backend/frontend/full-stack E2E is green.
 
-**Current status:** not started.
+**Current status:** implemented, pending Docker-based backend/frontend/full-stack validation before marking complete.
 
 ---
 
@@ -352,10 +350,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 1 complete — stopped before Phase 2`
+`Phase 2 implementation started`
 
 ## Current milestone
-`P2-M1 — READY, NOT STARTED`
+`P2-M1 — IMPLEMENTED, PENDING DOCKER E2E VALIDATION`
 
 ## Completed
 - research and product reconstruction;
@@ -382,15 +380,34 @@ Future agents/sessions must update this section after meaningful implementation.
 - `GET /v1/player` persistent state implemented;
 - registration/login/session-restore frontend implemented;
 - PostgreSQL integration tests and full Docker auth E2E pass;
-- final P1-M1 branch CI is green: backend, frontend and compose-smoke.
+- final P1-M1 branch CI is green: backend, frontend and compose-smoke;
+- P2-M1 production loop models, migration, service and routes implemented;
+- 3 fictional starter varieties implemented: Aurora Drift, Ember Leaf and Moon Sprout;
+- plant/care/harvest endpoints implemented under `/v1/production`;
+- server-authoritative `ready_at`, readiness checks, care bonus, quality and yield implemented;
+- harvest marks crop history and releases the slot so rewards cannot be duplicated by replay;
+- inventory item quantities persist per user inventory container;
+- `GET /v1/player` returns starter varieties, active crop state and inventory;
+- starter room frontend with variety selection, two production slots, timers, care, harvest and inventory implemented;
+- P2-M1 integration tests added for persistence, early-harvest rejection, care, single harvest and invalid variety.
 
 ## In progress
-- none.
+- Docker-based P2-M1 backend/frontend/full-stack E2E validation.
 
 ## Next action
-**STOP HERE.** When development resumes, begin P2-M1 as specified above. No P2 code has been started in this closing task.
+Start Docker Desktop, then run:
+- `docker compose up --build`
+- `docker compose exec api alembic upgrade head`
+- `docker compose exec api pytest -q`
+- `docker compose exec api ruff check .`
+- `docker compose run --rm web npm run lint`
+- `docker compose run --rm web npm run typecheck`
+- `docker compose run --rm web npm test`
+
+If all pass, mark P2-M1 complete and open/merge the branch.
 
 ## Known blockers
+- Docker Desktop was not running in the local Codex environment, so Docker-based P2-M1 E2E could not be executed here;
 - final commercial product name/trademark clearance not completed;
 - final iOS cannabis-policy framing needs review before iOS release;
 - final art assets for VS-01 are not yet production-complete unless separately committed.

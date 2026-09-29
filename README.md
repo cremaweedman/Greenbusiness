@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 1 complete — stopped before Phase 2  
-**Milestone:** P2-M1 — READY, NOT STARTED
+**Phase:** Phase 2 implementation started  
+**Milestone:** P2-M1 — IMPLEMENTED, PENDING DOCKER E2E VALIDATION
 
 ## Requirements
 
@@ -68,4 +68,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 and P1-M1 are complete. The repository is intentionally stopped before P2. Resume from `07_BUILD_HANDOFF.md` only when ready to begin the core vertical slice.
+Phase 0 and P1-M1 are complete. P2-M1 has been implemented on the production-loop slice and should be validated with the Docker-based backend/frontend/full-stack checks before it is marked complete.
