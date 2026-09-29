@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 1 P1-M1 completed and validated. Repository is intentionally stopped before P2; the core vertical slice has not started.
+**Current state:** P2-M1 core production vertical slice is completed and validated. P3-M1 economic loop implementation is the active milestone.
 
 ---
 
@@ -189,68 +189,58 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P2-M1 — IMPLEMENTED, PENDING DOCKER E2E VALIDATION**
+**P3-M1 — Economic Loop Playable**
 
-## Stop point
-P2-M1 implementation has been committed on `codex/p2-m1-production-loop`.
-
-## Next goal when development resumes
-Validate and review the first playable core vertical slice:
+## Goal
+Close the first complete business loop on top of the validated P2 production slice:
 
 ```text
-Authenticated player
-  -> starter room
-    -> choose one of 3 fictional varieties
-      -> plant in an available slot
-        -> server-authoritative timer
-          -> optional care action
-            -> ready state
-              -> harvest
-                -> inventory + quality result
-                  -> persisted state after reload
+plant -> wait/care -> harvest -> inventory
+  -> complete contract
+    -> Cash ledger reward
+      -> purchase first upgrade
+        -> improved future production outcome
 ```
 
-## Planned P2-M1 deliverables
-- 3 fictional starter varieties implemented;
-- crop/production instance model implemented;
-- plant endpoint implemented;
-- computed server-side `ready_at` timer implemented;
-- optional care action implemented;
-- harvest endpoint implemented;
-- idempotent harvest protection implemented;
-- server-side quality/yield calculation implemented;
-- inventory quantity representation implemented;
-- starter room UI with 3 production slots implemented;
-- reconnect/reload state restoration implemented through `GET /v1/player`;
-- persistent minimal tutorial state implemented through `PlayerProfile`;
-- first XP reward implemented on harvest;
-- vertical-slice integration test added, pending Docker execution in a running Docker Desktop environment.
+## Deliverables
+- Cash wallet starting at 500;
+- append-only economy ledger with balance_before / balance_after;
+- idempotent economic mutations;
+- static/versioned starter contract catalog;
+- accept + complete one starter contract using harvested inventory;
+- contract completion consumes inventory transactionally and grants Cash;
+- first purchasable business upgrade;
+- upgrade purchase recorded in ledger;
+- first upgrade visibly changes a production result;
+- player state exposes wallet, offers, active contract and owned upgrade;
+- frontend supports contract completion and upgrade purchase;
+- PostgreSQL integration tests for replay/concurrency/balance invariants;
+- full Docker E2E: plant -> harvest -> contract -> cash -> upgrade -> changed result.
 
-## Explicitly excluded from P2-M1
-- contracts;
-- Cash ledger/economy;
-- skills;
+## Explicitly excluded from P3-M1
+- full 20–25 level curve;
+- complete 3 skill trees;
+- 10–12 variety catalog expansion;
+- market simulation;
 - employees;
 - clubs;
 - monetization;
-- LiveOps beyond static/versioned config required by the slice.
+- seasons/LiveOps.
 
 ---
 
-# 9. P2-M1 acceptance criteria — for the next session
+# 9. P3-M1 acceptance criteria
 
-P2-M1 must not be marked complete until:
-- an authenticated player can plant into an available starter slot;
-- the server, not the browser clock, determines readiness;
-- reload/reconnect preserves the crop state;
-- optional care cannot block baseline completion;
-- harvest can succeed only once;
-- duplicate/replayed harvest does not duplicate inventory/rewards;
-- harvested output persists in inventory;
-- at least 3 starter fictional varieties are data-driven;
-- backend/frontend/full-stack E2E is green.
-
-**Current status:** implemented, pending Docker-based backend/frontend/full-stack validation before marking complete.
+Do not mark P3-M1 complete until:
+- new users start with exactly 500 Cash;
+- every Cash mutation has an append-only ledger entry;
+- wallet balance cannot become negative;
+- replaying contract completion cannot mint Cash twice;
+- contract completion consumes the required inventory exactly once;
+- upgrade purchase cannot charge twice for the same ownership state;
+- upgrade changes a measurable production outcome server-side;
+- player state persists wallet/contract/upgrade after reload;
+- backend/frontend/full-stack CI is green.
 
 ---
 
@@ -352,10 +342,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 2 implementation started`
+`Phase 3 — Economy, Contracts & Progression`
 
 ## Current milestone
-`P2-M1 — IMPLEMENTED, PENDING DOCKER E2E VALIDATION`
+`P3-M1 — Economic Loop Playable`
 
 ## Completed
 - research and product reconstruction;
@@ -392,25 +382,17 @@ Future agents/sessions must update this section after meaningful implementation.
 - inventory item quantities persist per user inventory container;
 - `GET /v1/player` returns starter varieties, active crop state and inventory;
 - starter room frontend with variety selection, three production slots, timers, care, harvest, XP, tutorial objective and inventory implemented;
-- P2-M1 integration tests added for persistence, early-harvest rejection, care, single harvest, tutorial progress, XP reward and invalid variety.
+- P2-M1 integration tests added for persistence, early-harvest rejection, care, single harvest, tutorial progress, XP reward and invalid variety;
+- P2-M1 merged to main and full backend/frontend/compose-smoke CI validated;
+- CI hotfix aligned the auth bootstrap expectation with the 3-slot P2 starter state.
 
 ## In progress
-- Docker-based P2-M1 backend/frontend/full-stack E2E validation.
+- P3-M1 Cash wallet, ledger, starter contract and first upgrade.
 
 ## Next action
-Start Docker Desktop, then run:
-- `docker compose up --build`
-- `docker compose exec api alembic upgrade head`
-- `docker compose exec api pytest -q`
-- `docker compose exec api ruff check .`
-- `docker compose run --rm web npm run lint`
-- `docker compose run --rm web npm run typecheck`
-- `docker compose run --rm web npm test`
-
-If all pass, mark P2-M1 complete and open/merge the branch.
+Implement P3-M1 exactly as specified above. Do not expand into full skills, employees, clubs or monetization until the economic loop passes all acceptance criteria.
 
 ## Known blockers
-- Docker Desktop was not running in the local Codex environment, so Docker-based P2-M1 E2E could not be executed here;
 - final commercial product name/trademark clearance not completed;
 - final iOS cannabis-policy framing needs review before iOS release;
 - final art assets for VS-01 are not yet production-complete unless separately committed.
