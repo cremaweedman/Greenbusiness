@@ -33,6 +33,18 @@ Open:
 - API v1 ping: http://localhost:8080/api/v1/system/ping
 - FastAPI docs: http://localhost:8080/api/docs
 
+## Local web-only development
+
+The web app can run directly on http://localhost:3000, but auth/gameplay still needs the API.
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+By default, Next proxies `/api/*` to `http://localhost:8000`. Override it with `API_INTERNAL_URL` when the API is somewhere else.
+
 ## Migrations
 
 ```bash

@@ -12,9 +12,11 @@ test("production shell exists", () => {
   assert.match(page, /AuthApp/);
   assert.match(auth, /GreenBusiness/);
   assert.match(auth, /\/api\/v1\/auth\/refresh/);
+  assert.match(auth, /\/api\/health\/live/);
   assert.match(auth, /\/api\/v1\/production\/slots/);
   assert.match(auth, /Starter varieties/);
   assert.match(auth, /room-scene/);
+  assert.match(auth, /API offline/);
   assert.match(auth, /credentials: "include"/);
   assert.match(nextConfig, /API_INTERNAL_URL/);
   assert.match(nextConfig, /source: "\/api\/:path\*"/);

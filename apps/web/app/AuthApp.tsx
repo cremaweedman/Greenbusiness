@@ -67,6 +67,8 @@ type ApiError = {
   };
 };
 
+type ApiStatus = "checking" | "online" | "offline";
+
 async function parseError(response: Response): Promise<string> {
   try {
     const body = (await response.json()) as ApiError;
@@ -127,6 +129,7 @@ export default function AuthApp() {
   const [restoring, setRestoring] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [actionSlotId, setActionSlotId] = useState<string | null>(null);
+  const [apiStatus, setApiStatus] = useState<ApiStatus>("checking");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
@@ -174,6 +177,32 @@ export default function AuthApp() {
     };
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+
+    async function checkApi() {
+      try {
+        const response = await fetch("/api/health/live", {
+          cache: "no-store",
+        });
+        if (!mounted) return;
+        setApiStatus(response.ok ? "online" : "offline");
+      } catch {
+        if (mounted) setApiStatus("offline");
+      }
+    }
+
+    void checkApi();
+    const interval = window.setInterval(() => {
+      void checkApi();
+    }, 15_000);
+
+    return () => {
+      mounted = false;
+      window.clearInterval(interval);
+    };
+  }, []);
+
   async function refreshPlayer(token = accessToken) {
     if (!token) return;
     setPlayer(await getPlayer(token));
@@ -184,6 +213,9 @@ export default function AuthApp() {
     setError(null);
     setNotice(null);
     try {
+      if (apiStatus === "offline") {
+        throw new Error("API is offline. Start the backend, then try again.");
+      }
       const response = await fetch(`/api/v1/auth/${endpoint}`, {
         method: "POST",
         credentials: "include",
@@ -439,6 +471,14 @@ export default function AuthApp() {
         {mode === "register"
           ? "Create the owner profile for your first business."
           : "Continue your existing business."}
+      </p>
+
+      <p className={`api-status ${apiStatus}`} aria-live="polite">
+        {apiStatus === "checking"
+          ? "Checking API..."
+          : apiStatus === "online"
+            ? "API online"
+            : "API offline - start the backend before creating an account"}
       </p>
 
       <div className="tabs" role="tablist" aria-label="Authentication mode">

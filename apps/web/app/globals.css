@@ -61,6 +61,26 @@ h1 {
   line-height: 1.6;
 }
 
+.api-status {
+  margin: 18px 0 0;
+  padding: 9px 12px;
+  border: 1px solid #35483d;
+  border-radius: 8px;
+  background: #0b100d;
+  color: #aeb9b2;
+  font-size: 0.84rem;
+}
+
+.api-status.online {
+  border-color: #547a5d;
+  color: #c9f1d1;
+}
+
+.api-status.offline {
+  border-color: #74433f;
+  color: #f1b7b1;
+}
+
 .tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
