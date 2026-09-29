@@ -182,6 +182,7 @@ class Progression(Base):
     level: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     xp: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     reputation: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    skill_points_unspent: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
 class InventoryContainer(Base):
@@ -211,6 +212,30 @@ class InventoryItem(Base):
         index=True,
     )
     item_key: Mapped[str] = mapped_column(String(96), nullable=False)
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
+class InventoryLot(Base):
+    __tablename__ = "inventory_lots"
+    __table_args__ = (
+        UniqueConstraint(
+            "inventory_container_id",
+            "item_key",
+            "quality",
+            name="uq_inventory_lot_container_key_quality",
+        ),
+        CheckConstraint("quantity >= 0", name="ck_inventory_lots_quantity_nonnegative"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    inventory_container_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("inventory_containers.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    item_key: Mapped[str] = mapped_column(String(96), nullable=False)
+    quality: Mapped[str] = mapped_column(String(24), nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
@@ -280,7 +305,7 @@ class EconomyRequest(Base):
 class PlayerContract(Base):
     __tablename__ = "player_contracts"
     __table_args__ = (
-        UniqueConstraint("user_id", "contract_key", name="uq_player_contract_user_key"),
+        UniqueConstraint("user_id", "offer_id", name="uq_player_contract_user_offer"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -290,7 +315,17 @@ class PlayerContract(Base):
         nullable=False,
         index=True,
     )
+    offer_id: Mapped[str] = mapped_column(String(96), nullable=False)
+    offer_bucket: Mapped[int] = mapped_column(Integer, nullable=False)
     contract_key: Mapped[str] = mapped_column(String(64), nullable=False)
+    archetype: Mapped[str] = mapped_column(String(24), nullable=False)
+    config_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    item_key: Mapped[str] = mapped_column(String(96), nullable=False)
+    required_quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+    required_quality: Mapped[str | None] = mapped_column(String(24))
+    required_trait: Mapped[str | None] = mapped_column(String(32))
+    reward_cash: Mapped[int] = mapped_column(Integer, nullable=False)
+    reward_reputation: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="active")
     accepted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -319,3 +354,21 @@ class PlayerUpgrade(Base):
         server_default=func.now(),
         nullable=False,
     )
+
+
+class PlayerSkillBranch(Base):
+    __tablename__ = "player_skill_branches"
+    __table_args__ = (
+        UniqueConstraint("user_id", "branch", name="uq_player_skill_branch_user_branch"),
+        CheckConstraint("points >= 0", name="ck_player_skill_branch_points_nonnegative"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    branch: Mapped[str] = mapped_column(String(32), nullable=False)
+    points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
