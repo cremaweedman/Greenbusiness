@@ -12,7 +12,7 @@ Canonical project repository for GreenBusiness.
 ## Current development state
 
 **Phase:** Phase 3 — Economy, Contracts & Progression  
-**Milestone:** P3-M1 — Economic Loop Playable
+**Milestone:** P3-M2 — READY, NOT STARTED
 
 ## Requirements
 
@@ -80,4 +80,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0, P1-M1 and P2-M1 are complete and validated in CI. Current work is P3-M1: Cash wallet + append-only ledger + first contract + first upgrade, closing the first end-to-end economic loop.
+Phase 0, P1-M1, P2-M1 and P3-M1 are complete and validated in CI. The repository is ready for P3-M2: contract rotation, broader progression and economy expansion.
