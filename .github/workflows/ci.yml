@@ -125,6 +125,137 @@ jobs:
           LOGGED_OUT_STATUS="$(curl -sS -o /tmp/logged-out.json -w "%{http_code}"             -b /tmp/cookies.txt             -X POST             http://localhost:8080/api/v1/auth/refresh)"
           test "$LOGGED_OUT_STATUS" = "401"
 
+      - name: Economic loop E2E
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python - <<'PY' > /tmp/economy-register.json
+          import json
+          print(json.dumps({
+              "email": "ci-economy@example.com",
+              "password": "CI-economy-password-123",
+              "display_name": "CI Economy",
+          }))
+          PY
+
+          curl -fsS \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/economy-register.json \
+            http://localhost:8080/api/v1/auth/register \
+            > /tmp/economy-token.json
+
+          ECON_TOKEN="$(python -c 'import json; print(json.load(open("/tmp/economy-token.json"))["access_token"])')"
+
+          curl -fsS \
+            -H "Authorization: Bearer $ECON_TOKEN" \
+            http://localhost:8080/api/v1/player \
+            > /tmp/economy-player.json
+
+          python - <<'PY'
+          import json
+          player = json.load(open("/tmp/economy-player.json"))
+          assert player["cash"] == 500
+          assert player["contract_offers"][0]["key"] == "neighborhood-sampler"
+          assert player["upgrade_offers"][0]["key"] == "starter-yield-boost"
+          PY
+
+          SLOT_ID="$(python -c 'import json; print(json.load(open("/tmp/economy-player.json"))["slots"][0]["id"])')"
+
+          curl -fsS \
+            -H "Authorization: Bearer $ECON_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"variety_key":"aurora-drift"}' \
+            http://localhost:8080/api/v1/production/slots/$SLOT_ID/plant \
+            > /tmp/economy-plant.json
+
+          docker compose exec -T postgres psql \
+            -U greenbusiness -d greenbusiness -v ON_ERROR_STOP=1 \
+            -c "UPDATE crop_productions SET ready_at = now() - interval '1 second' WHERE slot_id = '$SLOT_ID'::uuid AND harvested_at IS NULL;"
+
+          curl -fsS \
+            -H "Authorization: Bearer $ECON_TOKEN" \
+            -X POST \
+            http://localhost:8080/api/v1/production/slots/$SLOT_ID/harvest \
+            > /tmp/economy-harvest-1.json
+
+          python - <<'PY'
+          import json
+          harvest = json.load(open("/tmp/economy-harvest-1.json"))
+          assert harvest["yield_quantity"] == 3
+          PY
+
+          curl -fsS \
+            -H "Authorization: Bearer $ECON_TOKEN" \
+            -X POST \
+            http://localhost:8080/api/v1/economy/contracts/neighborhood-sampler/accept \
+            > /tmp/economy-contract.json
+
+          CONTRACT_ID="$(python -c 'import json; print(json.load(open("/tmp/economy-contract.json"))["id"])')"
+
+          curl -fsS \
+            -H "Authorization: Bearer $ECON_TOKEN" \
+            -H "Idempotency-Key: ci-contract-complete-1" \
+            -X POST \
+            http://localhost:8080/api/v1/economy/contracts/$CONTRACT_ID/complete \
+            > /tmp/economy-complete.json
+
+          python - <<'PY'
+          import json
+          result = json.load(open("/tmp/economy-complete.json"))
+          assert result["cash"] == 650
+          PY
+
+          curl -fsS \
+            -H "Authorization: Bearer $ECON_TOKEN" \
+            -H "Idempotency-Key: ci-contract-complete-1" \
+            -X POST \
+            http://localhost:8080/api/v1/economy/contracts/$CONTRACT_ID/complete \
+            > /tmp/economy-complete-replay.json
+
+          python - <<'PY'
+          import json
+          result = json.load(open("/tmp/economy-complete-replay.json"))
+          assert result["cash"] == 650
+          PY
+
+          curl -fsS \
+            -H "Authorization: Bearer $ECON_TOKEN" \
+            -H "Idempotency-Key: ci-upgrade-purchase-1" \
+            -X POST \
+            http://localhost:8080/api/v1/economy/upgrades/starter-yield-boost/purchase \
+            > /tmp/economy-upgrade.json
+
+          python - <<'PY'
+          import json
+          result = json.load(open("/tmp/economy-upgrade.json"))
+          assert result["cash"] == 50
+          assert result["owned_upgrade_keys"] == ["starter-yield-boost"]
+          PY
+
+          curl -fsS \
+            -H "Authorization: Bearer $ECON_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"variety_key":"aurora-drift"}' \
+            http://localhost:8080/api/v1/production/slots/$SLOT_ID/plant \
+            > /tmp/economy-plant-2.json
+
+          docker compose exec -T postgres psql \
+            -U greenbusiness -d greenbusiness -v ON_ERROR_STOP=1 \
+            -c "UPDATE crop_productions SET ready_at = now() - interval '1 second' WHERE slot_id = '$SLOT_ID'::uuid AND harvested_at IS NULL;"
+
+          curl -fsS \
+            -H "Authorization: Bearer $ECON_TOKEN" \
+            -X POST \
+            http://localhost:8080/api/v1/production/slots/$SLOT_ID/harvest \
+            > /tmp/economy-harvest-2.json
+
+          python - <<'PY'
+          import json
+          harvest = json.load(open("/tmp/economy-harvest-2.json"))
+          assert harvest["yield_quantity"] == 4
+          PY
+
       - name: Teardown
         if: always()
         run: docker compose down -v

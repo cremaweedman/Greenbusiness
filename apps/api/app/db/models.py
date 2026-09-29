@@ -6,6 +6,7 @@ from typing import Any
 
 from sqlalchemy import (
     Boolean,
+    CheckConstraint,
     DateTime,
     ForeignKey,
     Index,
@@ -211,3 +212,110 @@ class InventoryItem(Base):
     )
     item_key: Mapped[str] = mapped_column(String(96), nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
+class Wallet(Base):
+    __tablename__ = "wallets"
+    __table_args__ = (CheckConstraint("cash >= 0", name="ck_wallets_cash_nonnegative"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
+    cash: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
+class EconomyLedger(Base):
+    __tablename__ = "economy_ledger"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    transaction_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, index=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    currency: Mapped[str] = mapped_column(String(24), nullable=False)
+    amount: Mapped[int] = mapped_column(Integer, nullable=False)
+    source_or_sink: Mapped[str] = mapped_column(String(64), nullable=False)
+    reference_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    reference_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    config_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    balance_before: Mapped[int] = mapped_column(Integer, nullable=False)
+    balance_after: Mapped[int] = mapped_column(Integer, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+        index=True,
+    )
+
+
+class EconomyRequest(Base):
+    __tablename__ = "economy_requests"
+    __table_args__ = (
+        UniqueConstraint("user_id", "idempotency_key", name="uq_economy_requests_user_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    idempotency_key: Mapped[str] = mapped_column(String(128), nullable=False)
+    operation: Mapped[str] = mapped_column(String(64), nullable=False)
+    reference_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+
+
+class PlayerContract(Base):
+    __tablename__ = "player_contracts"
+    __table_args__ = (
+        UniqueConstraint("user_id", "contract_key", name="uq_player_contract_user_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    contract_key: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="active")
+    accepted_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class PlayerUpgrade(Base):
+    __tablename__ = "player_upgrades"
+    __table_args__ = (
+        UniqueConstraint("user_id", "upgrade_key", name="uq_player_upgrade_user_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    upgrade_key: Mapped[str] = mapped_column(String(64), nullable=False)
+    purchased_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )

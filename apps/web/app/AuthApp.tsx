@@ -40,6 +40,30 @@ type InventoryItem = {
   quantity: number;
 };
 
+type ContractOffer = {
+  key: string;
+  title: string;
+  item_key: string;
+  item_name: string;
+  required_quantity: number;
+  reward_cash: number;
+};
+
+type PlayerContract = {
+  id: string;
+  contract_key: string;
+  status: string;
+  accepted_at: string;
+  completed_at: string | null;
+};
+
+type UpgradeOffer = {
+  key: string;
+  name: string;
+  cost_cash: number;
+  yield_bonus: number;
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -59,6 +83,11 @@ type Player = {
   inventory_container_id: string;
   inventory: InventoryItem[];
   starter_varieties: StarterVariety[];
+  cash: number;
+  contract_offers: ContractOffer[];
+  active_contract: PlayerContract | null;
+  upgrade_offers: UpgradeOffer[];
+  owned_upgrade_keys: string[];
 };
 
 type ApiError = {
@@ -130,6 +159,7 @@ export default function AuthApp() {
   const [restoring, setRestoring] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [actionSlotId, setActionSlotId] = useState<string | null>(null);
+  const [economyBusy, setEconomyBusy] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<ApiStatus>("checking");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -298,6 +328,52 @@ export default function AuthApp() {
     }
   }
 
+  async function runEconomyAction(
+    action: "accept" | "complete" | "upgrade",
+    target: string,
+  ) {
+    if (!accessToken) return;
+    setEconomyBusy(`${action}:${target}`);
+    setError(null);
+    setNotice(null);
+    try {
+      if (action === "accept") {
+        await requestJson<PlayerContract>(
+          `/api/v1/economy/contracts/${target}/accept`,
+          accessToken,
+          { method: "POST" },
+        );
+        setNotice("Contract accepted.");
+      } else if (action === "complete") {
+        await requestJson(
+          `/api/v1/economy/contracts/${target}/complete`,
+          accessToken,
+          {
+            method: "POST",
+            headers: { "Idempotency-Key": crypto.randomUUID() },
+          },
+        );
+        setNotice("Contract completed. Cash received.");
+      } else {
+        await requestJson(
+          `/api/v1/economy/upgrades/${target}/purchase`,
+          accessToken,
+          {
+            method: "POST",
+            headers: { "Idempotency-Key": crypto.randomUUID() },
+          },
+        );
+        setNotice("Upgrade purchased. Future harvest yield improved.");
+      }
+      await refreshPlayer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Economic action failed.");
+      await refreshPlayer();
+    } finally {
+      setEconomyBusy(null);
+    }
+  }
+
   async function logout() {
     setSubmitting(true);
     try {
@@ -316,7 +392,7 @@ export default function AuthApp() {
   if (restoring) {
     return (
       <section className="panel" aria-live="polite">
-        <p className="eyebrow">PHASE 2 - PRODUCTION</p>
+        <p className="eyebrow">PHASE 3 - ECONOMY</p>
         <h1>GreenBusiness</h1>
         <p className="muted">Restoring secure session...</p>
       </section>
@@ -337,9 +413,14 @@ export default function AuthApp() {
               {player.reputation}
             </p>
           </div>
-          <button className="secondary compact" onClick={logout} disabled={submitting}>
-            Sign out
-          </button>
+          <div className="topbar-actions">
+            <div className="cash-chip" aria-label={`Cash balance ${player.cash}`}>
+              Cash <strong>{player.cash}</strong>
+            </div>
+            <button className="secondary compact" onClick={logout} disabled={submitting}>
+              Sign out
+            </button>
+          </div>
         </header>
 
         <div className="game-grid">
@@ -381,6 +462,73 @@ export default function AuthApp() {
                       <strong>{item.quantity}</strong>
                     </article>
                   ))
+                )}
+              </div>
+            </div>
+
+            <div>
+              <p className="section-label">Economy</p>
+              <div className="economy-list">
+                {player.contract_offers.map((offer) => (
+                  <article key={offer.key} className="economy-card">
+                    <strong>{offer.title}</strong>
+                    <span>
+                      Deliver {offer.required_quantity} {offer.item_name} · +{offer.reward_cash} Cash
+                    </span>
+                    <button
+                      className="secondary"
+                      onClick={() => void runEconomyAction("accept", offer.key)}
+                      disabled={economyBusy !== null}
+                    >
+                      Accept contract
+                    </button>
+                  </article>
+                ))}
+
+                {player.active_contract?.status === "active" && (
+                  <article className="economy-card">
+                    <strong>Active contract</strong>
+                    <span>Deliver the requested inventory to receive Cash.</span>
+                    <button
+                      className="primary"
+                      onClick={() =>
+                        void runEconomyAction("complete", player.active_contract?.id ?? "")
+                      }
+                      disabled={economyBusy !== null}
+                    >
+                      Complete contract
+                    </button>
+                  </article>
+                )}
+
+                {player.active_contract?.status === "completed" && (
+                  <article className="economy-card complete">
+                    <strong>Starter contract complete</strong>
+                    <span>The first client relationship is secured.</span>
+                  </article>
+                )}
+
+                {player.upgrade_offers.map((upgrade) => (
+                  <article key={upgrade.key} className="economy-card">
+                    <strong>{upgrade.name}</strong>
+                    <span>
+                      {upgrade.cost_cash} Cash · +{upgrade.yield_bonus} yield per harvest
+                    </span>
+                    <button
+                      className="primary"
+                      onClick={() => void runEconomyAction("upgrade", upgrade.key)}
+                      disabled={economyBusy !== null || player.cash < upgrade.cost_cash}
+                    >
+                      Buy upgrade
+                    </button>
+                  </article>
+                ))}
+
+                {player.owned_upgrade_keys.includes("starter-yield-boost") && (
+                  <article className="economy-card complete">
+                    <strong>Efficient Racks owned</strong>
+                    <span>Future harvests receive +1 yield.</span>
+                  </article>
                 )}
               </div>
             </div>
@@ -474,7 +622,7 @@ export default function AuthApp() {
 
   return (
     <section className="panel auth">
-      <p className="eyebrow">PHASE 2 - PRODUCTION</p>
+      <p className="eyebrow">PHASE 3 - ECONOMY</p>
       <h1>GreenBusiness</h1>
       <p className="muted">
         {mode === "register"
