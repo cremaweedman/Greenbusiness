@@ -61,7 +61,10 @@ async def test_register_bootstrap_refresh_rotation_and_logout(client: AsyncClien
         assert state["display_name"] == "Starter"
         assert state["room_slug"] == "starter-growroom"
         assert state["level"] == 1
-        assert len(state["slots"]) == 2
+        assert state["xp"] == 0
+        assert state["tutorial_step"] == 0
+        assert state["tutorial_completed"] is False
+        assert len(state["slots"]) == 3
 
         duplicate = await client.post(
             "/v1/auth/register",
@@ -90,7 +93,7 @@ async def test_register_bootstrap_refresh_rotation_and_logout(client: AsyncClien
             slot_count = await session.scalar(
                 select(func.count()).select_from(ProductionSlot).where(ProductionSlot.room_id == room.id)
             )
-            assert slot_count == 2
+            assert slot_count == 3
 
         refresh = await client.post("/v1/auth/refresh")
         assert refresh.status_code == 200

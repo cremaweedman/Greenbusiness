@@ -53,6 +53,8 @@ type Player = {
   level: number;
   xp: number;
   reputation: number;
+  tutorial_step: number;
+  tutorial_completed: boolean;
   inventory_container_id: string;
   inventory: InventoryItem[];
   starter_varieties: StarterVariety[];
@@ -103,6 +105,13 @@ function formatRemaining(readyAt: string, now: number): string {
   const minutes = Math.floor(remainingSeconds / 60);
   const seconds = remainingSeconds % 60;
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+function tutorialObjective(player: Player): string {
+  if (player.tutorial_completed) return "First harvest complete";
+  if (player.tutorial_step >= 2) return "Bring a ready crop in";
+  if (player.tutorial_step >= 1) return "Care is available";
+  return "Set the first crop";
 }
 
 export default function AuthApp() {
@@ -230,9 +239,10 @@ export default function AuthApp() {
           yield_quantity: number;
           quality: string;
           harvested_item: InventoryItem;
+          xp_reward: number;
         }>(`/api/v1/production/slots/${slot.id}/harvest`, accessToken, { method: "POST" });
         setNotice(
-          `Harvested ${harvest.yield_quantity} ${harvest.harvested_item.display_name} (${harvest.quality}).`,
+          `Harvested ${harvest.yield_quantity} ${harvest.harvested_item.display_name} (${harvest.quality}) +${harvest.xp_reward} XP.`,
         );
       }
       await refreshPlayer();
@@ -277,7 +287,8 @@ export default function AuthApp() {
             <p className="eyebrow">STARTER ROOM ONLINE</p>
             <h1>{player.business_name}</h1>
             <p className="muted">
-              {player.display_name} - Level {player.level} - Reputation {player.reputation}
+              {player.display_name} - Level {player.level} - XP {player.xp} - Reputation{" "}
+              {player.reputation}
             </p>
           </div>
           <button className="secondary compact" onClick={logout} disabled={submitting}>
@@ -287,6 +298,12 @@ export default function AuthApp() {
 
         <div className="game-grid">
           <aside className="tool-panel">
+            <div className="objective">
+              <p className="section-label">Current objective</p>
+              <strong>{tutorialObjective(player)}</strong>
+              <span>{player.tutorial_completed ? "Reward secured" : "Starter loop"}</span>
+            </div>
+
             <div>
               <p className="section-label">Starter varieties</p>
               <div className="variety-list" role="radiogroup" aria-label="Starter varieties">

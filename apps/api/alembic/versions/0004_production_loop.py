@@ -56,6 +56,20 @@ def upgrade():
     )
     op.create_index("ix_inventory_items_container_id", "inventory_items", ["inventory_container_id"])
 
+    op.execute(
+        """
+        INSERT INTO production_slots (id, room_id, slot_index, status)
+        SELECT gen_random_uuid(), rooms.id, 2, 'available'
+        FROM rooms
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM production_slots
+            WHERE production_slots.room_id = rooms.id
+              AND production_slots.slot_index = 2
+        )
+        """
+    )
+
 
 def downgrade():
     op.drop_index("ix_inventory_items_container_id", table_name="inventory_items")

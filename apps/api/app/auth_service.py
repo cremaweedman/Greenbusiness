@@ -82,6 +82,7 @@ async def register_user(
         [
             ProductionSlot(room_id=room.id, slot_index=0, status="available"),
             ProductionSlot(room_id=room.id, slot_index=1, status="available"),
+            ProductionSlot(room_id=room.id, slot_index=2, status="available"),
         ]
     )
 
@@ -256,6 +257,8 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         level=progression.level,
         xp=progression.xp,
         reputation=progression.reputation,
+        tutorial_step=profile.tutorial_step,
+        tutorial_completed=profile.tutorial_completed,
         inventory_container_id=inventory.id,
         inventory=await inventory_responses(session, inventory.id),
         starter_varieties=starter_variety_responses(),

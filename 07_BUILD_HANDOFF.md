@@ -220,8 +220,10 @@ Authenticated player
 - idempotent harvest protection implemented;
 - server-side quality/yield calculation implemented;
 - inventory quantity representation implemented;
-- starter room UI with 2 existing production slots implemented;
+- starter room UI with 3 production slots implemented;
 - reconnect/reload state restoration implemented through `GET /v1/player`;
+- persistent minimal tutorial state implemented through `PlayerProfile`;
+- first XP reward implemented on harvest;
 - vertical-slice integration test added, pending Docker execution in a running Docker Desktop environment.
 
 ## Explicitly excluded from P2-M1
@@ -376,7 +378,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - access JWT + HttpOnly refresh-cookie flow implemented;
 - refresh-token rotation and replay invalidation implemented;
 - logout/revocation implemented;
-- starter player/profile/business/room/two production slots/progression/inventory container bootstrap transaction implemented;
+- starter player/profile/business/room/production slots/progression/inventory container bootstrap transaction implemented;
 - `GET /v1/player` persistent state implemented;
 - registration/login/session-restore frontend implemented;
 - PostgreSQL integration tests and full Docker auth E2E pass;
@@ -388,8 +390,8 @@ Future agents/sessions must update this section after meaningful implementation.
 - harvest marks crop history and releases the slot so rewards cannot be duplicated by replay;
 - inventory item quantities persist per user inventory container;
 - `GET /v1/player` returns starter varieties, active crop state and inventory;
-- starter room frontend with variety selection, two production slots, timers, care, harvest and inventory implemented;
-- P2-M1 integration tests added for persistence, early-harvest rejection, care, single harvest and invalid variety.
+- starter room frontend with variety selection, three production slots, timers, care, harvest, XP, tutorial objective and inventory implemented;
+- P2-M1 integration tests added for persistence, early-harvest rejection, care, single harvest, tutorial progress, XP reward and invalid variety.
 
 ## In progress
 - Docker-based P2-M1 backend/frontend/full-stack E2E validation.

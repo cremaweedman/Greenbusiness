@@ -63,6 +63,7 @@ class HarvestResponse(BaseModel):
     harvested_item: InventoryItemResponse
     yield_quantity: int
     quality: str
+    xp_reward: int
 
 
 class PlayerResponse(BaseModel):
@@ -78,6 +79,8 @@ class PlayerResponse(BaseModel):
     level: int
     xp: int
     reputation: int
+    tutorial_step: int
+    tutorial_completed: bool
     inventory_container_id: uuid.UUID
     inventory: list[InventoryItemResponse]
     starter_varieties: list[StarterVarietyResponse]

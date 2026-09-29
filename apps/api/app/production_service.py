@@ -13,7 +13,9 @@ from app.db.models import (
     CropProduction,
     InventoryContainer,
     InventoryItem,
+    PlayerProfile,
     ProductionSlot,
+    Progression,
     Room,
 )
 from app.errors import AppError
@@ -44,6 +46,7 @@ STARTER_VARIETIES: tuple[StarterVariety, ...] = (
     StarterVariety(key="moon-sprout", name="Moon Sprout", grow_seconds=150, base_yield=5),
 )
 STARTER_VARIETY_BY_KEY = {variety.key: variety for variety in STARTER_VARIETIES}
+XP_PER_HARVEST_UNIT = 5
 
 
 def starter_variety_responses() -> list[StarterVarietyResponse]:
@@ -172,6 +175,23 @@ async def _get_active_crop(session: AsyncSession, slot_id: uuid.UUID) -> CropPro
     )
 
 
+async def _advance_tutorial(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    *,
+    minimum_step: int,
+    completed: bool = False,
+) -> None:
+    profile = await session.scalar(
+        select(PlayerProfile).where(PlayerProfile.user_id == user_id).with_for_update()
+    )
+    if profile is None:
+        raise AppError("PLAYER_STATE_INCOMPLETE", "Player profile is missing.", status_code=500)
+    profile.tutorial_step = max(profile.tutorial_step, minimum_step)
+    if completed:
+        profile.tutorial_completed = True
+
+
 async def plant_crop(
     session: AsyncSession,
     *,
@@ -202,6 +222,7 @@ async def plant_crop(
     )
     slot.status = "planted"
     session.add(crop)
+    await _advance_tutorial(session, user_id, minimum_step=1)
     await append_audit_event(
         session,
         event_type="production.crop_planted",
@@ -232,6 +253,7 @@ async def care_for_crop(
 
     now = _now()
     crop.cared_at = now
+    await _advance_tutorial(session, user_id, minimum_step=2)
     await append_audit_event(
         session,
         event_type="production.crop_cared",
@@ -271,11 +293,17 @@ async def harvest_crop(
     )
     if inventory is None:
         raise AppError("PLAYER_STATE_INCOMPLETE", "Player inventory is missing.", status_code=500)
+    progression = await session.scalar(
+        select(Progression).where(Progression.user_id == user_id).with_for_update()
+    )
+    if progression is None:
+        raise AppError("PLAYER_STATE_INCOMPLETE", "Player progression is missing.", status_code=500)
 
     variety = STARTER_VARIETY_BY_KEY[crop.variety_key]
     care_bonus = 1 if crop.cared_at is not None else 0
     quality = "cared" if crop.cared_at is not None else "standard"
     yield_quantity = variety.base_yield + care_bonus
+    xp_reward = yield_quantity * XP_PER_HARVEST_UNIT
     item_key = variety.item_key
 
     item = await session.scalar(
@@ -298,6 +326,8 @@ async def harvest_crop(
     crop.yield_quantity = yield_quantity
     crop.quality = quality
     slot.status = "available"
+    progression.xp += xp_reward
+    await _advance_tutorial(session, user_id, minimum_step=3, completed=True)
 
     await append_audit_event(
         session,
@@ -307,7 +337,12 @@ async def harvest_crop(
         target_type="crop_production",
         target_id=str(crop.id),
         request_id=request_id,
-        payload={"item_key": item_key, "yield_quantity": yield_quantity, "quality": quality},
+        payload={
+            "item_key": item_key,
+            "yield_quantity": yield_quantity,
+            "quality": quality,
+            "xp_reward": xp_reward,
+        },
     )
     await session.commit()
 
@@ -323,4 +358,5 @@ async def harvest_crop(
         harvested_item=harvested_item,
         yield_quantity=yield_quantity,
         quality=quality,
+        xp_reward=xp_reward,
     )

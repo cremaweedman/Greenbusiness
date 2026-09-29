@@ -55,6 +55,9 @@ async def test_production_loop_persists_harvests_once_and_updates_inventory(clie
             "ember-leaf",
             "moon-sprout",
         ]
+        assert len(state["slots"]) == 3
+        assert state["tutorial_step"] == 0
+        assert state["tutorial_completed"] is False
         slot_id = state["slots"][0]["id"]
 
         planted = await client.post(
@@ -69,9 +72,12 @@ async def test_production_loop_persists_harvests_once_and_updates_inventory(clie
         assert planted_slot["crop"]["is_ready"] is False
 
         replayed_player = await client.get("/v1/player", headers=auth)
-        replayed_slot = replayed_player.json()["slots"][0]
+        replayed_state = replayed_player.json()
+        replayed_slot = replayed_state["slots"][0]
         assert replayed_slot["crop"]["id"] == planted_slot["crop"]["id"]
         assert replayed_slot["crop"]["ready_at"] == planted_slot["crop"]["ready_at"]
+        assert replayed_state["tutorial_step"] == 1
+        assert replayed_state["tutorial_completed"] is False
 
         occupied = await client.post(
             f"/v1/production/slots/{slot_id}/plant",
@@ -88,6 +94,8 @@ async def test_production_loop_persists_harvests_once_and_updates_inventory(clie
         cared = await client.post(f"/v1/production/slots/{slot_id}/care", headers=auth)
         assert cared.status_code == 200
         assert cared.json()["crop"]["cared_at"] is not None
+        after_care = await client.get("/v1/player", headers=auth)
+        assert after_care.json()["tutorial_step"] == 2
 
         async with SessionLocal() as session:
             slot_uuid = uuid.UUID(slot_id)
@@ -109,6 +117,7 @@ async def test_production_loop_persists_harvests_once_and_updates_inventory(clie
         assert harvest_body["slot"]["status"] == "available"
         assert harvest_body["yield_quantity"] == 4
         assert harvest_body["quality"] == "cared"
+        assert harvest_body["xp_reward"] == 20
         assert harvest_body["harvested_item"]["quantity"] == 4
 
         duplicate = await client.post(f"/v1/production/slots/{slot_id}/harvest", headers=auth)
@@ -116,7 +125,11 @@ async def test_production_loop_persists_harvests_once_and_updates_inventory(clie
         assert duplicate.json()["error"]["code"] == "PRODUCTION_SLOT_EMPTY"
 
         final_player = await client.get("/v1/player", headers=auth)
-        assert final_player.json()["inventory"] == [
+        final_state = final_player.json()
+        assert final_state["xp"] == 20
+        assert final_state["tutorial_step"] == 3
+        assert final_state["tutorial_completed"] is True
+        assert final_state["inventory"] == [
             {
                 "item_key": "starter_crop.aurora-drift",
                 "display_name": "Aurora Drift",
