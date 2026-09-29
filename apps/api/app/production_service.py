@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.audit import append_audit_event
@@ -47,6 +48,7 @@ STARTER_VARIETIES: tuple[StarterVariety, ...] = (
 )
 STARTER_VARIETY_BY_KEY = {variety.key: variety for variety in STARTER_VARIETIES}
 XP_PER_HARVEST_UNIT = 5
+ACTIVE_SLOT_CONSTRAINT = "uq_crop_productions_active_slot"
 
 
 def starter_variety_responses() -> list[StarterVarietyResponse]:
@@ -63,6 +65,11 @@ def starter_variety_responses() -> list[StarterVarietyResponse]:
 
 def _now() -> datetime:
     return datetime.now(UTC)
+
+
+def _is_active_slot_integrity_error(exc: IntegrityError) -> bool:
+    constraint_name = getattr(getattr(exc, "orig", None), "constraint_name", None)
+    return constraint_name == ACTIVE_SLOT_CONSTRAINT or ACTIVE_SLOT_CONSTRAINT in str(exc.orig)
 
 
 def _display_name(item_key: str) -> str:
@@ -233,7 +240,17 @@ async def plant_crop(
         request_id=request_id,
         payload={"variety_key": variety.key, "ready_at": crop.ready_at.isoformat()},
     )
-    await session.commit()
+    try:
+        await session.commit()
+    except IntegrityError as exc:
+        await session.rollback()
+        if _is_active_slot_integrity_error(exc):
+            raise AppError(
+                "PRODUCTION_SLOT_OCCUPIED",
+                "Production slot is already planted.",
+                status_code=409,
+            ) from exc
+        raise
     return slot_response(slot, crop, now)
 
 
