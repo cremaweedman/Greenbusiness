@@ -66,6 +66,37 @@ class HarvestResponse(BaseModel):
     xp_reward: int
 
 
+class ContractOfferResponse(BaseModel):
+    key: str
+    title: str
+    item_key: str
+    item_name: str
+    required_quantity: int
+    reward_cash: int
+
+
+class PlayerContractResponse(BaseModel):
+    id: uuid.UUID
+    contract_key: str
+    status: str
+    accepted_at: datetime
+    completed_at: datetime | None
+
+
+class UpgradeOfferResponse(BaseModel):
+    key: str
+    name: str
+    cost_cash: int
+    yield_bonus: int
+
+
+class EconomyActionResponse(BaseModel):
+    cash: int
+    inventory: list[InventoryItemResponse]
+    active_contract: PlayerContractResponse | None
+    owned_upgrade_keys: list[str]
+
+
 class PlayerResponse(BaseModel):
     server_time: datetime
     user_id: uuid.UUID
@@ -85,3 +116,8 @@ class PlayerResponse(BaseModel):
     inventory_container_id: uuid.UUID
     inventory: list[InventoryItemResponse]
     starter_varieties: list[StarterVarietyResponse]
+    cash: int
+    contract_offers: list[ContractOfferResponse]
+    active_contract: PlayerContractResponse | None
+    upgrade_offers: list[UpgradeOfferResponse]
+    owned_upgrade_keys: list[str]
