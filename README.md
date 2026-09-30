@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 4 — Missions, Narrative & Collection Meta  
-**Milestone:** P4-M2 — Narrative & Collection Expansion — READY, NOT STARTED
+**Phase:** Phase 4 complete — Phase 5 ready  
+**Milestone:** P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — READY, NOT STARTED
 
 ## Requirements
 
@@ -80,4 +80,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 through P4-M1 are complete and validated in CI. The repository is ready for P4-M2: expand narrative missions, collection mastery and persisted daily/weekly mission instances without starting Phase 5.
+Phase 0 through P4-M2 are complete and validated in CI. The repository is intentionally stopped before Phase 5. Resume from `07_BUILD_HANDOFF.md` when ready to begin P5-M1.
