@@ -95,6 +95,7 @@ type Upgrade = {
   max_level: number;
   effects: {
     yield_bonus: number;
+    slot_capacity_bonus: number;
   };
   can_purchase: boolean;
 };
@@ -715,7 +716,7 @@ export default function AuthApp() {
                       </div>
                       <div className="upgrade-meta">
                         <span>
-                          Level {upgrade.level}/{upgrade.max_level} - +{upgrade.effects.yield_bonus} yield
+                          Level {upgrade.level}/{upgrade.max_level} - +{upgrade.effects.yield_bonus} yield / +{upgrade.effects.slot_capacity_bonus} slot
                         </span>
                         <strong>{upgrade.cash_cost} Cash</strong>
                       </div>

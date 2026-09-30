@@ -30,6 +30,7 @@ test("production shell exists", () => {
   assert.match(auth, /cash_ledger/);
   assert.match(auth, /economy_summary/);
   assert.match(auth, /\/api\/v1\/upgrades/);
+  assert.match(auth, /slot_capacity_bonus/);
   assert.match(auth, /Upgrades/);
   assert.match(auth, /Progression/);
   assert.match(auth, /Skills/);

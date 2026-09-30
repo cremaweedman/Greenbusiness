@@ -403,10 +403,12 @@ Future agents/sessions must update this section after meaningful implementation.
 - web UI now shows Cash, contract requirements, delivery actions, source/sink summary and recent Cash ledger entries;
 - pure catalog anti-exploit test verifies starter Cash is bounded by unique contracts;
 - first Cash sink upgrade implemented: `starter-bench-calibration`;
+- starter capacity upgrade implemented: `starter-room-expansion`;
 - `GET /v1/upgrades` and `POST /v1/upgrades/{upgrade_key}/purchase` added;
 - purchased upgrade persists per player and adds +1 yield to future harvests;
-- web UI now shows upgrade level, cost and purchase action;
-- pure upgrade catalog tests verify upgrade cost and production effect;
+- purchased capacity upgrade adds a fourth persistent production slot using the existing production slots table;
+- web UI now shows upgrade level, cost, yield/slot effects and purchase action;
+- pure upgrade catalog tests verify upgrade costs, production effect and slot capacity effect;
 - 20-level versioned progression curve added as `p3-progression-v1`;
 - `progression.skill_points` added and awarded on server-side level-up;
 - harvest XP now recalculates level from the server curve and records level/skill-point state in audit payloads;
@@ -429,7 +431,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - contract completion now requires the contract to be present on the active board;
 - web UI now shows reroll cost, remaining rerolls and a reroll action;
 - P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API, economy summary API and replay rejection;
-- P3-M1 upgrade integration test added for insufficient Cash, purchase, duplicate max-level rejection and changed future harvest yield.
+- P3-M1 upgrade integration test added for insufficient Cash, purchase, duplicate max-level rejection, changed future harvest yield and capacity-slot expansion.
 
 ## In progress
 - Docker-based P2-M1 backend/frontend/full-stack E2E validation;

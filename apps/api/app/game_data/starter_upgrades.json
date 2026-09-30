@@ -8,7 +8,19 @@
       "cash_cost": 100,
       "max_level": 1,
       "effects": {
-        "yield_bonus": 1
+        "yield_bonus": 1,
+        "slot_capacity_bonus": 0
+      }
+    },
+    {
+      "key": "starter-room-expansion",
+      "name": "Starter Room Expansion",
+      "description": "Adds one extra starter production slot to increase planting capacity.",
+      "cash_cost": 120,
+      "max_level": 1,
+      "effects": {
+        "yield_bonus": 0,
+        "slot_capacity_bonus": 1
       }
     }
   ]

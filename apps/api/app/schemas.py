@@ -132,6 +132,7 @@ class ContractRerollResponse(BaseModel):
 
 class UpgradeEffectsResponse(BaseModel):
     yield_bonus: int
+    slot_capacity_bonus: int
 
 
 class UpgradeResponse(BaseModel):

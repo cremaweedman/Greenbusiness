@@ -120,3 +120,41 @@ async def test_upgrade_spends_cash_and_changes_future_harvest_yield(client: Asyn
         assert harvest.json()["yield_quantity"] == 4
     finally:
         await _cleanup(email)
+
+
+@pytest.mark.asyncio
+async def test_capacity_upgrade_spends_cash_and_adds_a_slot(client: AsyncClient):
+    email = f"p3-capacity-upgrade-{uuid.uuid4()}@example.com"
+    try:
+        access_token = await _register(client, email)
+        auth = {"Authorization": f"Bearer {access_token}"}
+
+        initial_state = (await client.get("/v1/player", headers=auth)).json()
+        assert len(initial_state["slots"]) == 3
+
+        expansion = next(
+            upgrade
+            for upgrade in initial_state["upgrades"]
+            if upgrade["key"] == "starter-room-expansion"
+        )
+        assert expansion["effects"]["slot_capacity_bonus"] == 1
+        assert expansion["can_purchase"] is False
+
+        await _grant_cash(email, 120)
+
+        purchased = await client.post(f"/v1/upgrades/{expansion['key']}/purchase", headers=auth)
+        assert purchased.status_code == 200
+        purchase_body = purchased.json()
+        assert purchase_body["cash_delta"] == -120
+        assert purchase_body["cash_balance"] == 0
+        assert purchase_body["upgrade"]["effects"]["slot_capacity_bonus"] == 1
+        assert purchase_body["economy_summary"]["burned"] == 120
+
+        expanded_state = (await client.get("/v1/player", headers=auth)).json()
+        assert [slot["slot_index"] for slot in expanded_state["slots"]] == [0, 1, 2, 3]
+
+        duplicate = await client.post(f"/v1/upgrades/{expansion['key']}/purchase", headers=auth)
+        assert duplicate.status_code == 409
+        assert duplicate.json()["error"]["code"] == "UPGRADE_MAX_LEVEL"
+    finally:
+        await _cleanup(email)

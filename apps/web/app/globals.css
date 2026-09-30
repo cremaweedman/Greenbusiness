@@ -559,22 +559,27 @@ input:focus {
 }
 
 .iso-plot.slot-0 {
-  left: 32%;
-  top: 42%;
+  left: 34%;
+  top: 36%;
 }
 
 .iso-plot.slot-1 {
-  left: 50%;
-  top: 62%;
+  left: 66%;
+  top: 36%;
 }
 
 .iso-plot.slot-2 {
-  left: 68%;
-  top: 42%;
+  left: 34%;
+  top: 64%;
+}
+
+.iso-plot.slot-3 {
+  left: 66%;
+  top: 64%;
 }
 
 .slot-list {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 
 .slot-card {

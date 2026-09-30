@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.audit import append_audit_event
 from app.contracts_service import CASH_CURRENCY, cash_balance, cash_summary
-from app.db.models import CurrencyLedgerEntry, PlayerUpgrade
+from app.db.models import Business, CurrencyLedgerEntry, PlayerUpgrade, ProductionSlot, Room
 from app.errors import AppError
 from app.game_data.upgrades_catalog import (
     STARTER_UPGRADE_BY_KEY,
@@ -45,7 +45,10 @@ def _upgrade_response(
         cash_cost=upgrade.cash_cost,
         level=level,
         max_level=upgrade.max_level,
-        effects=UpgradeEffectsResponse(yield_bonus=upgrade.effects.yield_bonus),
+        effects=UpgradeEffectsResponse(
+            yield_bonus=upgrade.effects.yield_bonus,
+            slot_capacity_bonus=upgrade.effects.slot_capacity_bonus,
+        ),
         can_purchase=level < upgrade.max_level and balance >= upgrade.cash_cost,
     )
 
@@ -65,6 +68,39 @@ async def total_yield_bonus(session: AsyncSession, *, user_id: uuid.UUID) -> int
         upgrade.effects.yield_bonus * levels.get(upgrade.key, 0)
         for upgrade in STARTER_UPGRADES
     )
+
+
+async def _add_capacity_slots(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    slots_to_add: int,
+) -> list[int]:
+    if slots_to_add <= 0:
+        return []
+    room = await session.scalar(
+        select(Room)
+        .join(Business, Room.business_id == Business.id)
+        .where(Business.user_id == user_id)
+        .with_for_update()
+    )
+    if room is None:
+        raise AppError("PLAYER_STATE_INCOMPLETE", "Player room is missing.", status_code=500)
+    slots = (
+        await session.scalars(
+            select(ProductionSlot)
+            .where(ProductionSlot.room_id == room.id)
+            .order_by(ProductionSlot.slot_index)
+            .with_for_update()
+        )
+    ).all()
+    next_index = (max((slot.slot_index for slot in slots), default=-1) + 1)
+    created_indexes: list[int] = []
+    for offset in range(slots_to_add):
+        slot_index = next_index + offset
+        session.add(ProductionSlot(room_id=room.id, slot_index=slot_index, status="available"))
+        created_indexes.append(slot_index)
+    return created_indexes
 
 
 def _is_duplicate_upgrade(exc: IntegrityError) -> bool:
@@ -118,6 +154,12 @@ async def purchase_upgrade(
         existing.level = next_level
         existing.purchased_at = now
 
+    created_slot_indexes = await _add_capacity_slots(
+        session,
+        user_id=user_id,
+        slots_to_add=upgrade.effects.slot_capacity_bonus,
+    )
+
     ledger_entry = CurrencyLedgerEntry(
         user_id=user_id,
         currency=CASH_CURRENCY,
@@ -141,6 +183,7 @@ async def purchase_upgrade(
             "level": next_level,
             "cash_cost": upgrade.cash_cost,
             "balance_after": balance_after,
+            "created_slot_indexes": created_slot_indexes,
             "config_version": STARTER_UPGRADES_CATALOG.version,
         },
     )

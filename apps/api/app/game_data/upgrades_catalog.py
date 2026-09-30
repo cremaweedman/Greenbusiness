@@ -9,6 +9,7 @@ from typing import Any
 @dataclass(frozen=True)
 class UpgradeEffects:
     yield_bonus: int = 0
+    slot_capacity_bonus: int = 0
 
 
 @dataclass(frozen=True)
@@ -51,7 +52,10 @@ def _effects(raw: dict[str, Any]) -> UpgradeEffects:
     yield_bonus = effects.get("yield_bonus", 0)
     if not isinstance(yield_bonus, int) or yield_bonus < 0:
         raise ValueError("Upgrade yield_bonus must be a non-negative integer.")
-    return UpgradeEffects(yield_bonus=yield_bonus)
+    slot_capacity_bonus = effects.get("slot_capacity_bonus", 0)
+    if not isinstance(slot_capacity_bonus, int) or slot_capacity_bonus < 0:
+        raise ValueError("Upgrade slot_capacity_bonus must be a non-negative integer.")
+    return UpgradeEffects(yield_bonus=yield_bonus, slot_capacity_bonus=slot_capacity_bonus)
 
 
 def load_upgrades_catalog(path: Path = CATALOG_PATH) -> UpgradesCatalog:
