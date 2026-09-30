@@ -128,6 +128,9 @@ async def test_production_loop_persists_harvests_once_and_updates_inventory(clie
         final_player = await client.get("/v1/player", headers=auth)
         final_state = final_player.json()
         assert final_state["xp"] == 20
+        assert final_state["level"] == 1
+        assert final_state["skill_points"] == 0
+        assert final_state["progression"]["next_level_xp"] == 25
         assert final_state["tutorial_step"] == 3
         assert final_state["tutorial_completed"] is True
         assert final_state["inventory"] == [

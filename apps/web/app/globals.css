@@ -253,6 +253,28 @@ input:focus {
   background: #152119;
 }
 
+.progression-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #3d563f;
+  border-radius: 8px;
+  background: #152119;
+}
+
+.progression-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.progression-head span, .progression-card p {
+  margin: 0;
+  color: #9fc8a9;
+  font-size: 0.84rem;
+}
+
 .objective strong {
   font-size: 1.05rem;
 }

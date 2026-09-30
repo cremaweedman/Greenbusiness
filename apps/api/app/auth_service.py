@@ -32,6 +32,7 @@ from app.production_service import (
     slot_response,
     starter_variety_responses,
 )
+from app.progression_service import progression_response
 from app.schemas import PlayerResponse
 from app.security import (
     create_access_token,
@@ -75,7 +76,7 @@ async def register_user(
 
     profile = PlayerProfile(user_id=user.id, display_name=display_name.strip())
     business = Business(user_id=user.id, name=f"{display_name.strip()}'s GreenBusiness")
-    progression = Progression(user_id=user.id, level=1, xp=0, reputation=0)
+    progression = Progression(user_id=user.id, level=1, xp=0, reputation=0, skill_points=0)
     inventory = InventoryContainer(user_id=user.id, kind="main")
 
     session.add_all([profile, business, progression, inventory])
@@ -266,6 +267,8 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         level=progression.level,
         xp=progression.xp,
         reputation=progression.reputation,
+        skill_points=progression.skill_points,
+        progression=progression_response(progression),
         cash_balance=await cash_balance(session, user_id),
         tutorial_step=profile.tutorial_step,
         tutorial_completed=profile.tutorial_completed,

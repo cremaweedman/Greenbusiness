@@ -181,6 +181,7 @@ class Progression(Base):
     level: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     xp: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     reputation: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    skill_points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
 class InventoryContainer(Base):

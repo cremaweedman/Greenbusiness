@@ -134,6 +134,17 @@ class UpgradePurchaseResponse(BaseModel):
     economy_summary: EconomySummaryResponse
 
 
+class ProgressionResponse(BaseModel):
+    level: int
+    xp: int
+    reputation: int
+    skill_points: int
+    max_level: int
+    current_level_xp: int
+    next_level_xp: int | None
+    next_unlock: str | None
+
+
 class PlayerResponse(BaseModel):
     server_time: datetime
     user_id: uuid.UUID
@@ -148,6 +159,8 @@ class PlayerResponse(BaseModel):
     level: int
     xp: int
     reputation: int
+    skill_points: int
+    progression: ProgressionResponse
     cash_balance: int
     tutorial_step: int
     tutorial_completed: bool

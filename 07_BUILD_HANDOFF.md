@@ -407,6 +407,12 @@ Future agents/sessions must update this section after meaningful implementation.
 - purchased upgrade persists per player and adds +1 yield to future harvests;
 - web UI now shows upgrade level, cost and purchase action;
 - pure upgrade catalog tests verify upgrade cost and production effect;
+- 20-level versioned progression curve added as `p3-progression-v1`;
+- `progression.skill_points` added and awarded on server-side level-up;
+- harvest XP now recalculates level from the server curve and records level/skill-point state in audit payloads;
+- `GET /v1/player` now returns progression details including current level XP, next level XP and next unlock;
+- web UI now shows level progress, next unlock and available skill points;
+- pure progression tests verify level curve, XP thresholds and skill-point awards;
 - P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API, economy summary API and replay rejection;
 - P3-M1 upgrade integration test added for insufficient Cash, purchase, duplicate max-level rejection and changed future harvest yield.
 
@@ -421,6 +427,7 @@ Start Docker Desktop, then run:
 - `docker compose exec api pytest -q`
 - `docker compose exec api pytest apps/api/tests/integration/test_contracts_economy.py -q`
 - `docker compose exec api pytest apps/api/tests/integration/test_upgrades_economy.py -q`
+- `docker compose exec api pytest apps/api/tests/integration/test_production_loop.py -q`
 - `docker compose exec api ruff check .`
 - `docker compose run --rm web npm run lint`
 - `docker compose run --rm web npm run typecheck`

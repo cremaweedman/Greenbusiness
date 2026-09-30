@@ -22,6 +22,7 @@ from app.db.models import (
 from app.errors import AppError
 from app.game_data.production_catalog import STARTER_VARIETIES, STARTER_VARIETY_BY_KEY
 from app.game_data.upgrades_catalog import STARTER_UPGRADES
+from app.progression_service import apply_xp
 from app.schemas import (
     CropProductionResponse,
     HarvestResponse,
@@ -338,7 +339,7 @@ async def harvest_crop(
     crop.yield_quantity = yield_quantity
     crop.quality = quality
     slot.status = "available"
-    progression.xp += xp_reward
+    levels_gained = apply_xp(progression, xp_reward)
     await _advance_tutorial(session, user_id, minimum_step=3, completed=True)
 
     await append_audit_event(
@@ -355,6 +356,9 @@ async def harvest_crop(
             "quality": quality,
             "xp_reward": xp_reward,
             "upgrade_bonus": upgrade_bonus,
+            "level": progression.level,
+            "levels_gained": levels_gained,
+            "skill_points": progression.skill_points,
         },
     )
     await session.commit()

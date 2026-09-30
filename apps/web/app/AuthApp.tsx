@@ -90,6 +90,17 @@ type Upgrade = {
   can_purchase: boolean;
 };
 
+type Progression = {
+  level: number;
+  xp: number;
+  reputation: number;
+  skill_points: number;
+  max_level: number;
+  current_level_xp: number;
+  next_level_xp: number | null;
+  next_unlock: string | null;
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -104,6 +115,8 @@ type Player = {
   level: number;
   xp: number;
   reputation: number;
+  skill_points: number;
+  progression: Progression;
   cash_balance: number;
   tutorial_step: number;
   tutorial_completed: boolean;
@@ -175,6 +188,14 @@ function tutorialObjective(player: Player): string {
 function slotState(slot: Slot, now: number): "available" | "planted" | "ready" {
   if (!slot.crop) return "available";
   return new Date(slot.crop.ready_at).getTime() <= now ? "ready" : "planted";
+}
+
+function progressionPercent(progression: Progression): number {
+  if (progression.next_level_xp === null) return 100;
+  const span = progression.next_level_xp - progression.current_level_xp;
+  if (span <= 0) return 100;
+  const progress = progression.xp - progression.current_level_xp;
+  return Math.max(0, Math.min(100, Math.round((progress / span) * 100)));
 }
 
 export default function AuthApp() {
@@ -451,6 +472,24 @@ export default function AuthApp() {
               <p className="section-label">Current objective</p>
               <strong>{tutorialObjective(player)}</strong>
               <span>{player.tutorial_completed ? "Reward secured" : "Starter loop"}</span>
+            </div>
+
+            <div className="progression-card">
+              <p className="section-label">Progression</p>
+              <div className="progression-head">
+                <strong>
+                  Level {player.progression.level}/{player.progression.max_level}
+                </strong>
+                <span>{player.progression.skill_points} skill points</span>
+              </div>
+              <div className="crop-meter" aria-hidden="true">
+                <span style={{ width: `${progressionPercent(player.progression)}%` }} />
+              </div>
+              <p>
+                {player.progression.next_level_xp === null
+                  ? "Progression cap reached"
+                  : `${player.progression.xp}/${player.progression.next_level_xp} XP - next: ${player.progression.next_unlock}`}
+              </p>
             </div>
 
             <div>
