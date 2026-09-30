@@ -343,7 +343,7 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 5 — LiveOps, Remote Config, Analytics & Admin`
 
 ## Current milestone
-`P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — IN PROGRESS`
+`P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — IMPLEMENTED, PENDING DOCKER VALIDATION`
 
 ## Completed
 - research and product reconstruction;
@@ -421,8 +421,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - P5-M1 integration test extended for publish, feature disable, rollback, audit trail, analytics emission, admin Cash mutation, ledger inspection and economy dashboard.
 
 ## In progress
-- Docker/PostgreSQL validation of P5-M1 migration and admin/config/analytics integration;
-- continue P5-M1 toward full acceptance criteria.
+- Docker/PostgreSQL validation of P5-M1 migration and admin/config/analytics integration.
 
 ## Next action
 Start Docker Desktop, then run:
@@ -435,7 +434,18 @@ Start Docker Desktop, then run:
 - `docker compose run --rm web npm run typecheck`
 - `docker compose run --rm web npm test`
 
-Then continue P5-M1 by adding final acceptance hardening, documentation cleanup and full Docker E2E for config rollback plus analytics emission.
+If Docker validation passes, mark P5-M1 complete and merge the PR. If any Docker/PostgreSQL issue appears, fix it in the P5-M1 branch before merge.
+
+Local validation already passed without Docker:
+- `python -m ruff check apps\api\app apps\api\tests\test_liveops_foundation.py apps\api\tests\integration\test_liveops_admin_analytics.py`
+- `python -m compileall apps\api\app apps\api\tests\test_liveops_foundation.py apps\api\tests\integration\test_liveops_admin_analytics.py`
+- `python -m pytest apps\api\tests\test_liveops_foundation.py`
+- `npm run lint`
+- `npm run typecheck`
+- `npm test`
+- `npm run build`
+
+Docker validation could not run in this local Codex environment because Docker Desktop's Linux engine was not running.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
