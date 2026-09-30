@@ -48,6 +48,41 @@ class LiveOpsConfigRollbackRequest(BaseModel):
     source_version: int = Field(ge=1)
 
 
+class AdminCashMutationRequest(BaseModel):
+    user_id: uuid.UUID
+    amount: int = Field(gt=0, le=100_000)
+    reason: str = Field(min_length=3, max_length=160)
+
+
+class AdminCashMutationResponse(BaseModel):
+    user_id: uuid.UUID
+    cash: int
+    cash_delta: int
+    transaction_id: uuid.UUID
+
+
+class AdminLedgerEntryResponse(BaseModel):
+    id: uuid.UUID
+    transaction_id: uuid.UUID
+    user_id: uuid.UUID
+    currency: str
+    amount: int
+    source_or_sink: str
+    reference_type: str
+    reference_id: str
+    config_version: str
+    balance_before: int
+    balance_after: int
+    created_at: datetime
+
+
+class WalletDistributionBucketResponse(BaseModel):
+    label: str
+    min_cash: int
+    max_cash: int | None
+    wallet_count: int
+
+
 class AnalyticsEventResponse(BaseModel):
     id: uuid.UUID
     user_id: uuid.UUID | None
@@ -66,6 +101,7 @@ class EconomyDashboardResponse(BaseModel):
     total_wallet_cash: int
     min_wallet_cash: int
     max_wallet_cash: int
+    wallet_distribution: list[WalletDistributionBucketResponse]
 
 
 class FunnelStepResponse(BaseModel):

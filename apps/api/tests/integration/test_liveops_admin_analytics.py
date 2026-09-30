@@ -73,7 +73,9 @@ async def test_liveops_publish_disable_and_rollback_are_audited(client: AsyncCli
 
         player = await client.get("/v1/player", headers=auth)
         assert player.status_code == 200
-        slot_id = player.json()["slots"][0]["id"]
+        player_body = player.json()
+        user_id = player_body["user_id"]
+        slot_id = player_body["slots"][0]["id"]
 
         disabled = await client.post(
             "/v1/admin/config/publish",
@@ -106,14 +108,42 @@ async def test_liveops_publish_disable_and_rollback_are_audited(client: AsyncCli
         assert rollback.status_code == 200
         assert rollback.json()["restored_from_version"] == disabled_version
 
+        grant = await client.post(
+            "/v1/admin/cash/grant",
+            headers=admin,
+            json={"user_id": user_id, "amount": 75, "reason": "integration grant"},
+        )
+        assert grant.status_code == 200
+        assert grant.json()["cash_delta"] == 75
+
+        revoke = await client.post(
+            "/v1/admin/cash/revoke",
+            headers=admin,
+            json={"user_id": user_id, "amount": 25, "reason": "integration revoke"},
+        )
+        assert revoke.status_code == 200
+        assert revoke.json()["cash_delta"] == -25
+
+        ledger = await client.get(f"/v1/admin/ledger?user_id={user_id}", headers=admin)
+        assert ledger.status_code == 200
+        assert any(entry["source_or_sink"] == "admin_grant" for entry in ledger.json())
+
+        dashboard = await client.get("/v1/admin/dashboards/economy", headers=admin)
+        assert dashboard.status_code == 200
+        assert dashboard.json()["wallet_distribution"]
+
         async with SessionLocal() as session:
             audit = await session.scalar(
                 select(AuditEvent).where(AuditEvent.event_type == "admin.liveops_config_rolled_back")
+            )
+            grant_audit = await session.scalar(
+                select(AuditEvent).where(AuditEvent.event_type == "admin.cash_granted")
             )
             analytics = await session.scalar(
                 select(AnalyticsEvent).where(AnalyticsEvent.event_name == "auth.user_registered")
             )
             assert audit is not None
+            assert grant_audit is not None
             assert analytics is not None
             assert "email" not in analytics.payload
     finally:

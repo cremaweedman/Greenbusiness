@@ -19,6 +19,8 @@ from app.db.models import (
 )
 from app.errors import AppError
 from app.schemas import (
+    AdminCashMutationResponse,
+    AdminLedgerEntryResponse,
     AdminPlayerLookupResponse,
     AnalyticsEventResponse,
     CoreFunnelResponse,
@@ -26,6 +28,7 @@ from app.schemas import (
     FunnelStepResponse,
     LiveOpsConfigPayload,
     LiveOpsConfigResponse,
+    WalletDistributionBucketResponse,
 )
 
 ACTIVE_CONFIG_META_KEY = "liveops.active_config_version"
@@ -66,6 +69,13 @@ DEFAULT_CONFIG = LiveOpsConfigPayload(
     event_windows={},
     notification_copy={},
     experiments={},
+)
+WALLET_BUCKETS = (
+    ("0", 0, 0),
+    ("1-499", 1, 499),
+    ("500-999", 500, 999),
+    ("1000-4999", 1000, 4999),
+    ("5000+", 5000, None),
 )
 
 
@@ -143,6 +153,21 @@ async def active_config(session: AsyncSession) -> LiveOpsConfigResponse:
     if model is None:
         raise AppError("LIVEOPS_CONFIG_MISSING", "Active LiveOps config is missing.", status_code=500)
     return _config_response(model)
+
+
+async def list_config_versions(
+    session: AsyncSession,
+    *,
+    limit: int = 50,
+) -> list[LiveOpsConfigResponse]:
+    rows = (
+        await session.scalars(
+            select(LiveOpsConfigVersion)
+            .order_by(desc(LiveOpsConfigVersion.version))
+            .limit(max(1, min(limit, 200)))
+        )
+    ).all()
+    return [_config_response(row) for row in rows]
 
 
 async def _database_now(session: AsyncSession):
@@ -252,6 +277,21 @@ async def require_feature_enabled(session: AsyncSession, feature_key: str) -> No
         )
 
 
+async def contract_reward_multipliers(session: AsyncSession) -> tuple[float, float, int]:
+    config = await active_config(session)
+    cash = config.config.contract_multipliers.get("default_cash", 1.0)
+    reputation = config.config.contract_multipliers.get("default_reputation", 1.0)
+    return max(0.0, cash), max(0.0, reputation), config.version
+
+
+def apply_contract_multiplier(value: int, multiplier: float) -> int:
+    return max(0, round(value * multiplier))
+
+
+def liveops_config_version_label(version: int) -> str:
+    return f"liveops_{version}" if version > 0 else "liveops_default"
+
+
 async def economy_dashboard(session: AsyncSession) -> EconomyDashboardResponse:
     minted = await session.scalar(
         select(func.coalesce(func.sum(EconomyLedger.amount), 0)).where(EconomyLedger.amount > 0)
@@ -263,6 +303,20 @@ async def economy_dashboard(session: AsyncSession) -> EconomyDashboardResponse:
     total_wallet_cash = await session.scalar(select(func.coalesce(func.sum(Wallet.cash), 0)))
     min_wallet_cash = await session.scalar(select(func.coalesce(func.min(Wallet.cash), 0)))
     max_wallet_cash = await session.scalar(select(func.coalesce(func.max(Wallet.cash), 0)))
+    distribution: list[WalletDistributionBucketResponse] = []
+    for label, min_cash, max_cash in WALLET_BUCKETS:
+        query = select(func.count()).select_from(Wallet).where(Wallet.cash >= min_cash)
+        if max_cash is not None:
+            query = query.where(Wallet.cash <= max_cash)
+        count = await session.scalar(query)
+        distribution.append(
+            WalletDistributionBucketResponse(
+                label=label,
+                min_cash=min_cash,
+                max_cash=max_cash,
+                wallet_count=int(count or 0),
+            )
+        )
     return EconomyDashboardResponse(
         currency="cash",
         minted=int(minted or 0),
@@ -271,6 +325,7 @@ async def economy_dashboard(session: AsyncSession) -> EconomyDashboardResponse:
         total_wallet_cash=int(total_wallet_cash or 0),
         min_wallet_cash=int(min_wallet_cash or 0),
         max_wallet_cash=int(max_wallet_cash or 0),
+        wallet_distribution=distribution,
     )
 
 
@@ -311,6 +366,107 @@ async def recent_analytics_events(session: AsyncSession, *, limit: int = 50) -> 
         )
         for row in rows
     ]
+
+
+async def ledger_entries(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID | None = None,
+    limit: int = 50,
+) -> list[AdminLedgerEntryResponse]:
+    query = select(EconomyLedger).order_by(desc(EconomyLedger.created_at))
+    if user_id is not None:
+        query = query.where(EconomyLedger.user_id == user_id)
+    rows = (await session.scalars(query.limit(max(1, min(limit, 200))))).all()
+    return [
+        AdminLedgerEntryResponse(
+            id=row.id,
+            transaction_id=row.transaction_id,
+            user_id=row.user_id,
+            currency=row.currency,
+            amount=row.amount,
+            source_or_sink=row.source_or_sink,
+            reference_type=row.reference_type,
+            reference_id=row.reference_id,
+            config_version=row.config_version,
+            balance_before=row.balance_before,
+            balance_after=row.balance_after,
+            created_at=row.created_at,
+        )
+        for row in rows
+    ]
+
+
+async def admin_cash_mutation(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    amount: int,
+    source_or_sink: str,
+    admin_actor_id: str,
+    reason: str,
+    request_id: str | None,
+) -> AdminCashMutationResponse:
+    wallet = await session.scalar(select(Wallet).where(Wallet.user_id == user_id).with_for_update())
+    if wallet is None:
+        raise AppError("ADMIN_PLAYER_WALLET_NOT_FOUND", "Player wallet was not found.", status_code=404)
+
+    signed_amount = amount if source_or_sink == "admin_grant" else -amount
+    before = wallet.cash
+    after = before + signed_amount
+    if after < 0:
+        raise AppError(
+            "ADMIN_CASH_REVOKE_EXCEEDS_BALANCE",
+            "Cannot revoke more Cash than the player has.",
+            status_code=409,
+            details={"cash": before, "requested_revoke": amount},
+        )
+    wallet.cash = after
+    transaction_id = uuid.uuid4()
+    session.add(
+        EconomyLedger(
+            transaction_id=transaction_id,
+            user_id=user_id,
+            currency="cash",
+            amount=signed_amount,
+            source_or_sink=source_or_sink,
+            reference_type="admin_adjustment",
+            reference_id=request_id or str(transaction_id),
+            config_version="admin_manual_v1",
+            balance_before=before,
+            balance_after=after,
+        )
+    )
+    await append_audit_event(
+        session,
+        event_type=f"admin.cash_{'granted' if signed_amount > 0 else 'revoked'}",
+        actor_type="admin",
+        actor_id=admin_actor_id,
+        target_type="user",
+        target_id=str(user_id),
+        request_id=request_id,
+        payload={
+            "amount": signed_amount,
+            "balance_before": before,
+            "balance_after": after,
+            "reason": reason,
+            "transaction_id": str(transaction_id),
+        },
+    )
+    await record_analytics_event(
+        session,
+        event_name=f"admin.cash_{'granted' if signed_amount > 0 else 'revoked'}",
+        user_id=user_id,
+        payload={"amount": signed_amount, "balance_after": after},
+        request_id=request_id,
+    )
+    await session.commit()
+    return AdminCashMutationResponse(
+        user_id=user_id,
+        cash=after,
+        cash_delta=signed_amount,
+        transaction_id=transaction_id,
+    )
 
 
 async def admin_player_lookup(

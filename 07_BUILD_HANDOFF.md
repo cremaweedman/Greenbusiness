@@ -407,8 +407,13 @@ Future agents/sessions must update this section after meaningful implementation.
 - admin endpoints added for active config, config publish, config rollback, player lookup, economy dashboard, core-funnel dashboard and recent analytics events;
 - published config versions are not mutated; rollback creates a new active version restored from an earlier version;
 - production, contract and upgrade actions are guarded by LiveOps feature flags/kill switches;
+- active LiveOps contract multipliers now change newly generated contract rewards and are snapshotted into accepted contracts;
+- admin config history endpoint exposes immutable published/restored versions;
+- admin ledger inspection endpoint exposes recent economy ledger entries, optionally filtered by player;
+- audited admin Cash grant/revoke endpoints implemented for dev/test operations;
+- economy dashboard now includes wallet distribution buckets in addition to minted/burned totals;
 - auth, production and economy core actions emit canonical analytics events with payload sanitization;
-- P5-M1 integration test added for publish, feature disable, rollback, audit trail and analytics emission.
+- P5-M1 integration test extended for publish, feature disable, rollback, audit trail, analytics emission, admin Cash mutation, ledger inspection and economy dashboard.
 
 ## In progress
 - Docker/PostgreSQL validation of P5-M1 migration and admin/config/analytics integration;
@@ -425,7 +430,7 @@ Start Docker Desktop, then run:
 - `docker compose run --rm web npm run typecheck`
 - `docker compose run --rm web npm test`
 
-Then continue P5-M1 by adding stronger admin read models for ledger/config history, a richer tutorial/core-loop dashboard, and a full Docker E2E for config rollback plus analytics emission.
+Then continue P5-M1 by adding richer tutorial/core-loop analytics breakdowns, error/performance event capture and full Docker E2E for config rollback plus analytics emission.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;

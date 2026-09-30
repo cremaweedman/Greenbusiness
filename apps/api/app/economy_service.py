@@ -37,7 +37,12 @@ from app.game_data.economy_catalog import (
     UpgradeDefinition,
 )
 from app.game_data.production_catalog import STARTER_VARIETY_BY_KEY
-from app.liveops_service import record_analytics_event
+from app.liveops_service import (
+    apply_contract_multiplier,
+    contract_reward_multipliers,
+    liveops_config_version_label,
+    record_analytics_event,
+)
 from app.mission_service import record_domain_event
 from app.production_service import inventory_lot_responses, inventory_responses
 from app.schemas import (
@@ -84,6 +89,8 @@ def _offer_response(
     slot: int,
     level: int,
     reputation: int,
+    cash_multiplier: float = 1.0,
+    reputation_multiplier: float = 1.0,
 ) -> ContractOfferResponse:
     return ContractOfferResponse(
         offer_id=f"{bucket}-{slot}-{definition.key}",
@@ -96,8 +103,11 @@ def _offer_response(
         required_quantity=definition.required_quantity,
         required_quality=definition.required_quality,
         required_trait=definition.required_trait,
-        reward_cash=definition.reward_cash,
-        reward_reputation=definition.reward_reputation,
+        reward_cash=apply_contract_multiplier(definition.reward_cash, cash_multiplier),
+        reward_reputation=apply_contract_multiplier(
+            definition.reward_reputation,
+            reputation_multiplier,
+        ),
         min_level=definition.min_level,
         min_reputation=definition.min_reputation,
         specialized=definition.specialized,
@@ -112,6 +122,8 @@ def generate_contract_offers(
     level: int,
     reputation: int,
     now: datetime,
+    cash_multiplier: float = 1.0,
+    reputation_multiplier: float = 1.0,
 ) -> list[ContractOfferResponse]:
     bucket = offer_bucket_for_time(now)
     standards = [contract for contract in CONTRACTS if not contract.specialized]
@@ -148,6 +160,8 @@ def generate_contract_offers(
             slot=slot,
             level=level,
             reputation=reputation,
+            cash_multiplier=cash_multiplier,
+            reputation_multiplier=reputation_multiplier,
         )
         for slot, contract in enumerate(selected[:STANDARD_OFFER_COUNT])
     ]
@@ -162,6 +176,8 @@ def generate_contract_offers(
                 slot=STANDARD_OFFER_COUNT + index,
                 level=level,
                 reputation=reputation,
+                cash_multiplier=cash_multiplier,
+                reputation_multiplier=reputation_multiplier,
             )
         )
     return offers
@@ -301,6 +317,9 @@ async def economy_state(
     )
 
     accepted_offer_ids = {contract.offer_id for contract in contracts}
+    cash_multiplier, reputation_multiplier, _liveops_version = await contract_reward_multipliers(
+        session
+    )
     offers = [
         offer
         for offer in generate_contract_offers(
@@ -308,6 +327,8 @@ async def economy_state(
             level=progression.level,
             reputation=progression.reputation,
             now=current_time,
+            cash_multiplier=cash_multiplier,
+            reputation_multiplier=reputation_multiplier,
         )
         if offer.offer_id not in accepted_offer_ids
     ]
@@ -470,11 +491,16 @@ async def accept_offer(
 ) -> PlayerContractResponse:
     current_time = now or datetime.now(UTC)
     progression = await _progression_for_update(session, user_id)
+    cash_multiplier, reputation_multiplier, liveops_version = await contract_reward_multipliers(
+        session
+    )
     current_offers = generate_contract_offers(
         user_id=user_id,
         level=progression.level,
         reputation=progression.reputation,
         now=current_time,
+        cash_multiplier=cash_multiplier,
+        reputation_multiplier=reputation_multiplier,
     )
     offer = next((item for item in current_offers if item.offer_id == offer_id), None)
     if offer is None:
@@ -513,13 +539,13 @@ async def accept_offer(
         offer_bucket=offer.offer_bucket,
         contract_key=definition.key,
         archetype=definition.archetype,
-        config_version=ECONOMY_CONFIG_VERSION,
+        config_version=f"{ECONOMY_CONFIG_VERSION}:{liveops_config_version_label(liveops_version)}",
         item_key=definition.item_key,
         required_quantity=definition.required_quantity,
         required_quality=definition.required_quality,
         required_trait=definition.required_trait,
-        reward_cash=definition.reward_cash,
-        reward_reputation=definition.reward_reputation,
+        reward_cash=offer.reward_cash,
+        reward_reputation=offer.reward_reputation,
         status="active",
         accepted_at=current_time,
     )
@@ -532,13 +558,23 @@ async def accept_offer(
         target_type="contract_offer",
         target_id=offer.offer_id,
         request_id=request_id,
-        payload={"contract_key": definition.key, "offer_bucket": offer.offer_bucket},
+        payload={
+            "contract_key": definition.key,
+            "offer_bucket": offer.offer_bucket,
+            "cash_multiplier": cash_multiplier,
+            "reputation_multiplier": reputation_multiplier,
+            "liveops_config_version": liveops_version,
+        },
     )
     await record_analytics_event(
         session,
         event_name="economy.contract_accepted",
         user_id=user_id,
-        payload={"contract_key": definition.key, "offer_bucket": offer.offer_bucket},
+        payload={
+            "contract_key": definition.key,
+            "offer_bucket": offer.offer_bucket,
+            "liveops_config_version": liveops_version,
+        },
         request_id=request_id,
     )
     await session.commit()

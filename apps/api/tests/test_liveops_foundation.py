@@ -11,8 +11,15 @@ def test_liveops_foundation_contract_is_wired():
     assert '"production": True' in service
     assert "record_analytics_event" in service
     assert "ANALYTICS_SECRET_KEYS" in service
+    assert "admin_cash_mutation" in service
+    assert "contract_reward_multipliers" in service
+    assert "wallet_distribution" in service
     assert "LiveOpsConfigVersion" in models
     assert "AnalyticsEvent" in models
     assert "/config/publish" in routes
     assert "/config/rollback" in routes
+    assert "/config/versions" in routes
+    assert "/ledger" in routes
+    assert "/cash/grant" in routes
+    assert "/cash/revoke" in routes
     assert "/dashboards/economy" in routes

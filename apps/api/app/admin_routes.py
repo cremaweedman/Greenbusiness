@@ -9,14 +9,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.dependencies import get_admin_actor_id, get_db
 from app.liveops_service import (
     active_config,
+    admin_cash_mutation,
     admin_player_lookup,
     core_funnel,
     economy_dashboard,
+    ledger_entries,
+    list_config_versions,
     publish_config,
     recent_analytics_events,
     rollback_config,
 )
 from app.schemas import (
+    AdminCashMutationRequest,
+    AdminCashMutationResponse,
+    AdminLedgerEntryResponse,
     AdminPlayerLookupResponse,
     AnalyticsEventResponse,
     CoreFunnelResponse,
@@ -44,6 +50,15 @@ async def get_active_admin_config(
     _admin_actor: AdminActor,
 ) -> LiveOpsConfigResponse:
     return await active_config(session)
+
+
+@admin_router.get("/config/versions", response_model=list[LiveOpsConfigResponse])
+async def list_admin_config_versions(
+    session: DbSession,
+    _admin_actor: AdminActor,
+    limit: int = Query(default=50, ge=1, le=200),
+) -> list[LiveOpsConfigResponse]:
+    return await list_config_versions(session, limit=limit)
 
 
 @admin_router.post("/config/publish", response_model=LiveOpsConfigResponse)
@@ -83,6 +98,52 @@ async def lookup_player(
     _admin_actor: AdminActor,
 ) -> AdminPlayerLookupResponse:
     return await admin_player_lookup(session, user_id=user_id)
+
+
+@admin_router.get("/ledger", response_model=list[AdminLedgerEntryResponse])
+async def inspect_ledger(
+    session: DbSession,
+    _admin_actor: AdminActor,
+    user_id: uuid.UUID | None = None,
+    limit: int = Query(default=50, ge=1, le=200),
+) -> list[AdminLedgerEntryResponse]:
+    return await ledger_entries(session, user_id=user_id, limit=limit)
+
+
+@admin_router.post("/cash/grant", response_model=AdminCashMutationResponse)
+async def grant_cash(
+    body: AdminCashMutationRequest,
+    request: Request,
+    session: DbSession,
+    admin_actor: AdminActor,
+) -> AdminCashMutationResponse:
+    return await admin_cash_mutation(
+        session,
+        user_id=body.user_id,
+        amount=body.amount,
+        source_or_sink="admin_grant",
+        admin_actor_id=admin_actor,
+        reason=body.reason,
+        request_id=getattr(request.state, "request_id", None),
+    )
+
+
+@admin_router.post("/cash/revoke", response_model=AdminCashMutationResponse)
+async def revoke_cash(
+    body: AdminCashMutationRequest,
+    request: Request,
+    session: DbSession,
+    admin_actor: AdminActor,
+) -> AdminCashMutationResponse:
+    return await admin_cash_mutation(
+        session,
+        user_id=body.user_id,
+        amount=body.amount,
+        source_or_sink="admin_revoke",
+        admin_actor_id=admin_actor,
+        reason=body.reason,
+        request_id=getattr(request.state, "request_id", None),
+    )
 
 
 @admin_router.get("/dashboards/economy", response_model=EconomyDashboardResponse)

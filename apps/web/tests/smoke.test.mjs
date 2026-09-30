@@ -44,6 +44,10 @@ test("liveops admin API surfaces are wired", () => {
   assert.match(api, /liveops_router/);
   assert.match(adminRoutes, /\/config\/publish/);
   assert.match(adminRoutes, /\/config\/rollback/);
+  assert.match(adminRoutes, /\/config\/versions/);
+  assert.match(adminRoutes, /\/ledger/);
+  assert.match(adminRoutes, /\/cash\/grant/);
+  assert.match(adminRoutes, /\/cash\/revoke/);
   assert.match(adminRoutes, /\/dashboards\/economy/);
   assert.match(adminRoutes, /\/dashboards\/core-funnel/);
 });
