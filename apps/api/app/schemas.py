@@ -158,6 +158,8 @@ class PlayerMissionResponse(BaseModel):
     key: str
     sequence: int
     contact_key: str
+    arc_key: str
+    arc_title: str
     title: str
     description: str
     objective_type: str
@@ -166,6 +168,7 @@ class PlayerMissionResponse(BaseModel):
     progress: int
     status: str
     reward: MissionRewardResponse
+    inbox_message: str
     completed_at: datetime | None
 
 
