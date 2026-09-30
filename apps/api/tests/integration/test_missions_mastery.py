@@ -64,10 +64,10 @@ async def test_production_events_advance_missions_and_mastery_without_replay_rew
         auth = {"Authorization": f"Bearer {token}"}
 
         initial = (await client.get("/v1/player", headers=auth)).json()
-        assert len(initial["missions"]) == 10
+        assert len(initial["missions"]) == 30
         assert initial["missions"][0]["status"] == "active"
         assert initial["missions"][1]["status"] == "locked"
-        assert len(initial["contacts"]) == 2
+        assert len(initial["contacts"]) == 4
         assert len(initial["daily_mission_keys"]) == 2
         assert len(initial["weekly_mission_keys"]) == 3
 
