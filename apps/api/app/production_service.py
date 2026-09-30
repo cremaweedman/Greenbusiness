@@ -13,6 +13,7 @@ from app.db.models import (
     CropProduction,
     InventoryContainer,
     InventoryItem,
+    InventoryLot,
     PlayerProfile,
     PlayerUpgrade,
     ProductionSlot,
@@ -20,12 +21,14 @@ from app.db.models import (
     Room,
 )
 from app.errors import AppError
-from app.game_data.economy_catalog import STARTER_UPGRADE
+from app.game_data.economy_catalog import UPGRADE_BY_KEY
 from app.game_data.production_catalog import STARTER_VARIETIES, STARTER_VARIETY_BY_KEY
+from app.game_data.progression_catalog import awarded_skill_points, level_for_xp
 from app.schemas import (
     CropProductionResponse,
     HarvestResponse,
     InventoryItemResponse,
+    InventoryLotResponse,
     ProductionSlotResponse,
     StarterVarietyResponse,
 )
@@ -41,6 +44,7 @@ def starter_variety_responses() -> list[StarterVarietyResponse]:
             name=variety.name,
             grow_seconds=variety.grow_seconds,
             base_yield=variety.base_yield,
+            traits=list(variety.traits),
         )
         for variety in STARTER_VARIETIES
     ]
@@ -119,6 +123,29 @@ async def inventory_responses(
             quantity=item.quantity,
         )
         for item in items
+    ]
+
+
+async def inventory_lot_responses(
+    session: AsyncSession,
+    inventory_container_id: uuid.UUID,
+) -> list[InventoryLotResponse]:
+    lots = (
+        await session.scalars(
+            select(InventoryLot)
+            .where(InventoryLot.inventory_container_id == inventory_container_id)
+            .order_by(InventoryLot.item_key, InventoryLot.quality)
+        )
+    ).all()
+    return [
+        InventoryLotResponse(
+            item_key=lot.item_key,
+            display_name=_display_name(lot.item_key),
+            quality=lot.quality,
+            quantity=lot.quantity,
+        )
+        for lot in lots
+        if lot.quantity > 0
     ]
 
 
@@ -301,15 +328,18 @@ async def harvest_crop(
 
     variety = STARTER_VARIETY_BY_KEY[crop.variety_key]
     care_bonus = 1 if crop.cared_at is not None else 0
-    has_yield_upgrade = (
-        await session.scalar(
-            select(PlayerUpgrade.id)
-            .where(PlayerUpgrade.user_id == user_id)
-            .where(PlayerUpgrade.upgrade_key == STARTER_UPGRADE.key)
-        )
-        is not None
+    owned_upgrade_keys = set(
+        (
+            await session.scalars(
+                select(PlayerUpgrade.upgrade_key).where(PlayerUpgrade.user_id == user_id)
+            )
+        ).all()
     )
-    upgrade_bonus = STARTER_UPGRADE.yield_bonus if has_yield_upgrade else 0
+    upgrade_bonus = sum(
+        UPGRADE_BY_KEY[key].yield_bonus
+        for key in owned_upgrade_keys
+        if key in UPGRADE_BY_KEY
+    )
     quality = "cared" if crop.cared_at is not None else "standard"
     yield_quantity = variety.base_yield + care_bonus + upgrade_bonus
     xp_reward = yield_quantity * XP_PER_HARVEST_UNIT
@@ -330,12 +360,38 @@ async def harvest_crop(
         session.add(item)
         await session.flush()
 
+    lot = await session.scalar(
+        select(InventoryLot)
+        .where(InventoryLot.inventory_container_id == inventory.id)
+        .where(InventoryLot.item_key == item_key)
+        .where(InventoryLot.quality == quality)
+        .with_for_update()
+    )
+    if lot is None:
+        lot = InventoryLot(
+            inventory_container_id=inventory.id,
+            item_key=item_key,
+            quality=quality,
+            quantity=0,
+        )
+        session.add(lot)
+        await session.flush()
+
     item.quantity += yield_quantity
+    lot.quantity += yield_quantity
     crop.harvested_at = now
     crop.yield_quantity = yield_quantity
     crop.quality = quality
     slot.status = "available"
+
+    previous_level = progression.level
+    previous_awarded_points = awarded_skill_points(previous_level)
     progression.xp += xp_reward
+    progression.level = level_for_xp(progression.xp)
+    new_awarded_points = awarded_skill_points(progression.level)
+    if new_awarded_points > previous_awarded_points:
+        progression.skill_points_unspent += new_awarded_points - previous_awarded_points
+
     await _advance_tutorial(session, user_id, minimum_step=3, completed=True)
 
     await append_audit_event(
@@ -352,11 +408,13 @@ async def harvest_crop(
             "quality": quality,
             "xp_reward": xp_reward,
             "upgrade_bonus": upgrade_bonus,
+            "level": progression.level,
         },
     )
     await session.commit()
 
     all_inventory = await inventory_responses(session, inventory.id)
+    all_lots = await inventory_lot_responses(session, inventory.id)
     harvested_item = InventoryItemResponse(
         item_key=item.item_key,
         display_name=_display_name(item.item_key),
@@ -365,6 +423,7 @@ async def harvest_crop(
     return HarvestResponse(
         slot=slot_response(slot, None, now),
         inventory=all_inventory,
+        inventory_lots=all_lots,
         harvested_item=harvested_item,
         yield_quantity=yield_quantity,
         quality=quality,
