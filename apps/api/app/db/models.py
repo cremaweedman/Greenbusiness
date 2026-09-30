@@ -443,3 +443,42 @@ class PlayerVarietyMastery(Base):
         onupdate=func.now(),
     )
 
+
+class MissionPoolAssignment(Base):
+    __tablename__ = "mission_pool_assignments"
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id",
+            "period_type",
+            "period_key",
+            "slot_index",
+            name="uq_mission_pool_period_slot",
+        ),
+        UniqueConstraint(
+            "user_id",
+            "period_type",
+            "period_key",
+            "mission_key",
+            name="uq_mission_pool_period_mission",
+        ),
+        CheckConstraint(
+            "period_type IN ('daily','weekly')",
+            name="ck_mission_pool_period_type",
+        ),
+        CheckConstraint("slot_index >= 0", name="ck_mission_pool_slot_nonnegative"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    period_type: Mapped[str] = mapped_column(String(16), nullable=False)
+    period_key: Mapped[str] = mapped_column(String(32), nullable=False)
+    slot_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    mission_key: Mapped[str] = mapped_column(String(64), nullable=False)
+    config_version: Mapped[str] = mapped_column(String(32), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
