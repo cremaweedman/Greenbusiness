@@ -12,6 +12,7 @@ from app.liveops_service import (
     admin_cash_mutation,
     admin_player_lookup,
     core_funnel,
+    core_loop_dashboard,
     economy_dashboard,
     ledger_entries,
     list_config_versions,
@@ -26,6 +27,7 @@ from app.schemas import (
     AdminPlayerLookupResponse,
     AnalyticsEventResponse,
     CoreFunnelResponse,
+    CoreLoopDashboardResponse,
     EconomyDashboardResponse,
     LiveOpsConfigPublishRequest,
     LiveOpsConfigResponse,
@@ -160,6 +162,14 @@ async def read_core_funnel(
     _admin_actor: AdminActor,
 ) -> CoreFunnelResponse:
     return await core_funnel(session)
+
+
+@admin_router.get("/dashboards/core-loop", response_model=CoreLoopDashboardResponse)
+async def read_core_loop_dashboard(
+    session: DbSession,
+    _admin_actor: AdminActor,
+) -> CoreLoopDashboardResponse:
+    return await core_loop_dashboard(session)
 
 
 @admin_router.get("/analytics/events", response_model=list[AnalyticsEventResponse])

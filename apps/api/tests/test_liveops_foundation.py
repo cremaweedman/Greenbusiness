@@ -14,6 +14,8 @@ def test_liveops_foundation_contract_is_wired():
     assert "admin_cash_mutation" in service
     assert "contract_reward_multipliers" in service
     assert "wallet_distribution" in service
+    assert "core_loop_dashboard" in service
+    assert "errors.api_request_failed" in service
     assert "LiveOpsConfigVersion" in models
     assert "AnalyticsEvent" in models
     assert "/config/publish" in routes
@@ -23,3 +25,4 @@ def test_liveops_foundation_contract_is_wired():
     assert "/cash/grant" in routes
     assert "/cash/revoke" in routes
     assert "/dashboards/economy" in routes
+    assert "/dashboards/core-loop" in routes

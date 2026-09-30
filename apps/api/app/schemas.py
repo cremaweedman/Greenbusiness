@@ -113,6 +113,20 @@ class CoreFunnelResponse(BaseModel):
     steps: list[FunnelStepResponse]
 
 
+class CoreLoopDashboardResponse(BaseModel):
+    tutorial_started: int
+    tutorial_completed: int
+    registered: int
+    planted: int
+    cared: int
+    harvested: int
+    contracts_accepted: int
+    contracts_completed: int
+    upgrades_purchased: int
+    missions_completed: int
+    failed_requests: int
+
+
 class AdminPlayerLookupResponse(BaseModel):
     user_id: uuid.UUID
     email: str

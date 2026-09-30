@@ -24,6 +24,7 @@ from app.schemas import (
     AdminPlayerLookupResponse,
     AnalyticsEventResponse,
     CoreFunnelResponse,
+    CoreLoopDashboardResponse,
     EconomyDashboardResponse,
     FunnelStepResponse,
     LiveOpsConfigPayload,
@@ -343,6 +344,47 @@ async def core_funnel(session: AsyncSession) -> CoreFunnelResponse:
             FunnelStepResponse(event_name=event_name, count=counts.get(event_name, 0))
             for event_name in CORE_FUNNEL_EVENTS
         ]
+    )
+
+
+async def core_loop_dashboard(session: AsyncSession) -> CoreLoopDashboardResponse:
+    event_names = [
+        "auth.user_registered",
+        "production.crop_planted",
+        "production.crop_cared",
+        "production.crop_harvested",
+        "economy.contract_accepted",
+        "economy.contract_completed",
+        "economy.upgrade_purchased",
+        "meta.mission_completed",
+        "errors.api_request_failed",
+    ]
+    rows = (
+        await session.execute(
+            select(AnalyticsEvent.event_name, func.count(AnalyticsEvent.id))
+            .where(AnalyticsEvent.event_name.in_(event_names))
+            .group_by(AnalyticsEvent.event_name)
+        )
+    ).all()
+    counts = {event_name: int(count) for event_name, count in rows}
+    tutorial_started = await session.scalar(
+        select(func.count()).select_from(PlayerProfile).where(PlayerProfile.tutorial_step > 0)
+    )
+    tutorial_completed = await session.scalar(
+        select(func.count()).select_from(PlayerProfile).where(PlayerProfile.tutorial_completed.is_(True))
+    )
+    return CoreLoopDashboardResponse(
+        tutorial_started=int(tutorial_started or 0),
+        tutorial_completed=int(tutorial_completed or 0),
+        registered=counts.get("auth.user_registered", 0),
+        planted=counts.get("production.crop_planted", 0),
+        cared=counts.get("production.crop_cared", 0),
+        harvested=counts.get("production.crop_harvested", 0),
+        contracts_accepted=counts.get("economy.contract_accepted", 0),
+        contracts_completed=counts.get("economy.contract_completed", 0),
+        upgrades_purchased=counts.get("economy.upgrade_purchased", 0),
+        missions_completed=counts.get("meta.mission_completed", 0),
+        failed_requests=counts.get("errors.api_request_failed", 0),
     )
 
 

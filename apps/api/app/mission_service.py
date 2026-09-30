@@ -34,6 +34,7 @@ from app.game_data.mission_catalog import (
 )
 from app.game_data.production_catalog import STARTER_VARIETY_BY_KEY
 from app.game_data.progression_catalog import awarded_skill_points, level_for_xp
+from app.liveops_service import record_analytics_event
 from app.schemas import (
     ContactResponse,
     MissionRewardResponse,
@@ -186,6 +187,18 @@ async def _award_mission_reward(
             "reward_reputation": definition.reward_reputation,
             "transaction_id": str(transaction_id) if transaction_id else None,
         },
+    )
+    await record_analytics_event(
+        session,
+        event_name="meta.mission_completed",
+        user_id=user_id,
+        payload={
+            "mission_key": definition.key,
+            "reward_cash": definition.reward_cash,
+            "reward_xp": definition.reward_xp,
+            "reward_reputation": definition.reward_reputation,
+        },
+        request_id=request_id,
     )
 
 

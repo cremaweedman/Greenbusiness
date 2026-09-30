@@ -413,6 +413,9 @@ Future agents/sessions must update this section after meaningful implementation.
 - audited admin Cash grant/revoke endpoints implemented for dev/test operations;
 - economy dashboard now includes wallet distribution buckets in addition to minted/burned totals;
 - auth, production and economy core actions emit canonical analytics events with payload sanitization;
+- mission completion now emits canonical analytics events;
+- request middleware records best-effort performance analytics and failed-request error analytics without storing credentials;
+- admin core-loop dashboard added for tutorial, production, contract, upgrade, mission and failed-request funnel counts;
 - P5-M1 integration test extended for publish, feature disable, rollback, audit trail, analytics emission, admin Cash mutation, ledger inspection and economy dashboard.
 
 ## In progress
@@ -430,7 +433,7 @@ Start Docker Desktop, then run:
 - `docker compose run --rm web npm run typecheck`
 - `docker compose run --rm web npm test`
 
-Then continue P5-M1 by adding richer tutorial/core-loop analytics breakdowns, error/performance event capture and full Docker E2E for config rollback plus analytics emission.
+Then continue P5-M1 by adding final acceptance hardening, documentation cleanup and full Docker E2E for config rollback plus analytics emission.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
