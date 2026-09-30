@@ -216,7 +216,13 @@ class InventoryItem(Base):
 class CurrencyLedgerEntry(Base):
     __tablename__ = "currency_ledger_entries"
     __table_args__ = (
-        UniqueConstraint("currency", "source", "source_id", name="uq_currency_ledger_source"),
+        UniqueConstraint(
+            "user_id",
+            "currency",
+            "source",
+            "source_id",
+            name="uq_currency_ledger_user_source",
+        ),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

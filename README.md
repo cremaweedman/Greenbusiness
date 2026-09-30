@@ -31,6 +31,7 @@ Open:
 - API liveness: http://localhost:8080/api/health/live
 - API readiness: http://localhost:8080/api/health/ready
 - API v1 ping: http://localhost:8080/api/v1/system/ping
+- Contracts: http://localhost:8080/api/v1/contracts
 - FastAPI docs: http://localhost:8080/api/docs
 
 ## Local web-only development
@@ -80,4 +81,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 and P1-M1 are complete. P2-M1 has been implemented on the production-loop slice and should be validated with the Docker-based backend/frontend/full-stack checks before it is marked complete. P3-M1 has started with versioned starter contracts, a Cash ledger base and contract delivery UI.
+Phase 0 and P1-M1 are complete. P2-M1 has been implemented on the production-loop slice and should be validated with the Docker-based backend/frontend/full-stack checks before it is marked complete. P3-M1 has started with versioned starter contracts, a Cash ledger base, contract delivery UI and integration coverage prepared for Docker/PostgreSQL validation.

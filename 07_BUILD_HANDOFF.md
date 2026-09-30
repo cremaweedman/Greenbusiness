@@ -394,9 +394,12 @@ Future agents/sessions must update this section after meaningful implementation.
 - P3-M1 starter contracts catalog added with quick, standard and premium contract tiers;
 - append-only Cash ledger model and migration added with balance-before/balance-after and config version;
 - contract completion model added with one completion per user/contract;
+- ledger source uniqueness is scoped per user so multiple players can complete the same starter contract safely;
+- `GET /v1/contracts` endpoint added for direct contract availability reads;
 - `/v1/contracts/{contract_key}/complete` endpoint added to consume inventory and grant Cash;
 - `GET /v1/player` now returns Cash balance and contract availability;
-- web UI now shows Cash, contract requirements and delivery actions.
+- web UI now shows Cash, contract requirements and delivery actions;
+- P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence and replay rejection.
 
 ## In progress
 - Docker-based P2-M1 backend/frontend/full-stack E2E validation;
@@ -407,6 +410,7 @@ Start Docker Desktop, then run:
 - `docker compose up --build`
 - `docker compose exec api alembic upgrade head`
 - `docker compose exec api pytest -q`
+- `docker compose exec api pytest apps/api/tests/integration/test_contracts_economy.py -q`
 - `docker compose exec api ruff check .`
 - `docker compose run --rm web npm run lint`
 - `docker compose run --rm web npm run typecheck`

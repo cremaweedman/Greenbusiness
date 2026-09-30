@@ -6,14 +6,22 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.contracts_service import complete_contract
+from app.contracts_service import complete_contract, list_contracts
 from app.dependencies import get_current_user_id, get_db
-from app.schemas import ContractCompletionResponse
+from app.schemas import ContractCompletionResponse, ContractResponse
 
 contracts_router = APIRouter(prefix="/contracts", tags=["contracts"])
 
 DbSession = Annotated[AsyncSession, Depends(get_db)]
 CurrentUserId = Annotated[uuid.UUID, Depends(get_current_user_id)]
+
+
+@contracts_router.get("", response_model=list[ContractResponse])
+async def list_available_contracts(
+    user_id: CurrentUserId,
+    session: DbSession,
+) -> list[ContractResponse]:
+    return await list_contracts(session, user_id=user_id)
 
 
 @contracts_router.post("/{contract_key}/complete", response_model=ContractCompletionResponse)

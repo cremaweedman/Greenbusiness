@@ -33,7 +33,13 @@ def upgrade():
         sa.Column("balance_after", sa.Integer(), nullable=False),
         sa.Column("config_version", sa.String(32), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False),
-        sa.UniqueConstraint("currency", "source", "source_id", name="uq_currency_ledger_source"),
+        sa.UniqueConstraint(
+            "user_id",
+            "currency",
+            "source",
+            "source_id",
+            name="uq_currency_ledger_user_source",
+        ),
     )
     op.create_index("ix_currency_ledger_entries_user_id", "currency_ledger_entries", ["user_id"])
 

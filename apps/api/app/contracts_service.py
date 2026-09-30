@@ -105,6 +105,19 @@ async def contract_responses(
     ]
 
 
+async def list_contracts(session: AsyncSession, *, user_id: uuid.UUID) -> list[ContractResponse]:
+    inventory = await session.scalar(
+        select(InventoryContainer).where(InventoryContainer.user_id == user_id)
+    )
+    if inventory is None:
+        raise AppError("PLAYER_STATE_INCOMPLETE", "Player inventory is missing.", status_code=500)
+    return await contract_responses(
+        session,
+        user_id=user_id,
+        inventory_container_id=inventory.id,
+    )
+
+
 async def _get_inventory(session: AsyncSession, user_id: uuid.UUID) -> InventoryContainer:
     inventory = await session.scalar(
         select(InventoryContainer).where(InventoryContainer.user_id == user_id).with_for_update()
