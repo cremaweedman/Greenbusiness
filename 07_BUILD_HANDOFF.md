@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 1 P1-M1 completed and validated. Repository is intentionally stopped before P2; the core vertical slice has not started.
+**Current state:** P2-M1 production loop is implemented and merged to `main`, pending Docker-based E2E validation. P3-M1 contracts/economy base has started on a new development branch.
 
 ---
 
@@ -189,25 +189,23 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P2-M1 — IMPLEMENTED, PENDING DOCKER E2E VALIDATION**
+**P3-M1 — CONTRACTS/ECONOMY BASE IN PROGRESS**
 
 ## Stop point
-P2-M1 implementation has been committed on `codex/p2-m1-production-loop`.
+P2-M1 implementation has been merged to `main`. Docker-based P2-M1 validation is still pending because Docker Desktop was unavailable locally.
 
 ## Next goal when development resumes
-Validate and review the first playable core vertical slice:
+Continue the first management layer on top of the production loop:
 
 ```text
 Authenticated player
   -> starter room
-    -> choose one of 3 fictional varieties
-      -> plant in an available slot
-        -> server-authoritative timer
-          -> optional care action
-            -> ready state
-              -> harvest
-                -> inventory + quality result
-                  -> persisted state after reload
+    -> harvest inventory
+      -> view versioned starter contracts
+        -> deliver required inventory
+          -> append Cash ledger entry
+            -> update Cash balance
+              -> persist completed contract
 ```
 
 ## Planned P2-M1 deliverables
@@ -355,7 +353,7 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 2 implementation started`
 
 ## Current milestone
-`P2-M1 — IMPLEMENTED, PENDING DOCKER E2E VALIDATION`
+`P3-M1 — CONTRACTS/ECONOMY BASE IN PROGRESS`
 
 ## Completed
 - research and product reconstruction;
@@ -392,10 +390,17 @@ Future agents/sessions must update this section after meaningful implementation.
 - inventory item quantities persist per user inventory container;
 - `GET /v1/player` returns starter varieties, active crop state and inventory;
 - starter room frontend with variety selection, three production slots, timers, care, harvest, XP, tutorial objective and inventory implemented;
-- P2-M1 integration tests added for persistence, early-harvest rejection, care, single harvest, tutorial progress, XP reward and invalid variety.
+- P2-M1 integration tests added for persistence, early-harvest rejection, care, single harvest, tutorial progress, XP reward and invalid variety;
+- P3-M1 starter contracts catalog added with quick, standard and premium contract tiers;
+- append-only Cash ledger model and migration added with balance-before/balance-after and config version;
+- contract completion model added with one completion per user/contract;
+- `/v1/contracts/{contract_key}/complete` endpoint added to consume inventory and grant Cash;
+- `GET /v1/player` now returns Cash balance and contract availability;
+- web UI now shows Cash, contract requirements and delivery actions.
 
 ## In progress
-- Docker-based P2-M1 backend/frontend/full-stack E2E validation.
+- Docker-based P2-M1 backend/frontend/full-stack E2E validation;
+- Docker/PostgreSQL validation of P3-M1 migration and contract completion integration.
 
 ## Next action
 Start Docker Desktop, then run:
@@ -407,7 +412,7 @@ Start Docker Desktop, then run:
 - `docker compose run --rm web npm run typecheck`
 - `docker compose run --rm web npm test`
 
-If all pass, mark P2-M1 complete and open/merge the branch.
+Then manually validate the flow: register/login, plant, harvest, deliver a contract, confirm inventory decreases and Cash increases. If all pass, mark P2-M1 complete and continue hardening P3-M1.
 
 ## Known blockers
 - Docker Desktop was not running in the local Codex environment, so Docker-based P2-M1 E2E could not be executed here;

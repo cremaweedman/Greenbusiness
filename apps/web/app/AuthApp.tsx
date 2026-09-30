@@ -40,6 +40,22 @@ type InventoryItem = {
   quantity: number;
 };
 
+type Contract = {
+  key: string;
+  name: string;
+  tier: "quick" | "standard" | "premium" | string;
+  description: string;
+  requirement: {
+    item_key: string;
+    display_name: string;
+    quantity: number;
+    quality_required: string | null;
+  };
+  cash_reward: number;
+  can_complete: boolean;
+  completed: boolean;
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -54,11 +70,13 @@ type Player = {
   level: number;
   xp: number;
   reputation: number;
+  cash_balance: number;
   tutorial_step: number;
   tutorial_completed: boolean;
   inventory_container_id: string;
   inventory: InventoryItem[];
   starter_varieties: StarterVariety[];
+  contracts: Contract[];
 };
 
 type ApiError = {
@@ -130,6 +148,7 @@ export default function AuthApp() {
   const [restoring, setRestoring] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [actionSlotId, setActionSlotId] = useState<string | null>(null);
+  const [actionContractKey, setActionContractKey] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<ApiStatus>("checking");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -298,6 +317,29 @@ export default function AuthApp() {
     }
   }
 
+  async function completeContract(contract: Contract) {
+    if (!accessToken) return;
+    setActionContractKey(contract.key);
+    setError(null);
+    setNotice(null);
+    try {
+      const result = await requestJson<{
+        cash_balance: number;
+        cash_delta: number;
+        contract: Contract;
+      }>(`/api/v1/contracts/${contract.key}/complete`, accessToken, { method: "POST" });
+      setNotice(
+        `${result.contract.name} delivered. +${result.cash_delta} Cash (balance ${result.cash_balance}).`,
+      );
+      await refreshPlayer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Contract failed.");
+      await refreshPlayer();
+    } finally {
+      setActionContractKey(null);
+    }
+  }
+
   async function logout() {
     setSubmitting(true);
     try {
@@ -334,7 +376,7 @@ export default function AuthApp() {
             <h1>{player.business_name}</h1>
             <p className="muted">
               {player.display_name} - Level {player.level} - XP {player.xp} - Reputation{" "}
-              {player.reputation}
+              {player.reputation} - Cash {player.cash_balance}
             </p>
           </div>
           <button className="secondary compact" onClick={logout} disabled={submitting}>
@@ -382,6 +424,45 @@ export default function AuthApp() {
                     </article>
                   ))
                 )}
+              </div>
+            </div>
+
+            <div>
+              <p className="section-label">Contracts</p>
+              <div className="contract-list">
+                {player.contracts.map((contract) => {
+                  const busy = actionContractKey === contract.key;
+                  return (
+                    <article
+                      key={contract.key}
+                      className={`contract-card ${contract.completed ? "completed" : ""}`}
+                    >
+                      <div>
+                        <span className="contract-tier">{contract.tier}</span>
+                        <strong>{contract.name}</strong>
+                        <p>{contract.description}</p>
+                      </div>
+                      <div className="contract-meta">
+                        <span>
+                          Needs {contract.requirement.quantity}{" "}
+                          {contract.requirement.display_name}
+                        </span>
+                        <strong>+{contract.cash_reward} Cash</strong>
+                      </div>
+                      <button
+                        className="secondary"
+                        onClick={() => void completeContract(contract)}
+                        disabled={busy || contract.completed || !contract.can_complete}
+                      >
+                        {contract.completed
+                          ? "Completed"
+                          : contract.can_complete
+                            ? "Deliver"
+                            : "Needs inventory"}
+                      </button>
+                    </article>
+                  );
+                })}
               </div>
             </div>
           </aside>
@@ -474,7 +555,7 @@ export default function AuthApp() {
 
   return (
     <section className="panel auth">
-      <p className="eyebrow">PHASE 2 - PRODUCTION</p>
+      <p className="eyebrow">PHASE 3 - CONTRACTS</p>
       <h1>GreenBusiness</h1>
       <p className="muted">
         {mode === "register"

@@ -1,0 +1,35 @@
+{
+  "version": "p3-contracts-v1",
+  "contracts": [
+    {
+      "key": "quick-counter-sample",
+      "name": "Counter Sample",
+      "tier": "quick",
+      "description": "A neighborhood wellness counter wants a tiny fictional sample batch.",
+      "item_key": "starter_crop.aurora-drift",
+      "quantity": 2,
+      "quality_required": null,
+      "cash_reward": 45
+    },
+    {
+      "key": "standard-lounge-restock",
+      "name": "Lounge Restock",
+      "tier": "standard",
+      "description": "A licensed lounge needs a fuller restock from your starter inventory.",
+      "item_key": "starter_crop.ember-leaf",
+      "quantity": 3,
+      "quality_required": null,
+      "cash_reward": 85
+    },
+    {
+      "key": "premium-night-market",
+      "name": "Night Market Feature",
+      "tier": "premium",
+      "description": "A premium showcase asks for a larger Moon Sprout delivery.",
+      "item_key": "starter_crop.moon-sprout",
+      "quantity": 4,
+      "quality_required": null,
+      "cash_reward": 140
+    }
+  ]
+}

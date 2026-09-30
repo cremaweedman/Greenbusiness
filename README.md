@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 2 implementation started  
-**Milestone:** P2-M1 — IMPLEMENTED, PENDING DOCKER E2E VALIDATION
+**Phase:** Phase 3 implementation started  
+**Milestone:** P3-M1 — Contracts/economy base in progress; P2-M1 still pending Docker E2E validation
 
 ## Requirements
 
@@ -80,4 +80,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 and P1-M1 are complete. P2-M1 has been implemented on the production-loop slice and should be validated with the Docker-based backend/frontend/full-stack checks before it is marked complete.
+Phase 0 and P1-M1 are complete. P2-M1 has been implemented on the production-loop slice and should be validated with the Docker-based backend/frontend/full-stack checks before it is marked complete. P3-M1 has started with versioned starter contracts, a Cash ledger base and contract delivery UI.

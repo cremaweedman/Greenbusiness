@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.audit import append_audit_event
 from app.config import settings
+from app.contracts_service import cash_balance, contract_responses
 from app.db.models import (
     AuthSession,
     Business,
@@ -259,11 +260,17 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         level=progression.level,
         xp=progression.xp,
         reputation=progression.reputation,
+        cash_balance=await cash_balance(session, user_id),
         tutorial_step=profile.tutorial_step,
         tutorial_completed=profile.tutorial_completed,
         inventory_container_id=inventory.id,
         inventory=await inventory_responses(session, inventory.id),
         starter_varieties=starter_variety_responses(),
+        contracts=await contract_responses(
+            session,
+            user_id=user_id,
+            inventory_container_id=inventory.id,
+        ),
     )
 
 

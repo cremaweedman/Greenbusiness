@@ -53,6 +53,24 @@ class InventoryItemResponse(BaseModel):
     quantity: int
 
 
+class ContractRequirementResponse(BaseModel):
+    item_key: str
+    display_name: str
+    quantity: int
+    quality_required: str | None = None
+
+
+class ContractResponse(BaseModel):
+    key: str
+    name: str
+    tier: str
+    description: str
+    requirement: ContractRequirementResponse
+    cash_reward: int
+    can_complete: bool
+    completed: bool
+
+
 class PlantRequest(BaseModel):
     variety_key: str = Field(min_length=1, max_length=64)
 
@@ -64,6 +82,13 @@ class HarvestResponse(BaseModel):
     yield_quantity: int
     quality: str
     xp_reward: int
+
+
+class ContractCompletionResponse(BaseModel):
+    contract: ContractResponse
+    inventory: list[InventoryItemResponse]
+    cash_balance: int
+    cash_delta: int
 
 
 class PlayerResponse(BaseModel):
@@ -80,8 +105,10 @@ class PlayerResponse(BaseModel):
     level: int
     xp: int
     reputation: int
+    cash_balance: int
     tutorial_step: int
     tutorial_completed: bool
     inventory_container_id: uuid.UUID
     inventory: list[InventoryItemResponse]
     starter_varieties: list[StarterVarietyResponse]
+    contracts: list[ContractResponse]
