@@ -23,6 +23,7 @@ from app.db.models import (
 from app.economy_service import bootstrap_wallet, economy_state
 from app.errors import AppError
 from app.game_data.progression_catalog import SKILL_BRANCHES, next_level_xp, unlocked_keys
+from app.mission_service import bootstrap_missions, meta_state
 from app.production_service import (
     get_active_crops_by_slot,
     inventory_lot_responses,
@@ -88,6 +89,7 @@ async def register_user(
     session.add_all([profile, business, progression, inventory, *skill_branches])
     await session.flush()
     await bootstrap_wallet(session, user.id)
+    await bootstrap_missions(session, user.id)
 
     room = Room(business_id=business.id, slug="starter-growroom", level=1)
     session.add(room)
@@ -260,6 +262,7 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
     ).all()
     crops_by_slot = await get_active_crops_by_slot(session, [slot.id for slot in slots])
     state = await economy_state(session, user_id, now=now)
+    meta = await meta_state(session, user_id, now=now, persist_bootstrap=True)
     skill_models = (
         await session.scalars(
             select(PlayerSkillBranch)
@@ -302,6 +305,12 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         active_contracts=state.active_contracts,
         upgrade_offers=state.upgrade_offers,
         owned_upgrade_keys=state.owned_upgrade_keys,
+        contacts=meta.contacts,
+        missions=meta.missions,
+        daily_mission_keys=meta.daily_mission_keys,
+        weekly_mission_keys=meta.weekly_mission_keys,
+        mastery=meta.mastery,
+        unlocked_cosmetic_keys=meta.unlocked_cosmetic_keys,
     )
 
 

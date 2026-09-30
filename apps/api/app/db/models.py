@@ -372,3 +372,74 @@ class PlayerSkillBranch(Base):
     )
     branch: Mapped[str] = mapped_column(String(32), nullable=False)
     points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
+class PlayerMission(Base):
+    __tablename__ = "player_missions"
+    __table_args__ = (
+        UniqueConstraint("user_id", "mission_key", name="uq_player_mission_user_key"),
+        CheckConstraint("progress >= 0", name="ck_player_missions_progress_nonnegative"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    mission_key: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="locked")
+    progress: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    rewarded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+
+class MissionEventReceipt(Base):
+    __tablename__ = "mission_event_receipts"
+    __table_args__ = (
+        UniqueConstraint("user_id", "event_key", name="uq_mission_event_user_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    event_key: Mapped[str] = mapped_column(String(160), nullable=False)
+    event_type: Mapped[str] = mapped_column(String(48), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class PlayerVarietyMastery(Base):
+    __tablename__ = "player_variety_mastery"
+    __table_args__ = (
+        UniqueConstraint("user_id", "variety_key", name="uq_variety_mastery_user_variety"),
+        CheckConstraint("harvest_quantity >= 0", name="ck_mastery_harvest_nonnegative"),
+        CheckConstraint("contract_quantity >= 0", name="ck_mastery_contract_nonnegative"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    variety_key: Mapped[str] = mapped_column(String(64), nullable=False)
+    harvest_quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    contract_quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+

@@ -24,6 +24,7 @@ from app.errors import AppError
 from app.game_data.economy_catalog import UPGRADE_BY_KEY
 from app.game_data.production_catalog import STARTER_VARIETIES, STARTER_VARIETY_BY_KEY
 from app.game_data.progression_catalog import awarded_skill_points, level_for_xp
+from app.mission_service import record_domain_event
 from app.schemas import (
     CropProductionResponse,
     HarvestResponse,
@@ -240,6 +241,14 @@ async def plant_crop(
     slot.status = "planted"
     session.add(crop)
     await _advance_tutorial(session, user_id, minimum_step=1)
+    await record_domain_event(
+        session,
+        user_id=user_id,
+        event_key=f"plant:{crop.id}",
+        event_type="plant",
+        variety_key=variety.key,
+        request_id=request_id,
+    )
     await append_audit_event(
         session,
         event_type="production.crop_planted",
@@ -281,6 +290,14 @@ async def care_for_crop(
     now = _now()
     crop.cared_at = now
     await _advance_tutorial(session, user_id, minimum_step=2)
+    await record_domain_event(
+        session,
+        user_id=user_id,
+        event_key=f"care:{crop.id}",
+        event_type="care",
+        variety_key=crop.variety_key,
+        request_id=request_id,
+    )
     await append_audit_event(
         session,
         event_type="production.crop_cared",
@@ -393,6 +410,15 @@ async def harvest_crop(
         progression.skill_points_unspent += new_awarded_points - previous_awarded_points
 
     await _advance_tutorial(session, user_id, minimum_step=3, completed=True)
+    await record_domain_event(
+        session,
+        user_id=user_id,
+        event_key=f"harvest:{crop.id}",
+        event_type="harvest",
+        variety_key=variety.key,
+        mastery_quantity=yield_quantity,
+        request_id=request_id,
+    )
 
     await append_audit_event(
         session,

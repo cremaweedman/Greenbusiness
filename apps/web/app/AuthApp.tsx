@@ -102,6 +102,46 @@ type SkillBranch = {
   points: number;
 };
 
+type Contact = {
+  key: string;
+  name: string;
+  role: string;
+  tone: string;
+  intro_message: string;
+};
+
+type MissionReward = {
+  cash: number;
+  xp: number;
+  reputation: number;
+};
+
+type PlayerMission = {
+  key: string;
+  sequence: number;
+  contact_key: string;
+  title: string;
+  description: string;
+  objective_type: string;
+  objective_key: string | null;
+  target: number;
+  progress: number;
+  status: "locked" | "active" | "completed" | string;
+  reward: MissionReward;
+  completed_at: string | null;
+};
+
+type VarietyMastery = {
+  variety_key: string;
+  variety_name: string;
+  harvest_quantity: number;
+  contract_quantity: number;
+  points: number;
+  tier: number;
+  next_threshold: number | null;
+  unlocked_cosmetic_keys: string[];
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -133,6 +173,12 @@ type Player = {
   active_contracts: PlayerContract[];
   upgrade_offers: UpgradeOffer[];
   owned_upgrade_keys: string[];
+  contacts: Contact[];
+  missions: PlayerMission[];
+  daily_mission_keys: string[];
+  weekly_mission_keys: string[];
+  mastery: VarietyMastery[];
+  unlocked_cosmetic_keys: string[];
 };
 
 type ApiError = {
@@ -437,7 +483,7 @@ export default function AuthApp() {
   if (restoring) {
     return (
       <section className="panel" aria-live="polite">
-        <p className="eyebrow">PHASE 3 - ECONOMY</p>
+        <p className="eyebrow">PHASE 4 - MISSIONS</p>
         <h1>GreenBusiness</h1>
         <p className="muted">Restoring secure session...</p>
       </section>
@@ -680,6 +726,104 @@ export default function AuthApp() {
             </div>
           </div>
         </div>
+
+        <section className="phone-panel" aria-label="Phone missions and mastery">
+          <div className="phone-head">
+            <div>
+              <p className="section-label">Phone</p>
+              <h2>Missions & mastery</h2>
+            </div>
+            <div className="pool-chips" aria-label="Mission pools">
+              <span>Daily {player.daily_mission_keys.length}</span>
+              <span>Weekly {player.weekly_mission_keys.length}</span>
+            </div>
+          </div>
+
+          <div className="meta-grid">
+            <div>
+              <p className="section-label">Contacts</p>
+              <div className="contact-list">
+                {player.contacts.map((contact) => (
+                  <article key={contact.key} className="contact-card">
+                    <div>
+                      <strong>{contact.name}</strong>
+                      <span>{contact.role}</span>
+                    </div>
+                    <p>{contact.intro_message}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="section-label">Mission arc</p>
+              <div className="mission-list">
+                {player.missions.map((mission) => {
+                  const percentage =
+                    mission.target > 0 ? Math.min(100, (mission.progress / mission.target) * 100) : 0;
+                  return (
+                    <article key={mission.key} className={`mission-card ${mission.status}`}>
+                      <div className="mission-head">
+                        <span>#{mission.sequence}</span>
+                        <strong>{mission.title}</strong>
+                        <em>{mission.status}</em>
+                      </div>
+                      <p>{mission.description}</p>
+                      <div
+                        className="progress-track"
+                        aria-label={`${mission.progress} of ${mission.target}`}
+                      >
+                        <span style={{ width: `${percentage}%` }} />
+                      </div>
+                      <div className="mission-meta">
+                        <span>
+                          {mission.progress}/{mission.target}
+                        </span>
+                        <span>
+                          +{mission.reward.xp} XP
+                          {mission.reward.cash > 0 ? ` · +${mission.reward.cash} Cash` : ""}
+                          {mission.reward.reputation > 0
+                            ? ` · +${mission.reward.reputation} Rep`
+                            : ""}
+                        </span>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <p className="section-label">Collection mastery</p>
+              <div className="mastery-list">
+                {player.mastery.length === 0 ? (
+                  <p className="empty-state">Harvest a variety to start its mastery track.</p>
+                ) : (
+                  player.mastery.map((item) => (
+                    <article key={item.variety_key} className="mastery-card">
+                      <div className="mission-head">
+                        <strong>{item.variety_name}</strong>
+                        <em>Tier {item.tier}</em>
+                      </div>
+                      <div className="mission-meta">
+                        <span>{item.points} mastery</span>
+                        <span>
+                          {item.next_threshold ? `Next: ${item.next_threshold}` : "Max starter tier"}
+                        </span>
+                      </div>
+                      <p>
+                        Harvest {item.harvest_quantity} · Contracts {item.contract_quantity}
+                      </p>
+                      {item.unlocked_cosmetic_keys.length > 0 && (
+                        <span className="cosmetic-unlock">Cosmetic hook unlocked</span>
+                      )}
+                    </article>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
 
         {(notice || error) && (
           <p className={error ? "error" : "notice"} role={error ? "alert" : "status"}>

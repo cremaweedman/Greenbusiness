@@ -140,6 +140,46 @@ class EconomyActionResponse(BaseModel):
     owned_upgrade_keys: list[str]
 
 
+class ContactResponse(BaseModel):
+    key: str
+    name: str
+    role: str
+    tone: str
+    intro_message: str
+
+
+class MissionRewardResponse(BaseModel):
+    cash: int
+    xp: int
+    reputation: int
+
+
+class PlayerMissionResponse(BaseModel):
+    key: str
+    sequence: int
+    contact_key: str
+    title: str
+    description: str
+    objective_type: str
+    objective_key: str | None
+    target: int
+    progress: int
+    status: str
+    reward: MissionRewardResponse
+    completed_at: datetime | None
+
+
+class VarietyMasteryResponse(BaseModel):
+    variety_key: str
+    variety_name: str
+    harvest_quantity: int
+    contract_quantity: int
+    points: int
+    tier: int
+    next_threshold: int | None
+    unlocked_cosmetic_keys: list[str]
+
+
 class PlayerResponse(BaseModel):
     server_time: datetime
     user_id: uuid.UUID
@@ -171,3 +211,10 @@ class PlayerResponse(BaseModel):
     active_contracts: list[PlayerContractResponse]
     upgrade_offers: list[UpgradeOfferResponse]
     owned_upgrade_keys: list[str]
+    contacts: list[ContactResponse]
+    missions: list[PlayerMissionResponse]
+    daily_mission_keys: list[str]
+    weekly_mission_keys: list[str]
+    mastery: list[VarietyMasteryResponse]
+    unlocked_cosmetic_keys: list[str]
+

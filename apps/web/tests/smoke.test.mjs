@@ -21,6 +21,12 @@ test("production shell exists", () => {
   assert.match(auth, /contract_refresh_at/);
   assert.match(auth, /active_contracts/);
   assert.match(auth, /skill_points_unspent/);
+  assert.match(auth, /contacts/);
+  assert.match(auth, /missions/);
+  assert.match(auth, /daily_mission_keys/);
+  assert.match(auth, /weekly_mission_keys/);
+  assert.match(auth, /mastery/);
+  assert.match(auth, /Missions & mastery/);
   assert.match(auth, /server_time/);
   assert.match(auth, /serverClockOffsetMs/);
   assert.match(auth, /Starter varieties/);

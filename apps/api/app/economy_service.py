@@ -37,6 +37,7 @@ from app.game_data.economy_catalog import (
     UpgradeDefinition,
 )
 from app.game_data.production_catalog import STARTER_VARIETY_BY_KEY
+from app.mission_service import record_domain_event
 from app.production_service import inventory_lot_responses, inventory_responses
 from app.schemas import (
     ContractOfferResponse,
@@ -656,6 +657,16 @@ async def complete_contract(
             reference_id=reference_id,
         )
     )
+    await record_domain_event(
+        session,
+        user_id=user_id,
+        event_key=f"contract_complete:{contract.id}",
+        event_type="contract_complete",
+        cash_earned=contract.reward_cash,
+        item_key=contract.item_key,
+        contract_quantity=contract.required_quantity,
+        request_id=request_id,
+    )
     await append_audit_event(
         session,
         event_type="economy.contract_completed",
@@ -765,6 +776,14 @@ async def purchase_upgrade(
             operation="upgrade.purchase",
             reference_id=upgrade_key,
         )
+    )
+    await record_domain_event(
+        session,
+        user_id=user_id,
+        event_key=f"upgrade_owned:{upgrade_key}",
+        event_type="upgrade_owned",
+        upgrade_key=upgrade_key,
+        request_id=request_id,
     )
     await append_audit_event(
         session,
