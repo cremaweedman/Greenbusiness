@@ -3,18 +3,21 @@
     "key": "aurora-drift",
     "name": "Aurora Drift",
     "grow_seconds": 90,
-    "base_yield": 3
+    "base_yield": 3,
+    "traits": ["fast", "efficient"]
   },
   {
     "key": "ember-leaf",
     "name": "Ember Leaf",
     "grow_seconds": 120,
-    "base_yield": 4
+    "base_yield": 4,
+    "traits": ["stable", "resilient"]
   },
   {
     "key": "moon-sprout",
     "name": "Moon Sprout",
     "grow_seconds": 150,
-    "base_yield": 5
+    "base_yield": 5,
+    "traits": ["premium", "night"]
   }
 ]
