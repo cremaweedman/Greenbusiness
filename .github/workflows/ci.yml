@@ -378,10 +378,10 @@ jobs:
           python - <<'PY'
           import json
           player = json.load(open("/tmp/p4-player-initial.json"))
-          assert len(player["missions"]) == 10
+          assert len(player["missions"]) == 30
           assert player["missions"][0]["status"] == "active"
           assert player["missions"][1]["status"] == "locked"
-          assert len(player["contacts"]) == 2
+          assert len(player["contacts"]) == 4
           assert len(player["daily_mission_keys"]) == 2
           assert len(player["weekly_mission_keys"]) == 3
           PY
