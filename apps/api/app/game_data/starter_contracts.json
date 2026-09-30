@@ -9,7 +9,8 @@
       "item_key": "starter_crop.aurora-drift",
       "quantity": 2,
       "quality_required": null,
-      "cash_reward": 45
+      "cash_reward": 45,
+      "reputation_reward": 1
     },
     {
       "key": "standard-lounge-restock",
@@ -19,7 +20,8 @@
       "item_key": "starter_crop.ember-leaf",
       "quantity": 3,
       "quality_required": null,
-      "cash_reward": 85
+      "cash_reward": 85,
+      "reputation_reward": 2
     },
     {
       "key": "premium-night-market",
@@ -29,7 +31,8 @@
       "item_key": "starter_crop.moon-sprout",
       "quantity": 4,
       "quality_required": null,
-      "cash_reward": 140
+      "cash_reward": 140,
+      "reputation_reward": 3
     }
   ]
 }

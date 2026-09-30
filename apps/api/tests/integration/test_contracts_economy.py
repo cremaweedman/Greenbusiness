@@ -96,7 +96,10 @@ async def test_contract_completion_consumes_inventory_and_writes_cash_ledger(cli
         completion = completed.json()
         assert completion["cash_delta"] == 45
         assert completion["cash_balance"] == 45
+        assert completion["reputation_delta"] == 1
+        assert completion["reputation"] == 1
         assert completion["contract"]["completed"] is True
+        assert completion["contract"]["reputation_reward"] == 1
         assert completion["inventory"][0]["quantity"] == 0
 
         replay = await client.post(f"/v1/contracts/{quick_contract['key']}/complete", headers=auth)
@@ -106,6 +109,8 @@ async def test_contract_completion_consumes_inventory_and_writes_cash_ledger(cli
         final_player = await client.get("/v1/player", headers=auth)
         final_state = final_player.json()
         assert final_state["cash_balance"] == 45
+        assert final_state["reputation"] == 1
+        assert final_state["progression"]["reputation"] == 1
         assert final_state["economy_summary"] == {
             "currency": "cash",
             "balance": 45,
@@ -148,5 +153,6 @@ async def test_contract_completion_consumes_inventory_and_writes_cash_ledger(cli
         assert ledger_entries[0].config_version == "p3-contracts-v1"
         assert len(completions) == 1
         assert completions[0].contract_key == "quick-counter-sample"
+        assert completions[0].reputation_reward == 1
     finally:
         await _cleanup(email)

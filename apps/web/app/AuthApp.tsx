@@ -52,6 +52,7 @@ type Contract = {
     quality_required: string | null;
   };
   cash_reward: number;
+  reputation_reward: number;
   can_complete: boolean;
   completed: boolean;
 };
@@ -403,10 +404,12 @@ export default function AuthApp() {
       const result = await requestJson<{
         cash_balance: number;
         cash_delta: number;
+        reputation: number;
+        reputation_delta: number;
         contract: Contract;
       }>(`/api/v1/contracts/${contract.key}/complete`, accessToken, { method: "POST" });
       setNotice(
-        `${result.contract.name} delivered. +${result.cash_delta} Cash (balance ${result.cash_balance}).`,
+        `${result.contract.name} delivered. +${result.cash_delta} Cash, +${result.reputation_delta} Reputation (rep ${result.reputation}).`,
       );
       await refreshPlayer();
     } catch (err) {
@@ -609,7 +612,9 @@ export default function AuthApp() {
                           Needs {contract.requirement.quantity}{" "}
                           {contract.requirement.display_name}
                         </span>
-                        <strong>+{contract.cash_reward} Cash</strong>
+                        <strong>
+                          +{contract.cash_reward} Cash / +{contract.reputation_reward} Rep
+                        </strong>
                       </div>
                       <button
                         className="secondary"

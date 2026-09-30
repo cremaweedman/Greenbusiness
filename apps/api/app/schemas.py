@@ -67,6 +67,7 @@ class ContractResponse(BaseModel):
     description: str
     requirement: ContractRequirementResponse
     cash_reward: int
+    reputation_reward: int
     can_complete: bool
     completed: bool
 
@@ -89,6 +90,8 @@ class ContractCompletionResponse(BaseModel):
     inventory: list[InventoryItemResponse]
     cash_balance: int
     cash_delta: int
+    reputation: int
+    reputation_delta: int
 
 
 class CurrencyLedgerEntryResponse(BaseModel):

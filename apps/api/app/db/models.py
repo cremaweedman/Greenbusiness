@@ -261,6 +261,7 @@ class ContractCompletion(Base):
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
     quality_required: Mapped[str | None] = mapped_column(String(24))
     cash_reward: Mapped[int] = mapped_column(Integer, nullable=False)
+    reputation_reward: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     config_version: Mapped[str] = mapped_column(String(32), nullable=False)
     completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 

@@ -20,6 +20,7 @@ def test_starter_contracts_have_safe_requirements_and_rewards():
         assert contract.item_key.startswith("starter_crop.")
         assert contract.quantity > 0
         assert contract.cash_reward > 0
+        assert contract.reputation_reward > 0
         assert "weed" not in contract.name.lower()
 
 

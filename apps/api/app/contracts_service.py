@@ -13,6 +13,7 @@ from app.db.models import (
     CurrencyLedgerEntry,
     InventoryContainer,
     InventoryItem,
+    Progression,
 )
 from app.errors import AppError
 from app.game_data.contracts_catalog import (
@@ -144,6 +145,7 @@ def _contract_response(
             quality_required=contract.quality_required,
         ),
         cash_reward=contract.cash_reward + cash_bonus,
+        reputation_reward=contract.reputation_reward,
         can_complete=not completed and owned_quantity >= contract.quantity,
         completed=completed,
     )
@@ -246,6 +248,12 @@ async def complete_contract(
             details={"required": contract.quantity, "available": item.quantity},
         )
 
+    progression = await session.scalar(
+        select(Progression).where(Progression.user_id == user_id).with_for_update()
+    )
+    if progression is None:
+        raise AppError("PLAYER_STATE_INCOMPLETE", "Player progression is missing.", status_code=500)
+
     now = datetime.now(UTC)
     skill_effects = await player_skill_effects(session, user_id=user_id)
     cash_reward = contract.cash_reward + skill_effects.contract_cash_bonus
@@ -260,6 +268,7 @@ async def complete_contract(
         quantity=contract.quantity,
         quality_required=contract.quality_required,
         cash_reward=cash_reward,
+        reputation_reward=contract.reputation_reward,
         config_version=STARTER_CONTRACTS_CATALOG.version,
         completed_at=now,
     )
@@ -273,6 +282,7 @@ async def complete_contract(
         balance_after=balance_after,
         config_version=STARTER_CONTRACTS_CATALOG.version,
     )
+    progression.reputation += contract.reputation_reward
     session.add_all([completion, ledger_entry])
     await append_audit_event(
         session,
@@ -286,6 +296,8 @@ async def complete_contract(
             "item_key": contract.item_key,
             "quantity": contract.quantity,
             "cash_reward": cash_reward,
+            "reputation_reward": contract.reputation_reward,
+            "reputation": progression.reputation,
             "skill_contract_cash_bonus": skill_effects.contract_cash_bonus,
             "balance_after": balance_after,
             "config_version": STARTER_CONTRACTS_CATALOG.version,
@@ -316,4 +328,6 @@ async def complete_contract(
         inventory=updated_inventory,
         cash_balance=balance_after,
         cash_delta=cash_reward,
+        reputation=progression.reputation,
+        reputation_delta=contract.reputation_reward,
     )

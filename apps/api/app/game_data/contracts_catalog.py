@@ -16,6 +16,7 @@ class StarterContract:
     quantity: int
     quality_required: str | None
     cash_reward: int
+    reputation_reward: int
 
 
 @dataclass(frozen=True)
@@ -80,6 +81,7 @@ def load_contracts_catalog(path: Path = CATALOG_PATH) -> ContractsCatalog:
                 quantity=_require_positive_int(raw, "quantity"),
                 quality_required=quality_required,
                 cash_reward=_require_positive_int(raw, "cash_reward"),
+                reputation_reward=_require_positive_int(raw, "reputation_reward"),
             )
         )
 

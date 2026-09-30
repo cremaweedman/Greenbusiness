@@ -420,6 +420,9 @@ Future agents/sessions must update this section after meaningful implementation.
 - web UI now shows skill branches, ranks, effects, allocation and respec;
 - pure skill catalog tests verify branch coverage and effects;
 - P3-M1 skill integration test added for insufficient points, allocation, production effect and respec refund;
+- starter contracts now award Reputation as a separate meta-progression reward;
+- contract completion persists `reputation_reward`, updates `Progression.reputation` transactionally and returns reputation deltas to the UI;
+- web UI now displays contract Cash/Reputation rewards and completion notices include Reputation gained;
 - P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API, economy summary API and replay rejection;
 - P3-M1 upgrade integration test added for insufficient Cash, purchase, duplicate max-level rejection and changed future harvest yield.
 
