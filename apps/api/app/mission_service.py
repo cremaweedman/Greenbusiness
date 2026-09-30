@@ -21,9 +21,9 @@ from app.errors import AppError
 from app.game_data.mission_catalog import (
     CONTACTS,
     MASTERY_COSMETIC_THRESHOLD,
-    MISSIONS,
     MISSION_BY_KEY,
     MISSION_CONFIG_VERSION,
+    MISSIONS,
     cosmetic_key_for_variety,
     daily_pool_keys,
     mastery_tier,
