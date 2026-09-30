@@ -7,7 +7,12 @@ from fastapi import APIRouter, Depends, Header, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_current_user_id, get_db
-from app.economy_service import accept_contract, complete_contract, purchase_upgrade
+from app.economy_service import (
+    accept_contract,
+    accept_offer,
+    complete_contract,
+    purchase_upgrade,
+)
 from app.schemas import EconomyActionResponse, PlayerContractResponse
 
 economy_router = APIRouter(prefix="/economy", tags=["economy"])
@@ -20,8 +25,23 @@ IdempotencyKey = Annotated[
 ]
 
 
+@economy_router.post("/offers/{offer_id}/accept", response_model=PlayerContractResponse)
+async def accept_current_offer(
+    offer_id: str,
+    request: Request,
+    user_id: CurrentUserId,
+    session: DbSession,
+) -> PlayerContractResponse:
+    return await accept_offer(
+        session,
+        user_id=user_id,
+        offer_id=offer_id,
+        request_id=getattr(request.state, "request_id", None),
+    )
+
+
 @economy_router.post("/contracts/{contract_key}/accept", response_model=PlayerContractResponse)
-async def accept(
+async def accept_legacy_contract(
     contract_key: str,
     request: Request,
     user_id: CurrentUserId,
