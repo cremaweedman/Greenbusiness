@@ -138,39 +138,12 @@ class EconomyActionResponse(BaseModel):
     active_contract: PlayerContractResponse | None
     active_contracts: list[PlayerContractResponse]
     owned_upgrade_keys: list[str]
-
-
-class PlayerResponse(BaseModel):
-    server_time: datetime
-    user_id: uuid.UUID
-    email: str
-    display_name: str
-    business_id: uuid.UUID
-    business_name: str
-    room_id: uuid.UUID
-    room_slug: str
-    room_level: int
-    slots: list[ProductionSlotResponse]
-    level: int
-    xp: int
-    next_level_xp: int | None
-    reputation: int
-    skill_points_unspent: int
-    skill_branches: list[SkillBranchResponse]
-    unlocked_keys: list[str]
-    tutorial_step: int
-    tutorial_completed: bool
-    inventory_container_id: uuid.UUID
-    inventory: list[InventoryItemResponse]
-    inventory_lots: list[InventoryLotResponse]
-    starter_varieties: list[StarterVarietyResponse]
-    cash: int
-    contract_offers: list[ContractOfferResponse]
-    contract_refresh_at: datetime
-    active_contract: PlayerContractResponse | None
-    active_contracts: list[PlayerContractResponse]
-    upgrade_offers: list[UpgradeOfferResponse]
-    owned_upgrade_keys: list[str]
+    contacts: list[ContactResponse]
+    missions: list[PlayerMissionResponse]
+    daily_mission_keys: list[str]
+    weekly_mission_keys: list[str]
+    mastery: list[VarietyMasteryResponse]
+    unlocked_cosmetic_keys: list[str]
 
 
 class ContactResponse(BaseModel):
@@ -211,4 +184,37 @@ class VarietyMasteryResponse(BaseModel):
     tier: int
     next_threshold: int | None
     unlocked_cosmetic_keys: list[str]
+
+
+class PlayerResponse(BaseModel):
+    server_time: datetime
+    user_id: uuid.UUID
+    email: str
+    display_name: str
+    business_id: uuid.UUID
+    business_name: str
+    room_id: uuid.UUID
+    room_slug: str
+    room_level: int
+    slots: list[ProductionSlotResponse]
+    level: int
+    xp: int
+    next_level_xp: int | None
+    reputation: int
+    skill_points_unspent: int
+    skill_branches: list[SkillBranchResponse]
+    unlocked_keys: list[str]
+    tutorial_step: int
+    tutorial_completed: bool
+    inventory_container_id: uuid.UUID
+    inventory: list[InventoryItemResponse]
+    inventory_lots: list[InventoryLotResponse]
+    starter_varieties: list[StarterVarietyResponse]
+    cash: int
+    contract_offers: list[ContractOfferResponse]
+    contract_refresh_at: datetime
+    active_contract: PlayerContractResponse | None
+    active_contracts: list[PlayerContractResponse]
+    upgrade_offers: list[UpgradeOfferResponse]
+    owned_upgrade_keys: list[str]
 
