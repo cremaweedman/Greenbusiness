@@ -1,5 +1,5 @@
 {
-  "version": "missions_v1",
+  "version": "missions_v2",
   "contacts": [
     {
       "key": "alex-rowan",
@@ -14,6 +14,20 @@
       "role": "Botanical product designer",
       "tone": "precise",
       "intro_message": "Consistency is a craft. Track what works, then make it repeatable."
+    },
+    {
+      "key": "tessa-ward",
+      "name": "Tessa Ward",
+      "role": "Operations liaison",
+      "tone": "practical",
+      "intro_message": "A growing business needs routines that still work when the room gets busy."
+    },
+    {
+      "key": "jules-mercer",
+      "name": "Jules Mercer",
+      "role": "Brand curator",
+      "tone": "observant",
+      "intro_message": "People remember a business when its work feels consistent before they even see the name."
     }
   ]
 }
