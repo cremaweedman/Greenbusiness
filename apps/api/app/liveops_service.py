@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from hashlib import sha256
 from typing import Any
 
 from sqlalchemy import desc, func, select
@@ -26,6 +27,7 @@ from app.schemas import (
     CoreFunnelResponse,
     CoreLoopDashboardResponse,
     EconomyDashboardResponse,
+    ExperimentAssignmentResponse,
     FunnelStepResponse,
     LiveOpsConfigPayload,
     LiveOpsConfigResponse,
@@ -54,6 +56,8 @@ CORE_FUNNEL_EVENTS = [
     "meta.mission_completed",
 ]
 DEFAULT_CONFIG = LiveOpsConfigPayload(
+    seasons={},
+    featured_traits=[],
     feature_flags={
         "production": True,
         "contracts": True,
@@ -66,6 +70,7 @@ DEFAULT_CONFIG = LiveOpsConfigPayload(
         "upgrades": False,
         "missions": False,
     },
+    content_toggles={},
     contract_multipliers={"default_cash": 1.0, "default_reputation": 1.0},
     event_windows={},
     notification_copy={},
@@ -154,6 +159,48 @@ async def active_config(session: AsyncSession) -> LiveOpsConfigResponse:
     if model is None:
         raise AppError("LIVEOPS_CONFIG_MISSING", "Active LiveOps config is missing.", status_code=500)
     return _config_response(model)
+
+
+def _assignment_variant(
+    *,
+    user_id: uuid.UUID,
+    config_version: int,
+    experiment_key: str,
+    variants: list[str],
+) -> str | None:
+    if not variants:
+        return None
+    digest = sha256(f"{config_version}:{experiment_key}:{user_id}".encode()).hexdigest()
+    return variants[int(digest[:8], 16) % len(variants)]
+
+
+async def experiment_assignments(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    request_id: str | None = None,
+) -> ExperimentAssignmentResponse:
+    config = await active_config(session)
+    assignments = {
+        key: variant
+        for key, variants in config.config.experiments.items()
+        for variant in [_assignment_variant(
+            user_id=user_id,
+            config_version=config.version,
+            experiment_key=key,
+            variants=variants,
+        )]
+        if variant is not None
+    }
+    await record_analytics_event(
+        session,
+        event_name="liveops.experiments_assigned",
+        user_id=user_id,
+        payload={"config_version": config.version, "assignments": assignments},
+        request_id=request_id,
+    )
+    await session.commit()
+    return ExperimentAssignmentResponse(config_version=config.version, assignments=assignments)
 
 
 async def list_config_versions(

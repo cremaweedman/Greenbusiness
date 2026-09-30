@@ -6,7 +6,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.dependencies import get_admin_actor_id, get_db
+from app.dependencies import get_admin_actor_id, get_current_user_id, get_db
 from app.liveops_service import (
     active_config,
     admin_cash_mutation,
@@ -14,6 +14,7 @@ from app.liveops_service import (
     core_funnel,
     core_loop_dashboard,
     economy_dashboard,
+    experiment_assignments,
     ledger_entries,
     list_config_versions,
     publish_config,
@@ -29,6 +30,7 @@ from app.schemas import (
     CoreFunnelResponse,
     CoreLoopDashboardResponse,
     EconomyDashboardResponse,
+    ExperimentAssignmentResponse,
     LiveOpsConfigPublishRequest,
     LiveOpsConfigResponse,
     LiveOpsConfigRollbackRequest,
@@ -39,11 +41,25 @@ liveops_router = APIRouter(prefix="/liveops", tags=["liveops"])
 
 DbSession = Annotated[AsyncSession, Depends(get_db)]
 AdminActor = Annotated[str, Depends(get_admin_actor_id)]
+CurrentUserId = Annotated[uuid.UUID, Depends(get_current_user_id)]
 
 
 @liveops_router.get("/config", response_model=LiveOpsConfigResponse)
 async def get_active_public_config(session: DbSession) -> LiveOpsConfigResponse:
     return await active_config(session)
+
+
+@liveops_router.get("/experiments", response_model=ExperimentAssignmentResponse)
+async def get_experiment_assignments(
+    request: Request,
+    session: DbSession,
+    user_id: CurrentUserId,
+) -> ExperimentAssignmentResponse:
+    return await experiment_assignments(
+        session,
+        user_id=user_id,
+        request_id=getattr(request.state, "request_id", None),
+    )
 
 
 @admin_router.get("/config/active", response_model=LiveOpsConfigResponse)

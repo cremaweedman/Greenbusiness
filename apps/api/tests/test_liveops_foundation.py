@@ -13,6 +13,7 @@ def test_liveops_foundation_contract_is_wired():
     assert "ANALYTICS_SECRET_KEYS" in service
     assert "admin_cash_mutation" in service
     assert "contract_reward_multipliers" in service
+    assert "experiment_assignments" in service
     assert "wallet_distribution" in service
     assert "core_loop_dashboard" in service
     assert "errors.api_request_failed" in service
@@ -21,6 +22,7 @@ def test_liveops_foundation_contract_is_wired():
     assert "/config/publish" in routes
     assert "/config/rollback" in routes
     assert "/config/versions" in routes
+    assert "/experiments" in routes
     assert "/ledger" in routes
     assert "/cash/grant" in routes
     assert "/cash/revoke" in routes

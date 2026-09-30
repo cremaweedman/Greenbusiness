@@ -24,8 +24,11 @@ class TokenResponse(BaseModel):
 
 
 class LiveOpsConfigPayload(BaseModel):
+    seasons: dict[str, dict[str, str]] = Field(default_factory=dict)
+    featured_traits: list[str] = Field(default_factory=list)
     feature_flags: dict[str, bool] = Field(default_factory=dict)
     kill_switches: dict[str, bool] = Field(default_factory=dict)
+    content_toggles: dict[str, bool] = Field(default_factory=dict)
     contract_multipliers: dict[str, float] = Field(default_factory=dict)
     event_windows: dict[str, dict[str, str]] = Field(default_factory=dict)
     notification_copy: dict[str, str] = Field(default_factory=dict)
@@ -46,6 +49,11 @@ class LiveOpsConfigPublishRequest(BaseModel):
 
 class LiveOpsConfigRollbackRequest(BaseModel):
     source_version: int = Field(ge=1)
+
+
+class ExperimentAssignmentResponse(BaseModel):
+    config_version: int
+    assignments: dict[str, str]
 
 
 class AdminCashMutationRequest(BaseModel):

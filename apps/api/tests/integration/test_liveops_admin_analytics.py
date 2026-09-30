@@ -43,6 +43,8 @@ async def _register(client: AsyncClient, email: str) -> str:
 def _config(*, production_enabled: bool) -> dict[str, object]:
     return {
         "config": {
+            "seasons": {},
+            "featured_traits": ["fast"] if production_enabled else [],
             "feature_flags": {
                 "production": production_enabled,
                 "contracts": True,
@@ -55,10 +57,11 @@ def _config(*, production_enabled: bool) -> dict[str, object]:
                 "upgrades": False,
                 "missions": False,
             },
+            "content_toggles": {"missions_v2": True},
             "contract_multipliers": {"default_cash": 1.0},
             "event_windows": {},
             "notification_copy": {},
-            "experiments": {},
+            "experiments": {"starter_offer": ["control", "boosted"]},
         }
     }
 
@@ -99,6 +102,10 @@ async def test_liveops_publish_disable_and_rollback_are_audited(client: AsyncCli
             json=_config(production_enabled=True),
         )
         assert enabled.status_code == 200
+
+        assignments = await client.get("/v1/liveops/experiments", headers=auth)
+        assert assignments.status_code == 200
+        assert assignments.json()["assignments"]["starter_offer"] in {"control", "boosted"}
 
         rollback = await client.post(
             "/v1/admin/config/rollback",

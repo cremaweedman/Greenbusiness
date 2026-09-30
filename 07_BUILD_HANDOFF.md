@@ -403,6 +403,8 @@ Future agents/sessions must update this section after meaningful implementation.
 - P5-M1 LiveOps/admin foundation started;
 - migration `0009_liveops_admin_analytics` adds immutable LiveOps config versions and analytics events;
 - active LiveOps config is exposed through `/v1/liveops/config`;
+- remote config payload now includes seasons, featured traits, content toggles, event windows, notification copy, kill switches and experiments;
+- deterministic authenticated experiment assignments are exposed through `/v1/liveops/experiments`;
 - admin access is separated from player JWTs through `X-Admin-Key`;
 - admin endpoints added for active config, config publish, config rollback, player lookup, economy dashboard, core-funnel dashboard and recent analytics events;
 - published config versions are not mutated; rollback creates a new active version restored from an earlier version;

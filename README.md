@@ -32,6 +32,7 @@ Open:
 - API readiness: http://localhost:8080/api/health/ready
 - API v1 ping: http://localhost:8080/api/v1/system/ping
 - LiveOps config: http://localhost:8080/api/v1/liveops/config
+- LiveOps experiment assignments: http://localhost:8080/api/v1/liveops/experiments
 - Admin active config: http://localhost:8080/api/v1/admin/config/active
 - Admin config history: http://localhost:8080/api/v1/admin/config/versions
 - Admin ledger inspection: http://localhost:8080/api/v1/admin/ledger
@@ -85,4 +86,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 through P4-M2 are complete and validated in CI. P5-M1 has started with versioned LiveOps config, admin-only publish/rollback, remote contract reward multipliers, feature gates, analytics-event persistence, audited admin Cash grants/revokes, ledger inspection and first operational dashboard endpoints. Continue from `07_BUILD_HANDOFF.md`.
+Phase 0 through P4-M2 are complete and validated in CI. P5-M1 has started with versioned LiveOps config, admin-only publish/rollback, remote contract reward multipliers, deterministic experiment assignments, feature gates, analytics-event persistence, audited admin Cash grants/revokes, ledger inspection and first operational dashboard endpoints. Continue from `07_BUILD_HANDOFF.md`.

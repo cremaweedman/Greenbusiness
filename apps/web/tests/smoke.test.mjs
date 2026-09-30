@@ -42,6 +42,7 @@ test("liveops admin API surfaces are wired", () => {
   const adminRoutes = fs.readFileSync("../api/app/admin_routes.py", "utf8");
   assert.match(api, /admin_router/);
   assert.match(api, /liveops_router/);
+  assert.match(adminRoutes, /\/experiments/);
   assert.match(adminRoutes, /\/config\/publish/);
   assert.match(adminRoutes, /\/config\/rollback/);
   assert.match(adminRoutes, /\/config\/versions/);
