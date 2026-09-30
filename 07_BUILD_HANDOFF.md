@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** P3-M2 contracts/progression expansion is completed and validated. P4-M1 is ready but not started.
+**Current state:** P4-M1 mission engine/mastery slice is completed and validated. P4-M2 narrative and collection expansion is ready but not started.
 
 ---
 
@@ -189,48 +189,49 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P4-M1 — Mission Engine & Mastery Slice — READY, NOT STARTED**
+**P4-M2 — Narrative & Collection Expansion — READY, NOT STARTED**
 
 ## Goal
-Add the first repeatable meta-progression layer above production/contracts without expanding into LiveOps or social systems yet.
+Expand the validated P4-M1 meta systems into enough authored content and collection depth to sustain roughly one week of coherent early-game progression without introducing Phase 5 LiveOps/admin systems yet.
 
 ## Planned deliverables
-- data-driven mission definition format;
-- mission engine with objective types for plant, care, harvest, contract completion, Cash earned and upgrade ownership;
-- mission progress updated from authoritative domain events/actions;
-- 10–12 coherent starter missions forming the first short narrative arc;
-- 2 original NPC/contact identities with inbox/phone-style presentation;
-- variety mastery counters based on harvest quantity / contract use;
-- mastery thresholds and first cosmetic-only reward hooks;
-- daily and weekly mission-pool foundation;
-- catch-up-safe mission rules: absence never destroys progress;
-- player state/API/UI surfaces for missions, contacts and mastery;
-- PostgreSQL integration tests for mission idempotency and persistence;
-- full Docker E2E for production -> mission progress -> reward/mastery.
+- expand starter mission library from 10 to the MVP-target range of 25–40 missions;
+- split missions into 3–4 short original narrative arcs using existing and additional original contacts;
+- preserve data-driven/versioned mission definitions;
+- expand collection/mastery presentation across all starter varieties;
+- add cosmetic-only mastery rewards at defined thresholds;
+- add persisted daily/weekly mission-instance assignments derived from the deterministic pool foundation;
+- add completion/history view for finished narrative missions;
+- add catch-up-safe rules so missed days never delete permanent narrative progress;
+- add inbox/message history presentation using original NPC/contact content;
+- add progression pacing checks so mission rewards do not destabilize the existing Cash/XP economy;
+- add PostgreSQL integration tests for mission-instance persistence and reward uniqueness;
+- add full Docker E2E covering multi-mission progression across reconnects.
 
-## Explicitly excluded from P4-M1
-- full 25–40 mission MVP library;
+## Explicitly excluded from P4-M2
+- seasonal LiveOps scheduler;
+- remote-config admin UI;
 - employees;
 - clubs;
 - monetization;
-- seasonal LiveOps scheduling;
+- push notifications;
 - open chat;
 - P2P marketplace.
 
 ---
 
-# 9. P4-M1 acceptance criteria
+# 9. P4-M2 acceptance criteria
 
-Do not mark P4-M1 complete until:
-- mission definitions are data-driven and versioned;
-- mission progress is server-authoritative and persists across sessions;
-- replayed/idempotent domain actions cannot duplicate mission rewards;
-- at least 10 starter missions can be completed in a coherent sequence;
-- mission rewards use existing ledger/progression primitives where economic;
-- variety mastery increments from authoritative harvest/contract events;
-- mastery cannot be incremented by client-only calls;
-- NPC/contact content is original and independent of Weeds IP;
-- daily/weekly mission pool selection is deterministic/versioned;
+Do not mark P4-M2 complete until:
+- total authored mission library is within 25–40 missions;
+- at least 3 coherent original narrative arcs are playable;
+- narrative/contact content remains independent of Weeds IP;
+- permanent story missions survive reloads and absence without regression;
+- daily/weekly mission instances persist deterministically for their period;
+- cosmetic mastery rewards remain non-economic;
+- mission rewards remain ledger-backed when Cash is involved;
+- reward replay/idempotency tests remain green;
+- early-game mission reward pacing does not create an obvious infinite-money loop;
 - backend/frontend/full-stack CI is green.
 
 **Current status:** ready, not started.
@@ -338,7 +339,7 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 4 — Missions, Narrative & Collection Meta`
 
 ## Current milestone
-`P4-M1 — Mission Engine & Mastery Slice — READY, NOT STARTED`
+`P4-M2 — Narrative & Collection Expansion — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -369,13 +370,27 @@ Future agents/sessions must update this section after meaningful implementation.
 - P3-M2 frontend exposes offer refresh, locks, multiple active contracts, reputation/level/skill points and upgrade tiers;
 - integration tests cover deterministic rotation, active-contract limit, quality lots and progression;
 - full Docker E2E covers 4-offer board, active-contract limit and persisted progression state;
-- final P3-M2 branch CI is green: backend, frontend and compose-smoke.
+- final P3-M2 branch CI is green: backend, frontend and compose-smoke;
+- P4-M1 versioned mission engine implemented;
+- 10 sequential starter missions implemented with plant/care/harvest/contract/Cash/upgrade objectives;
+- mission progress is driven only by authoritative production/economy actions;
+- mission event receipts prevent duplicate progress and rewards;
+- mission Cash rewards reuse the append-only economy ledger;
+- mission XP/reputation rewards reuse the existing progression model;
+- original contacts Alex Rowan and Mira Vale implemented with phone-style presentation;
+- deterministic daily (2) and weekly (3) mission-pool foundations implemented;
+- variety mastery implemented from authoritative harvest quantity and contract consumption;
+- cosmetic-only mastery hooks implemented at versioned thresholds;
+- player state/API/frontend now expose contacts, missions, pools, mastery and cosmetic hooks;
+- integration tests cover persistence, reward idempotency and mastery replay protection;
+- full Docker E2E covers plant -> care -> harvest -> mission rewards -> mastery -> replay protection;
+- final P4-M1 branch CI is green: backend, frontend and compose-smoke.
 
 ## In progress
 - none.
 
 ## Next action
-Begin P4-M1 exactly as specified above when development resumes. Do not start Phase 5 or later systems early.
+Begin P4-M2 exactly as specified above when development resumes. Do not start Phase 5 or later systems early.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
