@@ -56,6 +56,18 @@ type Contract = {
   completed: boolean;
 };
 
+type CashLedgerEntry = {
+  id: string;
+  currency: string;
+  source: string;
+  source_id: string;
+  amount: number;
+  balance_before: number;
+  balance_after: number;
+  config_version: string;
+  created_at: string;
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -77,6 +89,7 @@ type Player = {
   inventory: InventoryItem[];
   starter_varieties: StarterVariety[];
   contracts: Contract[];
+  cash_ledger: CashLedgerEntry[];
 };
 
 type ApiError = {
@@ -463,6 +476,24 @@ export default function AuthApp() {
                     </article>
                   );
                 })}
+              </div>
+            </div>
+
+            <div>
+              <p className="section-label">Cash ledger</p>
+              <div className="ledger-list">
+                {player.cash_ledger.length === 0 ? (
+                  <p className="empty-state">No Cash movements yet.</p>
+                ) : (
+                  player.cash_ledger.map((entry) => (
+                    <article key={entry.id} className="ledger-item">
+                      <span>{entry.source.replace("_", " ")}</span>
+                      <strong>
+                        +{entry.amount} {"->"} {entry.balance_after}
+                      </strong>
+                    </article>
+                  ))
+                )}
               </div>
             </div>
           </aside>

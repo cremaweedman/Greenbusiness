@@ -397,9 +397,10 @@ Future agents/sessions must update this section after meaningful implementation.
 - ledger source uniqueness is scoped per user so multiple players can complete the same starter contract safely;
 - `GET /v1/contracts` endpoint added for direct contract availability reads;
 - `/v1/contracts/{contract_key}/complete` endpoint added to consume inventory and grant Cash;
-- `GET /v1/player` now returns Cash balance and contract availability;
-- web UI now shows Cash, contract requirements and delivery actions;
-- P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence and replay rejection.
+- `GET /v1/economy/cash-ledger` endpoint added for player-visible Cash history;
+- `GET /v1/player` now returns Cash balance, Cash ledger entries and contract availability;
+- web UI now shows Cash, contract requirements, delivery actions and recent Cash ledger entries;
+- P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API and replay rejection.
 
 ## In progress
 - Docker-based P2-M1 backend/frontend/full-stack E2E validation;

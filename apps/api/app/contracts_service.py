@@ -26,6 +26,7 @@ from app.schemas import (
     ContractCompletionResponse,
     ContractRequirementResponse,
     ContractResponse,
+    CurrencyLedgerEntryResponse,
     InventoryItemResponse,
 )
 
@@ -57,6 +58,37 @@ async def cash_balance(session: AsyncSession, user_id: uuid.UUID) -> int:
         .limit(1)
     )
     return entry.balance_after if entry is not None else 0
+
+
+async def cash_ledger_entries(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    limit: int = 10,
+) -> list[CurrencyLedgerEntryResponse]:
+    entries = (
+        await session.scalars(
+            select(CurrencyLedgerEntry)
+            .where(CurrencyLedgerEntry.user_id == user_id)
+            .where(CurrencyLedgerEntry.currency == CASH_CURRENCY)
+            .order_by(desc(CurrencyLedgerEntry.created_at), desc(CurrencyLedgerEntry.id))
+            .limit(limit)
+        )
+    ).all()
+    return [
+        CurrencyLedgerEntryResponse(
+            id=entry.id,
+            currency=entry.currency,
+            source=entry.source,
+            source_id=entry.source_id,
+            amount=entry.amount,
+            balance_before=entry.balance_before,
+            balance_after=entry.balance_after,
+            config_version=entry.config_version,
+            created_at=entry.created_at,
+        )
+        for entry in entries
+    ]
 
 
 async def _completed_contract_keys(session: AsyncSession, user_id: uuid.UUID) -> set[str]:

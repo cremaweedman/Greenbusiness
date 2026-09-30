@@ -106,8 +106,14 @@ async def test_contract_completion_consumes_inventory_and_writes_cash_ledger(cli
         final_player = await client.get("/v1/player", headers=auth)
         final_state = final_player.json()
         assert final_state["cash_balance"] == 45
+        assert final_state["cash_ledger"][0]["amount"] == 45
+        assert final_state["cash_ledger"][0]["balance_after"] == 45
         assert final_state["contracts"][0]["completed"] is True
         assert final_state["contracts"][0]["can_complete"] is False
+
+        cash_ledger = await client.get("/v1/economy/cash-ledger", headers=auth)
+        assert cash_ledger.status_code == 200
+        assert cash_ledger.json()[0]["source_id"] == quick_contract["key"]
 
         async with SessionLocal() as session:
             user = await session.scalar(select(User).where(User.email == email))

@@ -20,6 +20,8 @@ test("production shell exists", () => {
   assert.match(auth, /Starter varieties/);
   assert.match(auth, /Contracts/);
   assert.match(auth, /cash_balance/);
+  assert.match(auth, /cash_ledger/);
+  assert.match(auth, /Cash ledger/);
   assert.match(auth, /room-scene/);
   assert.match(auth, /API offline/);
   assert.match(auth, /credentials: "include"/);

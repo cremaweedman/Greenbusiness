@@ -91,6 +91,18 @@ class ContractCompletionResponse(BaseModel):
     cash_delta: int
 
 
+class CurrencyLedgerEntryResponse(BaseModel):
+    id: uuid.UUID
+    currency: str
+    source: str
+    source_id: str
+    amount: int
+    balance_before: int
+    balance_after: int
+    config_version: str
+    created_at: datetime
+
+
 class PlayerResponse(BaseModel):
     server_time: datetime
     user_id: uuid.UUID
@@ -112,3 +124,4 @@ class PlayerResponse(BaseModel):
     inventory: list[InventoryItemResponse]
     starter_varieties: list[StarterVarietyResponse]
     contracts: list[ContractResponse]
+    cash_ledger: list[CurrencyLedgerEntryResponse]

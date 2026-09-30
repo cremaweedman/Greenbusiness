@@ -219,7 +219,7 @@ input:focus {
   font-weight: 800;
 }
 
-.variety-list, .inventory-list, .slot-list, .contract-list {
+.variety-list, .inventory-list, .slot-list, .contract-list, .ledger-list {
   display: grid;
   gap: 10px;
 }
@@ -319,6 +319,28 @@ input:focus {
 }
 
 .contract-meta strong {
+  color: #e0ba78;
+}
+
+.ledger-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 38px;
+  padding: 9px 10px;
+  border: 1px solid #2f4036;
+  border-radius: 8px;
+  background: #0a100d;
+  color: #94a49a;
+  font-size: 0.82rem;
+}
+
+.ledger-item span {
+  text-transform: capitalize;
+}
+
+.ledger-item strong {
   color: #e0ba78;
 }
 
