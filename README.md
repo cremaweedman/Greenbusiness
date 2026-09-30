@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 4 complete — Phase 5 ready  
-**Milestone:** P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — READY, NOT STARTED
+**Phase:** Phase 5 implementation started
+**Milestone:** P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — IN PROGRESS
 
 ## Requirements
 
@@ -31,6 +31,9 @@ Open:
 - API liveness: http://localhost:8080/api/health/live
 - API readiness: http://localhost:8080/api/health/ready
 - API v1 ping: http://localhost:8080/api/v1/system/ping
+- LiveOps config: http://localhost:8080/api/v1/liveops/config
+- Admin active config: http://localhost:8080/api/v1/admin/config/active
+- Admin economy dashboard: http://localhost:8080/api/v1/admin/dashboards/economy
 - FastAPI docs: http://localhost:8080/api/docs
 
 ## Local web-only development
@@ -80,4 +83,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 through P4-M2 are complete and validated in CI. The repository is intentionally stopped before Phase 5. Resume from `07_BUILD_HANDOFF.md` when ready to begin P5-M1.
+Phase 0 through P4-M2 are complete and validated in CI. P5-M1 has started with versioned LiveOps config, admin-only publish/rollback, feature gates, analytics-event persistence and first operational dashboard endpoints. Continue from `07_BUILD_HANDOFF.md`.

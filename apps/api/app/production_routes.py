@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_current_user_id, get_db
+from app.liveops_service import require_feature_enabled
 from app.production_service import care_for_crop, harvest_crop, plant_crop
 from app.schemas import HarvestResponse, PlantRequest, ProductionSlotResponse
 
@@ -24,6 +25,7 @@ async def plant(
     user_id: CurrentUserId,
     session: DbSession,
 ) -> ProductionSlotResponse:
+    await require_feature_enabled(session, "production")
     return await plant_crop(
         session,
         user_id=user_id,
@@ -40,6 +42,7 @@ async def care(
     user_id: CurrentUserId,
     session: DbSession,
 ) -> ProductionSlotResponse:
+    await require_feature_enabled(session, "production")
     return await care_for_crop(
         session,
         user_id=user_id,
@@ -55,6 +58,7 @@ async def harvest(
     user_id: CurrentUserId,
     session: DbSession,
 ) -> HarvestResponse:
+    await require_feature_enabled(session, "production")
     return await harvest_crop(
         session,
         user_id=user_id,

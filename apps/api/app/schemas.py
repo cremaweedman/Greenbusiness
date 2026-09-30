@@ -23,6 +23,72 @@ class TokenResponse(BaseModel):
     expires_in: int
 
 
+class LiveOpsConfigPayload(BaseModel):
+    feature_flags: dict[str, bool] = Field(default_factory=dict)
+    kill_switches: dict[str, bool] = Field(default_factory=dict)
+    contract_multipliers: dict[str, float] = Field(default_factory=dict)
+    event_windows: dict[str, dict[str, str]] = Field(default_factory=dict)
+    notification_copy: dict[str, str] = Field(default_factory=dict)
+    experiments: dict[str, list[str]] = Field(default_factory=dict)
+
+
+class LiveOpsConfigResponse(BaseModel):
+    version: int
+    config: LiveOpsConfigPayload
+    created_by: str
+    restored_from_version: int | None
+    created_at: datetime
+
+
+class LiveOpsConfigPublishRequest(BaseModel):
+    config: LiveOpsConfigPayload
+
+
+class LiveOpsConfigRollbackRequest(BaseModel):
+    source_version: int = Field(ge=1)
+
+
+class AnalyticsEventResponse(BaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID | None
+    event_name: str
+    category: str
+    payload: dict[str, object]
+    request_id: str | None
+    created_at: datetime
+
+
+class EconomyDashboardResponse(BaseModel):
+    currency: str
+    minted: int
+    burned: int
+    wallet_count: int
+    total_wallet_cash: int
+    min_wallet_cash: int
+    max_wallet_cash: int
+
+
+class FunnelStepResponse(BaseModel):
+    event_name: str
+    count: int
+
+
+class CoreFunnelResponse(BaseModel):
+    steps: list[FunnelStepResponse]
+
+
+class AdminPlayerLookupResponse(BaseModel):
+    user_id: uuid.UUID
+    email: str
+    status: str
+    display_name: str | None
+    cash: int | None
+    level: int | None
+    reputation: int | None
+    tutorial_step: int | None
+    tutorial_completed: bool | None
+
+
 class StarterVarietyResponse(BaseModel):
     key: str
     name: str

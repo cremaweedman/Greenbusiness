@@ -1,0 +1,110 @@
+from __future__ import annotations
+
+import uuid
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Query, Request
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.dependencies import get_admin_actor_id, get_db
+from app.liveops_service import (
+    active_config,
+    admin_player_lookup,
+    core_funnel,
+    economy_dashboard,
+    publish_config,
+    recent_analytics_events,
+    rollback_config,
+)
+from app.schemas import (
+    AdminPlayerLookupResponse,
+    AnalyticsEventResponse,
+    CoreFunnelResponse,
+    EconomyDashboardResponse,
+    LiveOpsConfigPublishRequest,
+    LiveOpsConfigResponse,
+    LiveOpsConfigRollbackRequest,
+)
+
+admin_router = APIRouter(prefix="/admin", tags=["admin"])
+liveops_router = APIRouter(prefix="/liveops", tags=["liveops"])
+
+DbSession = Annotated[AsyncSession, Depends(get_db)]
+AdminActor = Annotated[str, Depends(get_admin_actor_id)]
+
+
+@liveops_router.get("/config", response_model=LiveOpsConfigResponse)
+async def get_active_public_config(session: DbSession) -> LiveOpsConfigResponse:
+    return await active_config(session)
+
+
+@admin_router.get("/config/active", response_model=LiveOpsConfigResponse)
+async def get_active_admin_config(
+    session: DbSession,
+    _admin_actor: AdminActor,
+) -> LiveOpsConfigResponse:
+    return await active_config(session)
+
+
+@admin_router.post("/config/publish", response_model=LiveOpsConfigResponse)
+async def publish_admin_config(
+    body: LiveOpsConfigPublishRequest,
+    request: Request,
+    session: DbSession,
+    admin_actor: AdminActor,
+) -> LiveOpsConfigResponse:
+    return await publish_config(
+        session,
+        config=body.config,
+        admin_actor_id=admin_actor,
+        request_id=getattr(request.state, "request_id", None),
+    )
+
+
+@admin_router.post("/config/rollback", response_model=LiveOpsConfigResponse)
+async def rollback_admin_config(
+    body: LiveOpsConfigRollbackRequest,
+    request: Request,
+    session: DbSession,
+    admin_actor: AdminActor,
+) -> LiveOpsConfigResponse:
+    return await rollback_config(
+        session,
+        source_version=body.source_version,
+        admin_actor_id=admin_actor,
+        request_id=getattr(request.state, "request_id", None),
+    )
+
+
+@admin_router.get("/players/{user_id}", response_model=AdminPlayerLookupResponse)
+async def lookup_player(
+    user_id: uuid.UUID,
+    session: DbSession,
+    _admin_actor: AdminActor,
+) -> AdminPlayerLookupResponse:
+    return await admin_player_lookup(session, user_id=user_id)
+
+
+@admin_router.get("/dashboards/economy", response_model=EconomyDashboardResponse)
+async def read_economy_dashboard(
+    session: DbSession,
+    _admin_actor: AdminActor,
+) -> EconomyDashboardResponse:
+    return await economy_dashboard(session)
+
+
+@admin_router.get("/dashboards/core-funnel", response_model=CoreFunnelResponse)
+async def read_core_funnel(
+    session: DbSession,
+    _admin_actor: AdminActor,
+) -> CoreFunnelResponse:
+    return await core_funnel(session)
+
+
+@admin_router.get("/analytics/events", response_model=list[AnalyticsEventResponse])
+async def read_recent_analytics_events(
+    session: DbSession,
+    _admin_actor: AdminActor,
+    limit: int = Query(default=50, ge=1, le=200),
+) -> list[AnalyticsEventResponse]:
+    return await recent_analytics_events(session, limit=limit)

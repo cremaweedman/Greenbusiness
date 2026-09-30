@@ -24,6 +24,7 @@ from app.errors import AppError
 from app.game_data.economy_catalog import UPGRADE_BY_KEY
 from app.game_data.production_catalog import STARTER_VARIETIES, STARTER_VARIETY_BY_KEY
 from app.game_data.progression_catalog import awarded_skill_points, level_for_xp
+from app.liveops_service import record_analytics_event
 from app.mission_service import record_domain_event
 from app.schemas import (
     CropProductionResponse,
@@ -259,6 +260,13 @@ async def plant_crop(
         request_id=request_id,
         payload={"variety_key": variety.key, "ready_at": crop.ready_at.isoformat()},
     )
+    await record_analytics_event(
+        session,
+        event_name="production.crop_planted",
+        user_id=user_id,
+        payload={"slot_index": slot.slot_index, "variety_key": variety.key},
+        request_id=request_id,
+    )
     try:
         await session.commit()
     except IntegrityError as exc:
@@ -305,6 +313,13 @@ async def care_for_crop(
         actor_id=str(user_id),
         target_type="crop_production",
         target_id=str(crop.id),
+        request_id=request_id,
+    )
+    await record_analytics_event(
+        session,
+        event_name="production.crop_cared",
+        user_id=user_id,
+        payload={"crop_id": crop.id},
         request_id=request_id,
     )
     await session.commit()
@@ -436,6 +451,19 @@ async def harvest_crop(
             "upgrade_bonus": upgrade_bonus,
             "level": progression.level,
         },
+    )
+    await record_analytics_event(
+        session,
+        event_name="production.crop_harvested",
+        user_id=user_id,
+        payload={
+            "variety_key": variety.key,
+            "yield_quantity": yield_quantity,
+            "quality": quality,
+            "xp_reward": xp_reward,
+            "level": progression.level,
+        },
+        request_id=request_id,
     )
     await session.commit()
 

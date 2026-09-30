@@ -343,7 +343,7 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 5 — LiveOps, Remote Config, Analytics & Admin`
 
 ## Current milestone
-`P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — READY, NOT STARTED`
+`P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — IN PROGRESS`
 
 ## Completed
 - research and product reconstruction;
@@ -400,12 +400,32 @@ Future agents/sessions must update this section after meaningful implementation.
 - PostgreSQL tests cover mission-pool persistence, mastery thresholds and replay protection;
 - frontend exposes narrative arcs, completion history/inbox messages and mastery cosmetic counts;
 - final P4-M2 branch CI is green: backend, frontend and compose-smoke.
+- P5-M1 LiveOps/admin foundation started;
+- migration `0009_liveops_admin_analytics` adds immutable LiveOps config versions and analytics events;
+- active LiveOps config is exposed through `/v1/liveops/config`;
+- admin access is separated from player JWTs through `X-Admin-Key`;
+- admin endpoints added for active config, config publish, config rollback, player lookup, economy dashboard, core-funnel dashboard and recent analytics events;
+- published config versions are not mutated; rollback creates a new active version restored from an earlier version;
+- production, contract and upgrade actions are guarded by LiveOps feature flags/kill switches;
+- auth, production and economy core actions emit canonical analytics events with payload sanitization;
+- P5-M1 integration test added for publish, feature disable, rollback, audit trail and analytics emission.
 
 ## In progress
-- none.
+- Docker/PostgreSQL validation of P5-M1 migration and admin/config/analytics integration;
+- continue P5-M1 toward full acceptance criteria.
 
 ## Next action
-**STOP HERE.** When development resumes, begin P5-M1 exactly as specified above. Phase 5 code has not been started in this closing task.
+Start Docker Desktop, then run:
+- `docker compose up --build`
+- `docker compose exec api alembic upgrade head`
+- `docker compose exec api pytest apps/api/tests/integration/test_liveops_admin_analytics.py -q`
+- `docker compose exec api pytest -q`
+- `docker compose exec api ruff check .`
+- `docker compose run --rm web npm run lint`
+- `docker compose run --rm web npm run typecheck`
+- `docker compose run --rm web npm test`
+
+Then continue P5-M1 by adding stronger admin read models for ledger/config history, a richer tutorial/core-loop dashboard, and a full Docker E2E for config rollback plus analytics emission.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;

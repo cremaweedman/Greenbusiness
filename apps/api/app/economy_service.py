@@ -37,6 +37,7 @@ from app.game_data.economy_catalog import (
     UpgradeDefinition,
 )
 from app.game_data.production_catalog import STARTER_VARIETY_BY_KEY
+from app.liveops_service import record_analytics_event
 from app.mission_service import record_domain_event
 from app.production_service import inventory_lot_responses, inventory_responses
 from app.schemas import (
@@ -533,6 +534,13 @@ async def accept_offer(
         request_id=request_id,
         payload={"contract_key": definition.key, "offer_bucket": offer.offer_bucket},
     )
+    await record_analytics_event(
+        session,
+        event_name="economy.contract_accepted",
+        user_id=user_id,
+        payload={"contract_key": definition.key, "offer_bucket": offer.offer_bucket},
+        request_id=request_id,
+    )
     await session.commit()
     response = _contract_response(contract)
     if response is None:
@@ -681,6 +689,18 @@ async def complete_contract(
             "transaction_id": str(transaction_id),
         },
     )
+    await record_analytics_event(
+        session,
+        event_name="economy.contract_completed",
+        user_id=user_id,
+        payload={
+            "contract_key": contract.contract_key,
+            "cash_delta": contract.reward_cash,
+            "reputation_delta": contract.reward_reputation,
+            "balance_after": wallet.cash,
+        },
+        request_id=request_id,
+    )
     await session.commit()
     return await _action_response(session, user_id, focus_contract=contract)
 
@@ -798,6 +818,17 @@ async def purchase_upgrade(
             "tier": definition.tier,
             "transaction_id": str(transaction_id),
         },
+    )
+    await record_analytics_event(
+        session,
+        event_name="economy.upgrade_purchased",
+        user_id=user_id,
+        payload={
+            "upgrade_key": definition.key,
+            "cash_delta": -definition.cost_cash,
+            "balance_after": wallet.cash,
+        },
+        request_id=request_id,
     )
     await session.commit()
     return await _action_response(session, user_id)

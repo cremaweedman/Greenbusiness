@@ -36,3 +36,14 @@ test("production shell exists", () => {
   assert.match(nextConfig, /API_INTERNAL_URL/);
   assert.match(nextConfig, /source: "\/api\/:path\*"/);
 });
+
+test("liveops admin API surfaces are wired", () => {
+  const api = fs.readFileSync("../api/app/api.py", "utf8");
+  const adminRoutes = fs.readFileSync("../api/app/admin_routes.py", "utf8");
+  assert.match(api, /admin_router/);
+  assert.match(api, /liveops_router/);
+  assert.match(adminRoutes, /\/config\/publish/);
+  assert.match(adminRoutes, /\/config\/rollback/);
+  assert.match(adminRoutes, /\/dashboards\/economy/);
+  assert.match(adminRoutes, /\/dashboards\/core-funnel/);
+});

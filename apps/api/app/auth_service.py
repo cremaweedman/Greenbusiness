@@ -23,6 +23,7 @@ from app.db.models import (
 from app.economy_service import bootstrap_wallet, economy_state
 from app.errors import AppError
 from app.game_data.progression_catalog import SKILL_BRANCHES, next_level_xp, unlocked_keys
+from app.liveops_service import record_analytics_event
 from app.mission_service import bootstrap_missions, meta_state
 from app.production_service import (
     get_active_crops_by_slot,
@@ -121,6 +122,13 @@ async def register_user(
         request_id=request_id,
         payload={"email": normalized},
     )
+    await record_analytics_event(
+        session,
+        event_name="auth.user_registered",
+        user_id=user.id,
+        payload={"tutorial_step": profile.tutorial_step},
+        request_id=request_id,
+    )
 
     await session.commit()
     return user, create_access_token(user.id), refresh_token
@@ -155,6 +163,12 @@ async def login_user(
         event_type="auth.login",
         actor_type="user",
         actor_id=str(user.id),
+        request_id=request_id,
+    )
+    await record_analytics_event(
+        session,
+        event_name="auth.login",
+        user_id=user.id,
         request_id=request_id,
     )
     await session.commit()

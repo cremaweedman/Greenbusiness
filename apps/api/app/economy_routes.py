@@ -13,6 +13,7 @@ from app.economy_service import (
     complete_contract,
     purchase_upgrade,
 )
+from app.liveops_service import require_feature_enabled
 from app.schemas import EconomyActionResponse, PlayerContractResponse
 
 economy_router = APIRouter(prefix="/economy", tags=["economy"])
@@ -32,6 +33,7 @@ async def accept_current_offer(
     user_id: CurrentUserId,
     session: DbSession,
 ) -> PlayerContractResponse:
+    await require_feature_enabled(session, "contracts")
     return await accept_offer(
         session,
         user_id=user_id,
@@ -47,6 +49,7 @@ async def accept_legacy_contract(
     user_id: CurrentUserId,
     session: DbSession,
 ) -> PlayerContractResponse:
+    await require_feature_enabled(session, "contracts")
     return await accept_contract(
         session,
         user_id=user_id,
@@ -63,6 +66,7 @@ async def complete(
     session: DbSession,
     idempotency_key: IdempotencyKey,
 ) -> EconomyActionResponse:
+    await require_feature_enabled(session, "contracts")
     return await complete_contract(
         session,
         user_id=user_id,
@@ -80,6 +84,7 @@ async def purchase(
     session: DbSession,
     idempotency_key: IdempotencyKey,
 ) -> EconomyActionResponse:
+    await require_feature_enabled(session, "upgrades")
     return await purchase_upgrade(
         session,
         user_id=user_id,
