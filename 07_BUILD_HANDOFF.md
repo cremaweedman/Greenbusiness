@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** P3-M1 economic loop is completed and validated. P3-M2 is ready but not started.
+**Current state:** P3-M2 contracts/progression expansion is completed and validated. P4-M1 is ready but not started.
 
 ---
 
@@ -147,16 +147,16 @@ Current repository status:
 - Next.js + TypeScript web shell boots behind Nginx;
 - liveness/readiness endpoints are implemented;
 - CI runs backend lint/tests/migration sanity, frontend lint/typecheck/tests/build and full Docker-stack smoke tests;
-- P0-M1 and P0-M2 passed all acceptance criteria;
-- canonical API error envelope and request IDs are implemented;
-- append-only audit-event infrastructure persists in PostgreSQL;
-- local + S3-compatible object storage abstraction is implemented;
-- application API routes are versioned under `/v1`;
-- real PostgreSQL integration tests run in CI;
-- dependency security audits run in CI;
-- Next.js is pinned to the patched 15.5.26 Maintenance LTS line.
+- Phase 0, P1-M1, P2-M1, P3-M1 and P3-M2 passed their acceptance gates;
+- server-authoritative production, economy, timers, contract rotation and progression are implemented;
+- Cash mutations are ledger-backed and economic mutations are idempotent;
+- inventory supports aggregate quantities plus quality-specific lots;
+- current contract system serves deterministic four-hour windows with 3 standard + 1 specialized offer;
+- progression foundation supports levels 1–20, reputation, unlocks and skill-point hooks;
+- Efficient Racks tiers I–III are versioned and prerequisite/level gated;
+- backend/frontend/full-stack Docker E2E is green through P3-M2.
 
-Implementation is now active. Documentation completeness must not be confused with full game completeness.
+Implementation is active. Documentation completeness must not be confused with full game completeness.
 
 ---
 
@@ -189,47 +189,48 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P3-M2 — Contracts & Progression Expansion — READY, NOT STARTED**
+**P4-M1 — Mission Engine & Mastery Slice — READY, NOT STARTED**
 
 ## Goal
-Expand the proven P3-M1 economic loop into a repeatable management layer without jumping to later phases.
+Add the first repeatable meta-progression layer above production/contracts without expanding into LiveOps or social systems yet.
 
 ## Planned deliverables
-- contract pool with quick / standard / premium archetypes;
-- 3 simultaneous standard offers plus 1 specialized offer;
-- server-authoritative 4-hour offer refresh;
-- trait and quality requirements;
-- reputation rewards and gates;
-- 20-level progression curve foundation;
-- unlock table for varieties / slots / upgrades;
-- upgrade tiers using the canonical exponential cost curve;
-- first compact skill-point progression hooks for Botany / Commerce / Operations;
-- player-state/API/UI support for rotating offers and progression;
-- economy simulation checks for obvious inflation/exploit paths;
-- backend/frontend/full-stack E2E for repeated contract cycles.
+- data-driven mission definition format;
+- mission engine with objective types for plant, care, harvest, contract completion, Cash earned and upgrade ownership;
+- mission progress updated from authoritative domain events/actions;
+- 10–12 coherent starter missions forming the first short narrative arc;
+- 2 original NPC/contact identities with inbox/phone-style presentation;
+- variety mastery counters based on harvest quantity / contract use;
+- mastery thresholds and first cosmetic-only reward hooks;
+- daily and weekly mission-pool foundation;
+- catch-up-safe mission rules: absence never destroys progress;
+- player state/API/UI surfaces for missions, contacts and mastery;
+- PostgreSQL integration tests for mission idempotency and persistence;
+- full Docker E2E for production -> mission progress -> reward/mastery.
 
-## Explicitly excluded from P3-M2
-- missions/narrative engine;
+## Explicitly excluded from P4-M1
+- full 25–40 mission MVP library;
 - employees;
 - clubs;
 - monetization;
-- seasons/LiveOps;
-- P2P marketplace;
-- open chat.
+- seasonal LiveOps scheduling;
+- open chat;
+- P2P marketplace.
 
 ---
 
-# 9. P3-M2 acceptance criteria
+# 9. P4-M1 acceptance criteria
 
-Do not mark P3-M2 complete until:
-- contract offers refresh deterministically from server state;
-- no more than the configured active/offer limits can be bypassed;
-- all Cash rewards and sinks remain ledger-backed;
-- progression/unlocks persist across sessions;
-- level/reputation changes are server-authoritative;
-- upgrade prices follow versioned configuration;
-- repeated contract cycles cannot duplicate inventory or Cash;
-- economy simulation shows no obvious infinite-money exploit;
+Do not mark P4-M1 complete until:
+- mission definitions are data-driven and versioned;
+- mission progress is server-authoritative and persists across sessions;
+- replayed/idempotent domain actions cannot duplicate mission rewards;
+- at least 10 starter missions can be completed in a coherent sequence;
+- mission rewards use existing ledger/progression primitives where economic;
+- variety mastery increments from authoritative harvest/contract events;
+- mastery cannot be incremented by client-only calls;
+- NPC/contact content is original and independent of Weeds IP;
+- daily/weekly mission pool selection is deterministic/versioned;
 - backend/frontend/full-stack CI is green.
 
 **Current status:** ready, not started.
@@ -334,10 +335,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 3 — Economy, Contracts & Progression`
+`Phase 4 — Missions, Narrative & Collection Meta`
 
 ## Current milestone
-`P3-M2 — READY, NOT STARTED`
+`P4-M1 — Mission Engine & Mastery Slice — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -350,47 +351,31 @@ Future agents/sessions must update this section after meaningful implementation.
 - Next.js/TypeScript frontend shell implemented;
 - Docker Compose + Nginx stack implemented;
 - backend/frontend/full-stack CI validated;
-- Next.js upgraded to patched 15.5.26;
 - P0-M2 canonical errors, audit events, object storage and API versioning implemented;
-- PostgreSQL integration tests and dependency audits added;
-- Phase 0 Definition of Done fully satisfied with backend, frontend and full-stack Docker CI green;
-- P1-M1 identity and persistent bootstrap implemented;
-- email/password registration and login implemented;
-- passwords use Argon2id hashing;
-- access JWT + HttpOnly refresh-cookie flow implemented;
-- refresh-token rotation and replay invalidation implemented;
-- logout/revocation implemented;
-- starter player/profile/business/room/production slots/progression/inventory container bootstrap transaction implemented;
-- `GET /v1/player` persistent state implemented;
-- registration/login/session-restore frontend implemented;
-- PostgreSQL integration tests and full Docker auth E2E pass;
-- final P1-M1 branch CI is green: backend, frontend and compose-smoke;
-- P2-M1 production loop models, migration, service and routes implemented;
-- 3 fictional starter varieties implemented as versioned backend data: Aurora Drift, Ember Leaf and Moon Sprout;
-- plant/care/harvest endpoints implemented under `/v1/production`;
-- server-authoritative `ready_at`, readiness checks, care bonus, quality and yield implemented;
-- partial unique database index prevents more than one active crop per production slot;
-- harvest marks crop history and releases the slot so rewards cannot be duplicated by replay;
-- inventory item quantities persist per user inventory container;
-- `GET /v1/player` returns starter varieties, active crop state and inventory;
-- starter room frontend with variety selection, three production slots, timers, care, harvest, XP, tutorial objective and inventory implemented;
-- P2-M1 integration tests added for persistence, early-harvest rejection, care, single harvest, tutorial progress, XP reward and invalid variety;
-- P2-M1 merged to main and full backend/frontend/compose-smoke CI validated;
-- CI hotfix aligned the auth bootstrap expectation with the 3-slot P2 starter state.
-- P3-M1 wallet starts at 500 Cash and all Cash mutations use an append-only ledger;
-- starter contract Neighborhood Sampler consumes 3 Aurora Drift and rewards 150 Cash transactionally;
-- economic mutations use Idempotency-Key replay protection;
-- Efficient Racks costs 600 Cash and adds +1 yield server-side;
-- player state and frontend expose Cash, contract and upgrade state;
-- PostgreSQL integration test covers harvest -> contract -> Cash -> upgrade -> improved harvest;
-- full Docker E2E covers the same economic loop;
-- final P3-M1 backend, frontend and compose-smoke CI are green.
+- P1-M1 identity/auth/session/bootstrap implemented and validated;
+- P2-M1 3-slot production loop, inventory, quality and tutorial implemented and validated;
+- P3-M1 wallet, ledger, starter contract, idempotency and first upgrade implemented and validated;
+- P3-M2 economy config advanced to `economy_v2`;
+- 10 versioned quick/standard/premium contract definitions implemented;
+- contract board generates deterministic 4-hour windows with 3 standard + 1 specialized offer;
+- maximum 3 active contracts enforced server-side;
+- accepted contracts snapshot quantity, quality, trait, rewards and config version;
+- inventory quality lots implemented and quality requirements consumed transactionally;
+- starter varieties now expose fictional traits for contract matching;
+- contract completion grants reputation server-side while preserving ledger-backed Cash;
+- 20-level XP foundation and level unlock table implemented;
+- Botany / Commerce / Operations skill-point hooks and persistent branch rows implemented;
+- Efficient Racks tiers I–III implemented with level/prerequisite gates and cumulative server-side yield bonus;
+- P3-M2 frontend exposes offer refresh, locks, multiple active contracts, reputation/level/skill points and upgrade tiers;
+- integration tests cover deterministic rotation, active-contract limit, quality lots and progression;
+- full Docker E2E covers 4-offer board, active-contract limit and persisted progression state;
+- final P3-M2 branch CI is green: backend, frontend and compose-smoke.
 
 ## In progress
 - none.
 
 ## Next action
-Begin P3-M2 exactly as specified above when development resumes. Do not start Phase 4 or later systems early.
+Begin P4-M1 exactly as specified above when development resumes. Do not start Phase 5 or later systems early.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
@@ -403,7 +388,7 @@ Begin P3-M2 exactly as specified above when development resumes. Do not start Ph
 - do not add Web3;
 - do not create dozens of varieties;
 - do not build full LiveOps UI;
-- do not optimize scale before a working vertical slice.
+- do not optimize scale before measured need.
 
 ---
 
