@@ -94,6 +94,14 @@ class ContractCompletionResponse(BaseModel):
     reputation_delta: int
 
 
+class ContractBoardResponse(BaseModel):
+    contracts: list[ContractResponse]
+    reroll_cost: int
+    rerolls_used: int
+    rerolls_remaining: int
+    window_started_at: datetime
+
+
 class CurrencyLedgerEntryResponse(BaseModel):
     id: uuid.UUID
     currency: str
@@ -113,6 +121,13 @@ class EconomySummaryResponse(BaseModel):
     burned: int
     entry_count: int
     config_versions: list[str]
+
+
+class ContractRerollResponse(BaseModel):
+    board: ContractBoardResponse
+    cash_balance: int
+    cash_delta: int
+    economy_summary: EconomySummaryResponse
 
 
 class UpgradeEffectsResponse(BaseModel):
@@ -195,6 +210,7 @@ class PlayerResponse(BaseModel):
     inventory: list[InventoryItemResponse]
     starter_varieties: list[StarterVarietyResponse]
     contracts: list[ContractResponse]
+    contract_board: ContractBoardResponse
     cash_ledger: list[CurrencyLedgerEntryResponse]
     economy_summary: EconomySummaryResponse
     upgrades: list[UpgradeResponse]

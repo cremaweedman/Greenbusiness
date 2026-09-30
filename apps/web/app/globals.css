@@ -363,6 +363,12 @@ input:focus {
   align-items: start;
 }
 
+.board-meta {
+  margin: -4px 0 10px;
+  color: #94a49a;
+  font-size: 0.78rem;
+}
+
 .tiny-action {
   min-height: 28px;
   border: 1px solid #35483d;

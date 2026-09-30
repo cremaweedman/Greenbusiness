@@ -423,6 +423,11 @@ Future agents/sessions must update this section after meaningful implementation.
 - starter contracts now award Reputation as a separate meta-progression reward;
 - contract completion persists `reputation_reward`, updates `Progression.reputation` transactionally and returns reputation deltas to the UI;
 - web UI now displays contract Cash/Reputation rewards and completion notices include Reputation gained;
+- active contract boards added with two visible offers per player;
+- `GET /v1/contracts/board` and `POST /v1/contracts/reroll` added;
+- contract rerolls cost Cash, write a negative Cash ledger entry and are limited to 3 per 24-hour window;
+- contract completion now requires the contract to be present on the active board;
+- web UI now shows reroll cost, remaining rerolls and a reroll action;
 - P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API, economy summary API and replay rejection;
 - P3-M1 upgrade integration test added for insufficient Cash, purchase, duplicate max-level rejection and changed future harvest yield.
 

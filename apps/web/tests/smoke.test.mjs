@@ -15,12 +15,15 @@ test("production shell exists", () => {
   assert.match(auth, /\/api\/health\/live/);
   assert.match(auth, /\/api\/v1\/production\/slots/);
   assert.match(auth, /\/api\/v1\/contracts/);
+  assert.match(auth, /\/api\/v1\/contracts\/reroll/);
   assert.match(auth, /server_time/);
   assert.match(auth, /serverClockOffsetMs/);
   assert.match(auth, /Starter varieties/);
   assert.match(auth, /Contracts/);
   assert.match(auth, /cash_balance/);
   assert.match(auth, /reputation_reward/);
+  assert.match(auth, /contract_board/);
+  assert.match(auth, /Reroll/);
   assert.match(auth, /progression/);
   assert.match(auth, /skill_points/);
   assert.match(auth, /\/api\/v1\/skills/);

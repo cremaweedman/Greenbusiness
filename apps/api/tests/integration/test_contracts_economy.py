@@ -77,10 +77,24 @@ async def test_contract_completion_consumes_inventory_and_writes_cash_ledger(cli
         assert quick_contract["key"] == "quick-counter-sample"
         assert quick_contract["can_complete"] is False
         assert quick_contract["completed"] is False
+        assert initial_state["contract_board"]["reroll_cost"] == 25
+        assert initial_state["contract_board"]["rerolls_remaining"] == 3
+        assert [contract["key"] for contract in initial_state["contract_board"]["contracts"]] == [
+            "quick-counter-sample",
+            "standard-lounge-restock",
+        ]
 
         listed = await client.get("/v1/contracts", headers=auth)
         assert listed.status_code == 200
         assert listed.json()[0]["key"] == quick_contract["key"]
+
+        board = await client.get("/v1/contracts/board", headers=auth)
+        assert board.status_code == 200
+        assert board.json()["contracts"][0]["key"] == quick_contract["key"]
+
+        poor_reroll = await client.post("/v1/contracts/reroll", headers=auth)
+        assert poor_reroll.status_code == 409
+        assert poor_reroll.json()["error"]["code"] == "CONTRACT_REROLL_CASH_INSUFFICIENT"
 
         missing = await client.post(f"/v1/contracts/{quick_contract['key']}/complete", headers=auth)
         assert missing.status_code == 409
@@ -133,12 +147,27 @@ async def test_contract_completion_consumes_inventory_and_writes_cash_ledger(cli
         assert economy_summary.json()["minted"] == 45
         assert economy_summary.json()["burned"] == 0
 
+        reroll = await client.post("/v1/contracts/reroll", headers=auth)
+        assert reroll.status_code == 200
+        reroll_body = reroll.json()
+        assert reroll_body["cash_delta"] == -25
+        assert reroll_body["cash_balance"] == 20
+        assert reroll_body["board"]["rerolls_used"] == 1
+        assert reroll_body["board"]["rerolls_remaining"] == 2
+        assert [contract["key"] for contract in reroll_body["board"]["contracts"]] == [
+            "premium-night-market",
+            "quick-counter-sample",
+        ]
+        assert reroll_body["economy_summary"]["burned"] == 25
+
         async with SessionLocal() as session:
             user = await session.scalar(select(User).where(User.email == email))
             assert user is not None
             ledger_entries = (
                 await session.scalars(
-                    select(CurrencyLedgerEntry).where(CurrencyLedgerEntry.user_id == user.id)
+                    select(CurrencyLedgerEntry)
+                    .where(CurrencyLedgerEntry.user_id == user.id)
+                    .order_by(CurrencyLedgerEntry.created_at, CurrencyLedgerEntry.id)
                 )
             ).all()
             completions = (
@@ -147,10 +176,12 @@ async def test_contract_completion_consumes_inventory_and_writes_cash_ledger(cli
                 )
             ).all()
 
-        assert len(ledger_entries) == 1
+        assert len(ledger_entries) == 2
         assert ledger_entries[0].balance_before == 0
         assert ledger_entries[0].balance_after == 45
         assert ledger_entries[0].config_version == "p3-contracts-v1"
+        assert ledger_entries[1].amount == -25
+        assert ledger_entries[1].balance_after == 20
         assert len(completions) == 1
         assert completions[0].contract_key == "quick-counter-sample"
         assert completions[0].reputation_reward == 1

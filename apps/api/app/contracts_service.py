@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import desc, select
 from sqlalchemy.exc import IntegrityError
@@ -13,6 +13,7 @@ from app.db.models import (
     CurrencyLedgerEntry,
     InventoryContainer,
     InventoryItem,
+    PlayerContractBoard,
     Progression,
 )
 from app.errors import AppError
@@ -24,8 +25,10 @@ from app.game_data.contracts_catalog import (
 )
 from app.production_service import inventory_responses
 from app.schemas import (
+    ContractBoardResponse,
     ContractCompletionResponse,
     ContractRequirementResponse,
+    ContractRerollResponse,
     ContractResponse,
     CurrencyLedgerEntryResponse,
     EconomySummaryResponse,
@@ -35,7 +38,12 @@ from app.skills_service import player_skill_effects
 
 CASH_CURRENCY = "cash"
 CONTRACT_SOURCE = "contract_completion"
+CONTRACT_REROLL_SOURCE = "contract_reroll"
 CONTRACT_COMPLETION_CONSTRAINT = "uq_contract_completion_user_contract"
+CONTRACT_BOARD_SIZE = 2
+CONTRACT_REROLL_COST = 25
+CONTRACT_REROLL_LIMIT = 3
+CONTRACT_REROLL_WINDOW = timedelta(hours=24)
 
 
 def _display_name(item_key: str) -> str:
@@ -124,6 +132,32 @@ async def _completed_contract_keys(session: AsyncSession, user_id: uuid.UUID) ->
     return set(rows.all())
 
 
+def _initial_offer_keys() -> list[str]:
+    return [contract.key for contract in STARTER_CONTRACTS[:CONTRACT_BOARD_SIZE]]
+
+
+def _rotated_offer_keys(reroll_count: int) -> list[str]:
+    keys = [contract.key for contract in STARTER_CONTRACTS]
+    start = (reroll_count * CONTRACT_BOARD_SIZE) % len(keys)
+    return [keys[(start + offset) % len(keys)] for offset in range(CONTRACT_BOARD_SIZE)]
+
+
+def _window_expired(board: PlayerContractBoard, now: datetime) -> bool:
+    return board.window_started_at + CONTRACT_REROLL_WINDOW <= now
+
+
+async def _get_contract_board(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    for_update: bool = False,
+) -> PlayerContractBoard | None:
+    statement = select(PlayerContractBoard).where(PlayerContractBoard.user_id == user_id)
+    if for_update:
+        statement = statement.with_for_update()
+    return await session.scalar(statement)
+
+
 def _contract_response(
     contract: StarterContract,
     *,
@@ -157,18 +191,49 @@ async def contract_responses(
     user_id: uuid.UUID,
     inventory_container_id: uuid.UUID,
 ) -> list[ContractResponse]:
+    board = await contract_board_response(
+        session,
+        user_id=user_id,
+        inventory_container_id=inventory_container_id,
+    )
+    return board.contracts
+
+
+async def contract_board_response(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    inventory_container_id: uuid.UUID,
+) -> ContractBoardResponse:
+    now = datetime.now(UTC)
+    board = await _get_contract_board(session, user_id=user_id)
+    offer_keys = _initial_offer_keys()
+    reroll_count = 0
+    window_started_at = now
+    if board is not None and not _window_expired(board, now):
+        offer_keys = list(board.offer_keys)
+        reroll_count = board.reroll_count
+        window_started_at = board.window_started_at
     inventory = await inventory_responses(session, inventory_container_id)
     completed_keys = await _completed_contract_keys(session, user_id)
     skill_effects = await player_skill_effects(session, user_id=user_id)
-    return [
+    offers = [
         _contract_response(
-            contract,
+            STARTER_CONTRACT_BY_KEY[contract_key],
             inventory=inventory,
             completed_keys=completed_keys,
             cash_bonus=skill_effects.contract_cash_bonus,
         )
-        for contract in STARTER_CONTRACTS
+        for contract_key in offer_keys
+        if contract_key in STARTER_CONTRACT_BY_KEY
     ]
+    return ContractBoardResponse(
+        contracts=offers,
+        reroll_cost=CONTRACT_REROLL_COST,
+        rerolls_used=reroll_count,
+        rerolls_remaining=max(0, CONTRACT_REROLL_LIMIT - reroll_count),
+        window_started_at=window_started_at,
+    )
 
 
 async def list_contracts(session: AsyncSession, *, user_id: uuid.UUID) -> list[ContractResponse]:
@@ -181,6 +246,100 @@ async def list_contracts(session: AsyncSession, *, user_id: uuid.UUID) -> list[C
         session,
         user_id=user_id,
         inventory_container_id=inventory.id,
+    )
+
+
+async def get_contract_board(session: AsyncSession, *, user_id: uuid.UUID) -> ContractBoardResponse:
+    inventory = await session.scalar(
+        select(InventoryContainer).where(InventoryContainer.user_id == user_id)
+    )
+    if inventory is None:
+        raise AppError("PLAYER_STATE_INCOMPLETE", "Player inventory is missing.", status_code=500)
+    return await contract_board_response(
+        session,
+        user_id=user_id,
+        inventory_container_id=inventory.id,
+    )
+
+
+async def reroll_contract_board(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    request_id: str | None,
+) -> ContractRerollResponse:
+    inventory = await _get_inventory(session, user_id)
+    now = datetime.now(UTC)
+    board = await _get_contract_board(session, user_id=user_id, for_update=True)
+    if board is None:
+        board = PlayerContractBoard(
+            user_id=user_id,
+            offer_keys=_initial_offer_keys(),
+            reroll_count=0,
+            window_started_at=now,
+            updated_at=now,
+        )
+        session.add(board)
+        await session.flush()
+    elif _window_expired(board, now):
+        board.offer_keys = _initial_offer_keys()
+        board.reroll_count = 0
+        board.window_started_at = now
+
+    if board.reroll_count >= CONTRACT_REROLL_LIMIT:
+        raise AppError("CONTRACT_REROLL_LIMIT", "Contract reroll limit reached.", status_code=409)
+
+    balance_before = await cash_balance(session, user_id)
+    if balance_before < CONTRACT_REROLL_COST:
+        raise AppError(
+            "CONTRACT_REROLL_CASH_INSUFFICIENT",
+            "Not enough Cash to reroll contracts.",
+            status_code=409,
+            details={"required": CONTRACT_REROLL_COST, "available": balance_before},
+        )
+
+    next_count = board.reroll_count + 1
+    balance_after = balance_before - CONTRACT_REROLL_COST
+    board.reroll_count = next_count
+    board.offer_keys = _rotated_offer_keys(next_count)
+    board.updated_at = now
+    ledger_entry = CurrencyLedgerEntry(
+        user_id=user_id,
+        currency=CASH_CURRENCY,
+        source=CONTRACT_REROLL_SOURCE,
+        source_id=f"{board.window_started_at.isoformat()}:{next_count}",
+        amount=-CONTRACT_REROLL_COST,
+        balance_before=balance_before,
+        balance_after=balance_after,
+        config_version=STARTER_CONTRACTS_CATALOG.version,
+    )
+    session.add(ledger_entry)
+    await append_audit_event(
+        session,
+        event_type="contracts.contract_board_rerolled",
+        actor_type="user",
+        actor_id=str(user_id),
+        target_type="contract_board",
+        target_id=str(board.id),
+        request_id=request_id,
+        payload={
+            "offer_keys": board.offer_keys,
+            "reroll_count": board.reroll_count,
+            "cash_cost": CONTRACT_REROLL_COST,
+            "balance_after": balance_after,
+        },
+    )
+    await session.commit()
+
+    return ContractRerollResponse(
+        board=await contract_board_response(
+            session,
+            user_id=user_id,
+            inventory_container_id=inventory.id,
+        ),
+        cash_balance=balance_after,
+        cash_delta=-CONTRACT_REROLL_COST,
+        economy_summary=await cash_summary(session, user_id=user_id),
     )
 
 
@@ -237,6 +396,15 @@ async def complete_contract(
     )
     if existing is not None:
         raise AppError("CONTRACT_ALREADY_COMPLETED", "Contract has already been completed.", status_code=409)
+
+    board = await _get_contract_board(session, user_id=user_id)
+    active_offer_keys = (
+        _initial_offer_keys()
+        if board is None or _window_expired(board, datetime.now(UTC))
+        else list(board.offer_keys)
+    )
+    if contract.key not in active_offer_keys:
+        raise AppError("CONTRACT_NOT_OFFERED", "Contract is not on the active board.", status_code=409)
 
     inventory = await _get_inventory(session, user_id)
     item = await _get_inventory_item(session, inventory_id=inventory.id, item_key=contract.item_key)

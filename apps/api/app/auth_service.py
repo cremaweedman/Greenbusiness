@@ -13,6 +13,7 @@ from app.contracts_service import (
     cash_balance,
     cash_ledger_entries,
     cash_summary,
+    contract_board_response,
     contract_responses,
 )
 from app.db.models import (
@@ -277,6 +278,11 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         inventory=await inventory_responses(session, inventory.id),
         starter_varieties=starter_variety_responses(),
         contracts=await contract_responses(
+            session,
+            user_id=user_id,
+            inventory_container_id=inventory.id,
+        ),
+        contract_board=await contract_board_response(
             session,
             user_id=user_id,
             inventory_container_id=inventory.id,

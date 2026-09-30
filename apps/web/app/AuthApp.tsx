@@ -57,6 +57,14 @@ type Contract = {
   completed: boolean;
 };
 
+type ContractBoard = {
+  contracts: Contract[];
+  reroll_cost: number;
+  rerolls_used: number;
+  rerolls_remaining: number;
+  window_started_at: string;
+};
+
 type CashLedgerEntry = {
   id: string;
   currency: string;
@@ -141,6 +149,7 @@ type Player = {
   inventory: InventoryItem[];
   starter_varieties: StarterVariety[];
   contracts: Contract[];
+  contract_board: ContractBoard;
   cash_ledger: CashLedgerEntry[];
   economy_summary: EconomySummary;
   upgrades: Upgrade[];
@@ -420,6 +429,30 @@ export default function AuthApp() {
     }
   }
 
+  async function rerollContracts() {
+    if (!accessToken) return;
+    setActionContractKey("reroll");
+    setError(null);
+    setNotice(null);
+    try {
+      const result = await requestJson<{
+        cash_balance: number;
+        cash_delta: number;
+        board: ContractBoard;
+      }>("/api/v1/contracts/reroll", accessToken, { method: "POST" });
+      setNotice(
+        `Contracts rerolled for ${Math.abs(result.cash_delta)} Cash. ${result.board.rerolls_remaining} rerolls left.`,
+      );
+      await refreshPlayer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Contract reroll failed.");
+      await refreshPlayer();
+    } finally {
+      setActionContractKey(null);
+    }
+  }
+
+
   async function purchaseUpgrade(upgrade: Upgrade) {
     if (!accessToken) return;
     setActionUpgradeKey(upgrade.key);
@@ -593,7 +626,24 @@ export default function AuthApp() {
             </div>
 
             <div>
-              <p className="section-label">Contracts</p>
+              <div className="section-head">
+                <p className="section-label">Contracts</p>
+                <button
+                  className="tiny-action"
+                  type="button"
+                  onClick={() => void rerollContracts()}
+                  disabled={
+                    actionContractKey === "reroll" ||
+                    player.contract_board.rerolls_remaining <= 0 ||
+                    player.cash_balance < player.contract_board.reroll_cost
+                  }
+                >
+                  Reroll {player.contract_board.reroll_cost}
+                </button>
+              </div>
+              <p className="board-meta">
+                {player.contract_board.rerolls_remaining} rerolls left in this window
+              </p>
               <div className="contract-list">
                 {player.contracts.map((contract) => {
                   const busy = actionContractKey === contract.key;
