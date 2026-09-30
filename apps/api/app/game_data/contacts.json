@@ -1,0 +1,19 @@
+{
+  "version": "missions_v1",
+  "contacts": [
+    {
+      "key": "alex-rowan",
+      "name": "Alex Rowan",
+      "role": "Neighborhood coordinator",
+      "tone": "grounded",
+      "intro_message": "Small, reliable batches build a reputation faster than flashy promises."
+    },
+    {
+      "key": "mira-vale",
+      "name": "Mira Vale",
+      "role": "Botanical product designer",
+      "tone": "precise",
+      "intro_message": "Consistency is a craft. Track what works, then make it repeatable."
+    }
+  ]
+}
