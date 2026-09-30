@@ -13,10 +13,10 @@ from app.game_data.mission_catalog import (
 
 
 def test_starter_mission_catalog_is_versioned_and_coherent():
-    assert MISSION_CONFIG_VERSION == "missions_v1"
-    assert len(MISSIONS) == 10
-    assert [mission.sequence for mission in MISSIONS] == list(range(1, 11))
-    assert len({mission.key for mission in MISSIONS}) == 10
+    assert MISSION_CONFIG_VERSION == "missions_v2"
+    assert len(MISSIONS) == 30
+    assert [mission.sequence for mission in MISSIONS] == list(range(1, 31))
+    assert len({mission.key for mission in MISSIONS}) == 30
     assert {mission.objective_type for mission in MISSIONS} >= {
         "plant",
         "care",
@@ -25,8 +25,12 @@ def test_starter_mission_catalog_is_versioned_and_coherent():
         "cash_earned",
         "upgrade_owned",
     }
-    assert len(CONTACTS) == 2
-    assert len({contact.key for contact in CONTACTS}) == 2
+    assert len(CONTACTS) == 4
+    assert len({contact.key for contact in CONTACTS}) == 4
+    assert len({mission.arc_key for mission in MISSIONS}) >= 3
+    assert all(mission.arc_title for mission in MISSIONS)
+    assert all(mission.inbox_message for mission in MISSIONS)
+    assert sum(mission.reward_cash for mission in MISSIONS) <= 3000
 
 
 def test_daily_and_weekly_pools_are_deterministic():
