@@ -30,6 +30,7 @@ from app.schemas import (
     EconomySummaryResponse,
     InventoryItemResponse,
 )
+from app.skills_service import player_skill_effects
 
 CASH_CURRENCY = "cash"
 CONTRACT_SOURCE = "contract_completion"
@@ -127,6 +128,7 @@ def _contract_response(
     *,
     inventory: list[InventoryItemResponse],
     completed_keys: set[str],
+    cash_bonus: int = 0,
 ) -> ContractResponse:
     owned_quantity = _quantity_for_item(inventory, contract.item_key)
     completed = contract.key in completed_keys
@@ -141,7 +143,7 @@ def _contract_response(
             quantity=contract.quantity,
             quality_required=contract.quality_required,
         ),
-        cash_reward=contract.cash_reward,
+        cash_reward=contract.cash_reward + cash_bonus,
         can_complete=not completed and owned_quantity >= contract.quantity,
         completed=completed,
     )
@@ -155,8 +157,14 @@ async def contract_responses(
 ) -> list[ContractResponse]:
     inventory = await inventory_responses(session, inventory_container_id)
     completed_keys = await _completed_contract_keys(session, user_id)
+    skill_effects = await player_skill_effects(session, user_id=user_id)
     return [
-        _contract_response(contract, inventory=inventory, completed_keys=completed_keys)
+        _contract_response(
+            contract,
+            inventory=inventory,
+            completed_keys=completed_keys,
+            cash_bonus=skill_effects.contract_cash_bonus,
+        )
         for contract in STARTER_CONTRACTS
     ]
 
@@ -239,8 +247,10 @@ async def complete_contract(
         )
 
     now = datetime.now(UTC)
+    skill_effects = await player_skill_effects(session, user_id=user_id)
+    cash_reward = contract.cash_reward + skill_effects.contract_cash_bonus
     balance_before = await cash_balance(session, user_id)
-    balance_after = balance_before + contract.cash_reward
+    balance_after = balance_before + cash_reward
 
     item.quantity -= contract.quantity
     completion = ContractCompletion(
@@ -249,7 +259,7 @@ async def complete_contract(
         item_key=contract.item_key,
         quantity=contract.quantity,
         quality_required=contract.quality_required,
-        cash_reward=contract.cash_reward,
+        cash_reward=cash_reward,
         config_version=STARTER_CONTRACTS_CATALOG.version,
         completed_at=now,
     )
@@ -258,7 +268,7 @@ async def complete_contract(
         currency=CASH_CURRENCY,
         source=CONTRACT_SOURCE,
         source_id=contract.key,
-        amount=contract.cash_reward,
+        amount=cash_reward,
         balance_before=balance_before,
         balance_after=balance_after,
         config_version=STARTER_CONTRACTS_CATALOG.version,
@@ -275,7 +285,8 @@ async def complete_contract(
         payload={
             "item_key": contract.item_key,
             "quantity": contract.quantity,
-            "cash_reward": contract.cash_reward,
+            "cash_reward": cash_reward,
+            "skill_contract_cash_bonus": skill_effects.contract_cash_bonus,
             "balance_after": balance_after,
             "config_version": STARTER_CONTRACTS_CATALOG.version,
         },
@@ -296,8 +307,13 @@ async def complete_contract(
     updated_inventory = await inventory_responses(session, inventory.id)
     completed_keys = await _completed_contract_keys(session, user_id)
     return ContractCompletionResponse(
-        contract=_contract_response(contract, inventory=updated_inventory, completed_keys=completed_keys),
+        contract=_contract_response(
+            contract,
+            inventory=updated_inventory,
+            completed_keys=completed_keys,
+            cash_bonus=skill_effects.contract_cash_bonus,
+        ),
         inventory=updated_inventory,
         cash_balance=balance_after,
-        cash_delta=contract.cash_reward,
+        cash_delta=cash_reward,
     )

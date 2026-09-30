@@ -413,6 +413,13 @@ Future agents/sessions must update this section after meaningful implementation.
 - `GET /v1/player` now returns progression details including current level XP, next level XP and next unlock;
 - web UI now shows level progress, next unlock and available skill points;
 - pure progression tests verify level curve, XP thresholds and skill-point awards;
+- starter Botany/Commerce/Operations skill catalog added as `p3-skills-v1`;
+- player skill allocation persistence added with one allocation row per skill;
+- `GET /v1/skills`, `POST /v1/skills/{skill_key}/allocate` and `POST /v1/skills/respec` added;
+- skill effects are live: Botany increases cared harvest yield, Commerce increases starter contract Cash, and Operations reduces future starter crop timers;
+- web UI now shows skill branches, ranks, effects, allocation and respec;
+- pure skill catalog tests verify branch coverage and effects;
+- P3-M1 skill integration test added for insufficient points, allocation, production effect and respec refund;
 - P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API, economy summary API and replay rejection;
 - P3-M1 upgrade integration test added for insufficient Cash, purchase, duplicate max-level rejection and changed future harvest yield.
 
@@ -428,6 +435,7 @@ Start Docker Desktop, then run:
 - `docker compose exec api pytest apps/api/tests/integration/test_contracts_economy.py -q`
 - `docker compose exec api pytest apps/api/tests/integration/test_upgrades_economy.py -q`
 - `docker compose exec api pytest apps/api/tests/integration/test_production_loop.py -q`
+- `docker compose exec api pytest apps/api/tests/integration/test_skills_progression.py -q`
 - `docker compose exec api ruff check .`
 - `docker compose run --rm web npm run lint`
 - `docker compose run --rm web npm run typecheck`

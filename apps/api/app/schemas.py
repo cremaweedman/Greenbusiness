@@ -145,6 +145,30 @@ class ProgressionResponse(BaseModel):
     next_unlock: str | None
 
 
+class SkillEffectsResponse(BaseModel):
+    care_yield_bonus: int
+    contract_cash_bonus: int
+    grow_seconds_reduction: int
+
+
+class SkillNodeResponse(BaseModel):
+    key: str
+    branch: str
+    name: str
+    description: str
+    rank: int
+    max_rank: int
+    cost_per_rank: int
+    can_allocate: bool
+    effects: SkillEffectsResponse
+
+
+class SkillAllocationResponse(BaseModel):
+    skill: SkillNodeResponse
+    progression: ProgressionResponse
+    skills: list[SkillNodeResponse]
+
+
 class PlayerResponse(BaseModel):
     server_time: datetime
     user_id: uuid.UUID
@@ -171,3 +195,4 @@ class PlayerResponse(BaseModel):
     cash_ledger: list[CurrencyLedgerEntryResponse]
     economy_summary: EconomySummaryResponse
     upgrades: list[UpgradeResponse]
+    skills: list[SkillNodeResponse]

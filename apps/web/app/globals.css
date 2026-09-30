@@ -219,7 +219,7 @@ input:focus {
   font-weight: 800;
 }
 
-.variety-list, .inventory-list, .slot-list, .contract-list, .ledger-list, .upgrade-list {
+.variety-list, .inventory-list, .slot-list, .contract-list, .ledger-list, .upgrade-list, .skill-list {
   display: grid;
   gap: 10px;
 }
@@ -334,6 +334,50 @@ input:focus {
 
 .upgrade-meta strong {
   color: #e0ba78;
+}
+
+.skill-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #2f4036;
+  border-radius: 8px;
+  background: #0a100d;
+}
+
+.skill-card.completed {
+  opacity: 0.72;
+}
+
+.skill-card p {
+  margin: 5px 0 0;
+  color: #94a49a;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.section-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: start;
+}
+
+.tiny-action {
+  min-height: 28px;
+  border: 1px solid #35483d;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: #121b16;
+  color: #aeb9b2;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.tiny-action:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 
 .contract-card.completed {

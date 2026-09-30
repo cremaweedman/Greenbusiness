@@ -281,3 +281,21 @@ class PlayerUpgrade(Base):
     upgrade_key: Mapped[str] = mapped_column(String(96), nullable=False)
     level: Mapped[int] = mapped_column(Integer, nullable=False)
     purchased_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class PlayerSkillAllocation(Base):
+    __tablename__ = "player_skill_allocations"
+    __table_args__ = (
+        UniqueConstraint("user_id", "skill_key", name="uq_player_skill_user_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    skill_key: Mapped[str] = mapped_column(String(96), nullable=False)
+    rank: Mapped[int] = mapped_column(Integer, nullable=False)
+    allocated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

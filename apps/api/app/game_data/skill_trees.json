@@ -1,0 +1,44 @@
+{
+  "version": "p3-skills-v1",
+  "skills": [
+    {
+      "key": "botany-careful-hands",
+      "branch": "botany",
+      "name": "Careful Hands",
+      "description": "Cared harvests gain one extra unit.",
+      "max_rank": 1,
+      "cost_per_rank": 1,
+      "effects": {
+        "care_yield_bonus": 1,
+        "contract_cash_bonus": 0,
+        "grow_seconds_reduction": 0
+      }
+    },
+    {
+      "key": "commerce-counter-presence",
+      "branch": "commerce",
+      "name": "Counter Presence",
+      "description": "Each starter contract pays 10 extra Cash.",
+      "max_rank": 1,
+      "cost_per_rank": 1,
+      "effects": {
+        "care_yield_bonus": 0,
+        "contract_cash_bonus": 10,
+        "grow_seconds_reduction": 0
+      }
+    },
+    {
+      "key": "operations-fast-setup",
+      "branch": "operations",
+      "name": "Fast Setup",
+      "description": "Future starter crops finish 15 seconds sooner.",
+      "max_rank": 1,
+      "cost_per_rank": 1,
+      "effects": {
+        "care_yield_bonus": 0,
+        "contract_cash_bonus": 0,
+        "grow_seconds_reduction": 15
+      }
+    }
+  ]
+}

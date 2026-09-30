@@ -101,6 +101,22 @@ type Progression = {
   next_unlock: string | null;
 };
 
+type Skill = {
+  key: string;
+  branch: string;
+  name: string;
+  description: string;
+  rank: number;
+  max_rank: number;
+  cost_per_rank: number;
+  can_allocate: boolean;
+  effects: {
+    care_yield_bonus: number;
+    contract_cash_bonus: number;
+    grow_seconds_reduction: number;
+  };
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -127,6 +143,7 @@ type Player = {
   cash_ledger: CashLedgerEntry[];
   economy_summary: EconomySummary;
   upgrades: Upgrade[];
+  skills: Skill[];
 };
 
 type ApiError = {
@@ -208,6 +225,7 @@ export default function AuthApp() {
   const [actionSlotId, setActionSlotId] = useState<string | null>(null);
   const [actionContractKey, setActionContractKey] = useState<string | null>(null);
   const [actionUpgradeKey, setActionUpgradeKey] = useState<string | null>(null);
+  const [actionSkillKey, setActionSkillKey] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<ApiStatus>("checking");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -422,6 +440,50 @@ export default function AuthApp() {
     }
   }
 
+  async function allocateSkill(skill: Skill) {
+    if (!accessToken) return;
+    setActionSkillKey(skill.key);
+    setError(null);
+    setNotice(null);
+    try {
+      const result = await requestJson<{ skill: Skill; progression: Progression }>(
+        `/api/v1/skills/${skill.key}/allocate`,
+        accessToken,
+        { method: "POST" },
+      );
+      setNotice(
+        `${result.skill.name} rank ${result.skill.rank}. ${result.progression.skill_points} skill points left.`,
+      );
+      await refreshPlayer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Skill allocation failed.");
+      await refreshPlayer();
+    } finally {
+      setActionSkillKey(null);
+    }
+  }
+
+  async function respecSkills() {
+    if (!accessToken) return;
+    setActionSkillKey("respec");
+    setError(null);
+    setNotice(null);
+    try {
+      const result = await requestJson<{ progression: Progression }>(
+        "/api/v1/skills/respec",
+        accessToken,
+        { method: "POST" },
+      );
+      setNotice(`Skills reset. ${result.progression.skill_points} skill points available.`);
+      await refreshPlayer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Skill respec failed.");
+      await refreshPlayer();
+    } finally {
+      setActionSkillKey(null);
+    }
+  }
+
   async function logout() {
     setSubmitting(true);
     try {
@@ -608,6 +670,50 @@ export default function AuthApp() {
                         disabled={busy || maxed || !upgrade.can_purchase}
                       >
                         {maxed ? "Maxed" : upgrade.can_purchase ? "Upgrade" : "Need Cash"}
+                      </button>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <div className="section-head">
+                <p className="section-label">Skills</p>
+                <button
+                  className="tiny-action"
+                  type="button"
+                  onClick={() => void respecSkills()}
+                  disabled={actionSkillKey === "respec"}
+                >
+                  Respec
+                </button>
+              </div>
+              <div className="skill-list">
+                {player.skills.map((skill) => {
+                  const busy = actionSkillKey === skill.key;
+                  const maxed = skill.rank >= skill.max_rank;
+                  return (
+                    <article key={skill.key} className={maxed ? "skill-card completed" : "skill-card"}>
+                      <div>
+                        <span className="contract-tier">{skill.branch}</span>
+                        <strong>{skill.name}</strong>
+                        <p>{skill.description}</p>
+                      </div>
+                      <div className="upgrade-meta">
+                        <span>
+                          Rank {skill.rank}/{skill.max_rank} - cost {skill.cost_per_rank}
+                        </span>
+                        <strong>
+                          +{skill.effects.care_yield_bonus} care / +{skill.effects.contract_cash_bonus} cash / -{skill.effects.grow_seconds_reduction}s
+                        </strong>
+                      </div>
+                      <button
+                        className="secondary"
+                        onClick={() => void allocateSkill(skill)}
+                        disabled={busy || maxed || !skill.can_allocate}
+                      >
+                        {maxed ? "Maxed" : skill.can_allocate ? "Allocate" : "Need points"}
                       </button>
                     </article>
                   );
