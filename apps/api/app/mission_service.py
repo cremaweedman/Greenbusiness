@@ -218,9 +218,12 @@ def _objective_increment(
     upgrade_key: str | None,
     variety_key: str | None,
 ) -> int:
-    if objective_key is not None and objective_type in {"plant", "harvest"}:
-        if objective_key != variety_key:
-            return 0
+    if (
+        objective_key is not None
+        and objective_type in {"plant", "harvest"}
+        and objective_key != variety_key
+    ):
+        return 0
     if objective_type == "cash_earned":
         return cash_earned if event_type == "contract_complete" else 0
     if objective_type == "upgrade_owned":
