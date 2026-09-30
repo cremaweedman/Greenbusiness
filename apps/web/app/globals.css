@@ -219,7 +219,7 @@ input:focus {
   font-weight: 800;
 }
 
-.variety-list, .inventory-list, .slot-list, .contract-list, .ledger-list {
+.variety-list, .inventory-list, .slot-list, .contract-list, .ledger-list, .upgrade-list {
   display: grid;
   gap: 10px;
 }
@@ -281,6 +281,37 @@ input:focus {
   border: 1px solid #2f4036;
   border-radius: 8px;
   background: #0a100d;
+}
+
+.upgrade-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #2f4036;
+  border-radius: 8px;
+  background: #0a100d;
+}
+
+.upgrade-card.completed {
+  opacity: 0.72;
+}
+
+.upgrade-card p {
+  margin: 5px 0 0;
+  color: #94a49a;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.upgrade-meta {
+  display: grid;
+  gap: 4px;
+  color: #94a49a;
+  font-size: 0.82rem;
+}
+
+.upgrade-meta strong {
+  color: #e0ba78;
 }
 
 .contract-card.completed {

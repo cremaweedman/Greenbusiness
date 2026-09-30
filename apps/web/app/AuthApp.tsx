@@ -77,6 +77,19 @@ type EconomySummary = {
   config_versions: string[];
 };
 
+type Upgrade = {
+  key: string;
+  name: string;
+  description: string;
+  cash_cost: number;
+  level: number;
+  max_level: number;
+  effects: {
+    yield_bonus: number;
+  };
+  can_purchase: boolean;
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -100,6 +113,7 @@ type Player = {
   contracts: Contract[];
   cash_ledger: CashLedgerEntry[];
   economy_summary: EconomySummary;
+  upgrades: Upgrade[];
 };
 
 type ApiError = {
@@ -172,6 +186,7 @@ export default function AuthApp() {
   const [submitting, setSubmitting] = useState(false);
   const [actionSlotId, setActionSlotId] = useState<string | null>(null);
   const [actionContractKey, setActionContractKey] = useState<string | null>(null);
+  const [actionUpgradeKey, setActionUpgradeKey] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<ApiStatus>("checking");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -363,6 +378,29 @@ export default function AuthApp() {
     }
   }
 
+  async function purchaseUpgrade(upgrade: Upgrade) {
+    if (!accessToken) return;
+    setActionUpgradeKey(upgrade.key);
+    setError(null);
+    setNotice(null);
+    try {
+      const result = await requestJson<{
+        cash_balance: number;
+        cash_delta: number;
+        upgrade: Upgrade;
+      }>(`/api/v1/upgrades/${upgrade.key}/purchase`, accessToken, { method: "POST" });
+      setNotice(
+        `${result.upgrade.name} upgraded to level ${result.upgrade.level}. ${result.cash_delta} Cash (balance ${result.cash_balance}).`,
+      );
+      await refreshPlayer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upgrade failed.");
+      await refreshPlayer();
+    } finally {
+      setActionUpgradeKey(null);
+    }
+  }
+
   async function logout() {
     setSubmitting(true);
     try {
@@ -504,6 +542,37 @@ export default function AuthApp() {
                   <span>Burned</span>
                   <strong>{player.economy_summary.burned}</strong>
                 </article>
+              </div>
+            </div>
+
+            <div>
+              <p className="section-label">Upgrades</p>
+              <div className="upgrade-list">
+                {player.upgrades.map((upgrade) => {
+                  const busy = actionUpgradeKey === upgrade.key;
+                  const maxed = upgrade.level >= upgrade.max_level;
+                  return (
+                    <article key={upgrade.key} className={maxed ? "upgrade-card completed" : "upgrade-card"}>
+                      <div>
+                        <strong>{upgrade.name}</strong>
+                        <p>{upgrade.description}</p>
+                      </div>
+                      <div className="upgrade-meta">
+                        <span>
+                          Level {upgrade.level}/{upgrade.max_level} - +{upgrade.effects.yield_bonus} yield
+                        </span>
+                        <strong>{upgrade.cash_cost} Cash</strong>
+                      </div>
+                      <button
+                        className="secondary"
+                        onClick={() => void purchaseUpgrade(upgrade)}
+                        disabled={busy || maxed || !upgrade.can_purchase}
+                      >
+                        {maxed ? "Maxed" : upgrade.can_purchase ? "Upgrade" : "Need Cash"}
+                      </button>
+                    </article>
+                  );
+                })}
               </div>
             </div>
 

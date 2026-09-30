@@ -14,12 +14,14 @@ from app.db.models import (
     InventoryContainer,
     InventoryItem,
     PlayerProfile,
+    PlayerUpgrade,
     ProductionSlot,
     Progression,
     Room,
 )
 from app.errors import AppError
 from app.game_data.production_catalog import STARTER_VARIETIES, STARTER_VARIETY_BY_KEY
+from app.game_data.upgrades_catalog import STARTER_UPGRADES
 from app.schemas import (
     CropProductionResponse,
     HarvestResponse,
@@ -134,6 +136,17 @@ async def get_active_crops_by_slot(
         )
     ).all()
     return {crop.slot_id: crop for crop in crops}
+
+
+async def _production_yield_bonus(session: AsyncSession, user_id: uuid.UUID) -> int:
+    upgrades = (
+        await session.scalars(select(PlayerUpgrade).where(PlayerUpgrade.user_id == user_id))
+    ).all()
+    levels = {upgrade.upgrade_key: upgrade.level for upgrade in upgrades}
+    return sum(
+        upgrade.effects.yield_bonus * levels.get(upgrade.key, 0)
+        for upgrade in STARTER_UPGRADES
+    )
 
 
 async def _get_owned_slot(
@@ -299,8 +312,9 @@ async def harvest_crop(
 
     variety = STARTER_VARIETY_BY_KEY[crop.variety_key]
     care_bonus = 1 if crop.cared_at is not None else 0
+    upgrade_bonus = await _production_yield_bonus(session, user_id)
     quality = "cared" if crop.cared_at is not None else "standard"
-    yield_quantity = variety.base_yield + care_bonus
+    yield_quantity = variety.base_yield + care_bonus + upgrade_bonus
     xp_reward = yield_quantity * XP_PER_HARVEST_UNIT
     item_key = variety.item_key
 
@@ -340,6 +354,7 @@ async def harvest_crop(
             "yield_quantity": yield_quantity,
             "quality": quality,
             "xp_reward": xp_reward,
+            "upgrade_bonus": upgrade_bonus,
         },
     )
     await session.commit()

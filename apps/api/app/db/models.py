@@ -262,3 +262,21 @@ class ContractCompletion(Base):
     cash_reward: Mapped[int] = mapped_column(Integer, nullable=False)
     config_version: Mapped[str] = mapped_column(String(32), nullable=False)
     completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class PlayerUpgrade(Base):
+    __tablename__ = "player_upgrades"
+    __table_args__ = (
+        UniqueConstraint("user_id", "upgrade_key", name="uq_player_upgrade_user_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    upgrade_key: Mapped[str] = mapped_column(String(96), nullable=False)
+    level: Mapped[int] = mapped_column(Integer, nullable=False)
+    purchased_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

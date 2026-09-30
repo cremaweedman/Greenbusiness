@@ -34,6 +34,7 @@ Open:
 - Contracts: http://localhost:8080/api/v1/contracts
 - Cash ledger: http://localhost:8080/api/v1/economy/cash-ledger
 - Economy summary: http://localhost:8080/api/v1/economy/summary
+- Upgrades: http://localhost:8080/api/v1/upgrades
 - FastAPI docs: http://localhost:8080/api/docs
 
 ## Local web-only development
@@ -83,4 +84,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 and P1-M1 are complete. P2-M1 has been implemented on the production-loop slice and should be validated with the Docker-based backend/frontend/full-stack checks before it is marked complete. P3-M1 has started with versioned starter contracts, a Cash ledger base, contract delivery UI, player-visible Cash history, a source/sink economy summary and integration coverage prepared for Docker/PostgreSQL validation.
+Phase 0 and P1-M1 are complete. P2-M1 has been implemented on the production-loop slice and should be validated with the Docker-based backend/frontend/full-stack checks before it is marked complete. P3-M1 has started with versioned starter contracts, a Cash ledger base, contract delivery UI, player-visible Cash history, a source/sink economy summary, a first Cash sink upgrade that changes future harvest yield, and integration coverage prepared for Docker/PostgreSQL validation.

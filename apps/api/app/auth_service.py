@@ -41,6 +41,7 @@ from app.security import (
     normalize_email,
     verify_password,
 )
+from app.upgrades_service import upgrade_responses
 
 
 async def _get_user_by_email(session: AsyncSession, email: str) -> User | None:
@@ -278,6 +279,7 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         ),
         cash_ledger=await cash_ledger_entries(session, user_id=user_id),
         economy_summary=await cash_summary(session, user_id=user_id),
+        upgrades=await upgrade_responses(session, user_id=user_id),
     )
 
 

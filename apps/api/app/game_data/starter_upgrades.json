@@ -1,0 +1,15 @@
+{
+  "version": "p3-upgrades-v1",
+  "upgrades": [
+    {
+      "key": "starter-bench-calibration",
+      "name": "Starter Bench Calibration",
+      "description": "Calibrates the starter room bench so future harvests return one extra unit.",
+      "cash_cost": 100,
+      "max_level": 1,
+      "effects": {
+        "yield_bonus": 1
+      }
+    }
+  ]
+}

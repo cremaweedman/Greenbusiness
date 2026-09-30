@@ -402,7 +402,13 @@ Future agents/sessions must update this section after meaningful implementation.
 - `GET /v1/player` now returns Cash balance, Cash ledger entries, economy summary and contract availability;
 - web UI now shows Cash, contract requirements, delivery actions, source/sink summary and recent Cash ledger entries;
 - pure catalog anti-exploit test verifies starter Cash is bounded by unique contracts;
-- P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API, economy summary API and replay rejection.
+- first Cash sink upgrade implemented: `starter-bench-calibration`;
+- `GET /v1/upgrades` and `POST /v1/upgrades/{upgrade_key}/purchase` added;
+- purchased upgrade persists per player and adds +1 yield to future harvests;
+- web UI now shows upgrade level, cost and purchase action;
+- pure upgrade catalog tests verify upgrade cost and production effect;
+- P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API, economy summary API and replay rejection;
+- P3-M1 upgrade integration test added for insufficient Cash, purchase, duplicate max-level rejection and changed future harvest yield.
 
 ## In progress
 - Docker-based P2-M1 backend/frontend/full-stack E2E validation;
@@ -414,6 +420,7 @@ Start Docker Desktop, then run:
 - `docker compose exec api alembic upgrade head`
 - `docker compose exec api pytest -q`
 - `docker compose exec api pytest apps/api/tests/integration/test_contracts_economy.py -q`
+- `docker compose exec api pytest apps/api/tests/integration/test_upgrades_economy.py -q`
 - `docker compose exec api ruff check .`
 - `docker compose run --rm web npm run lint`
 - `docker compose run --rm web npm run typecheck`

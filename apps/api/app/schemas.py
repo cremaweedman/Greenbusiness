@@ -112,6 +112,28 @@ class EconomySummaryResponse(BaseModel):
     config_versions: list[str]
 
 
+class UpgradeEffectsResponse(BaseModel):
+    yield_bonus: int
+
+
+class UpgradeResponse(BaseModel):
+    key: str
+    name: str
+    description: str
+    cash_cost: int
+    level: int
+    max_level: int
+    effects: UpgradeEffectsResponse
+    can_purchase: bool
+
+
+class UpgradePurchaseResponse(BaseModel):
+    upgrade: UpgradeResponse
+    cash_balance: int
+    cash_delta: int
+    economy_summary: EconomySummaryResponse
+
+
 class PlayerResponse(BaseModel):
     server_time: datetime
     user_id: uuid.UUID
@@ -135,3 +157,4 @@ class PlayerResponse(BaseModel):
     contracts: list[ContractResponse]
     cash_ledger: list[CurrencyLedgerEntryResponse]
     economy_summary: EconomySummaryResponse
+    upgrades: list[UpgradeResponse]
