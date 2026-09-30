@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 3 — Economy, Contracts & Progression  
-**Milestone:** P3-M2 — READY, NOT STARTED
+**Phase:** Phase 4 — Missions, Narrative & Collection Meta  
+**Milestone:** P4-M1 — Mission Engine & Mastery Slice — READY, NOT STARTED
 
 ## Requirements
 
@@ -80,4 +80,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0, P1-M1, P2-M1 and P3-M1 are complete and validated in CI. The repository is ready for P3-M2: contract rotation, broader progression and economy expansion.
+Phase 0, P1-M1, P2-M1, P3-M1 and P3-M2 are complete and validated in CI. The repository is ready for P4-M1: data-driven missions, narrative contacts and variety mastery.
