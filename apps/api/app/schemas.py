@@ -103,6 +103,15 @@ class CurrencyLedgerEntryResponse(BaseModel):
     created_at: datetime
 
 
+class EconomySummaryResponse(BaseModel):
+    currency: str
+    balance: int
+    minted: int
+    burned: int
+    entry_count: int
+    config_versions: list[str]
+
+
 class PlayerResponse(BaseModel):
     server_time: datetime
     user_id: uuid.UUID
@@ -125,3 +134,4 @@ class PlayerResponse(BaseModel):
     starter_varieties: list[StarterVarietyResponse]
     contracts: list[ContractResponse]
     cash_ledger: list[CurrencyLedgerEntryResponse]
+    economy_summary: EconomySummaryResponse

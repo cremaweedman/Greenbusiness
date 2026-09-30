@@ -68,6 +68,15 @@ type CashLedgerEntry = {
   created_at: string;
 };
 
+type EconomySummary = {
+  currency: string;
+  balance: number;
+  minted: number;
+  burned: number;
+  entry_count: number;
+  config_versions: string[];
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -90,6 +99,7 @@ type Player = {
   starter_varieties: StarterVariety[];
   contracts: Contract[];
   cash_ledger: CashLedgerEntry[];
+  economy_summary: EconomySummary;
 };
 
 type ApiError = {
@@ -476,6 +486,24 @@ export default function AuthApp() {
                     </article>
                   );
                 })}
+              </div>
+            </div>
+
+            <div>
+              <p className="section-label">Economy summary</p>
+              <div className="economy-summary">
+                <article>
+                  <span>Balance</span>
+                  <strong>{player.economy_summary.balance}</strong>
+                </article>
+                <article>
+                  <span>Minted</span>
+                  <strong>{player.economy_summary.minted}</strong>
+                </article>
+                <article>
+                  <span>Burned</span>
+                  <strong>{player.economy_summary.burned}</strong>
+                </article>
               </div>
             </div>
 

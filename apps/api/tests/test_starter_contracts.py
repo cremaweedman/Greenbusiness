@@ -21,3 +21,9 @@ def test_starter_contracts_have_safe_requirements_and_rewards():
         assert contract.quantity > 0
         assert contract.cash_reward > 0
         assert "weed" not in contract.name.lower()
+
+
+def test_starter_contract_rewards_are_bounded_by_unique_contracts():
+    total_cash_available_once = sum(contract.cash_reward for contract in STARTER_CONTRACTS)
+    assert total_cash_available_once == 270
+    assert len({contract.key for contract in STARTER_CONTRACTS}) == len(STARTER_CONTRACTS)

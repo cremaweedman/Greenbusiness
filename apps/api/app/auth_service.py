@@ -9,7 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.audit import append_audit_event
 from app.config import settings
-from app.contracts_service import cash_balance, cash_ledger_entries, contract_responses
+from app.contracts_service import (
+    cash_balance,
+    cash_ledger_entries,
+    cash_summary,
+    contract_responses,
+)
 from app.db.models import (
     AuthSession,
     Business,
@@ -272,6 +277,7 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
             inventory_container_id=inventory.id,
         ),
         cash_ledger=await cash_ledger_entries(session, user_id=user_id),
+        economy_summary=await cash_summary(session, user_id=user_id),
     )
 
 

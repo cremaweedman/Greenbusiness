@@ -398,9 +398,11 @@ Future agents/sessions must update this section after meaningful implementation.
 - `GET /v1/contracts` endpoint added for direct contract availability reads;
 - `/v1/contracts/{contract_key}/complete` endpoint added to consume inventory and grant Cash;
 - `GET /v1/economy/cash-ledger` endpoint added for player-visible Cash history;
-- `GET /v1/player` now returns Cash balance, Cash ledger entries and contract availability;
-- web UI now shows Cash, contract requirements, delivery actions and recent Cash ledger entries;
-- P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API and replay rejection.
+- `GET /v1/economy/summary` endpoint added for Cash source/sink totals;
+- `GET /v1/player` now returns Cash balance, Cash ledger entries, economy summary and contract availability;
+- web UI now shows Cash, contract requirements, delivery actions, source/sink summary and recent Cash ledger entries;
+- pure catalog anti-exploit test verifies starter Cash is bounded by unique contracts;
+- P3-M1 integration test added for missing inventory, contract completion, inventory consumption, Cash ledger persistence, ledger API, economy summary API and replay rejection.
 
 ## In progress
 - Docker-based P2-M1 backend/frontend/full-stack E2E validation;

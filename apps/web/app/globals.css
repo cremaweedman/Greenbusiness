@@ -322,6 +322,32 @@ input:focus {
   color: #e0ba78;
 }
 
+.economy-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.economy-summary article {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid #2f4036;
+  border-radius: 8px;
+  background: #0a100d;
+}
+
+.economy-summary span {
+  color: #94a49a;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.economy-summary strong {
+  color: #e0ba78;
+}
+
 .ledger-item {
   display: grid;
   grid-template-columns: 1fr auto;

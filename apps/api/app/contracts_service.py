@@ -27,6 +27,7 @@ from app.schemas import (
     ContractRequirementResponse,
     ContractResponse,
     CurrencyLedgerEntryResponse,
+    EconomySummaryResponse,
     InventoryItemResponse,
 )
 
@@ -89,6 +90,29 @@ async def cash_ledger_entries(
         )
         for entry in entries
     ]
+
+
+async def cash_summary(session: AsyncSession, *, user_id: uuid.UUID) -> EconomySummaryResponse:
+    entries = (
+        await session.scalars(
+            select(CurrencyLedgerEntry)
+            .where(CurrencyLedgerEntry.user_id == user_id)
+            .where(CurrencyLedgerEntry.currency == CASH_CURRENCY)
+            .order_by(CurrencyLedgerEntry.created_at, CurrencyLedgerEntry.id)
+        )
+    ).all()
+    minted = sum(entry.amount for entry in entries if entry.amount > 0)
+    burned = sum(abs(entry.amount) for entry in entries if entry.amount < 0)
+    balance = entries[-1].balance_after if entries else 0
+    config_versions = sorted({entry.config_version for entry in entries})
+    return EconomySummaryResponse(
+        currency=CASH_CURRENCY,
+        balance=balance,
+        minted=minted,
+        burned=burned,
+        entry_count=len(entries),
+        config_versions=config_versions,
+    )
 
 
 async def _completed_contract_keys(session: AsyncSession, user_id: uuid.UUID) -> set[str]:
