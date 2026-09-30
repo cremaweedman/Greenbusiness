@@ -1,16 +1,15 @@
-from dataclasses import dataclass
-
-
 MAX_LEVEL = 20
 SKILL_BRANCHES = ("botany", "commerce", "operations")
 
 
-@dataclass(frozen=True)
 class UnlockDefinition:
-    key: str
-    kind: str
-    level: int
-    label: str
+    __slots__ = ("key", "kind", "level", "label")
+
+    def __init__(self, key: str, kind: str, level: int, label: str) -> None:
+        self.key = key
+        self.kind = kind
+        self.level = level
+        self.label = label
 
 
 def xp_cost_for_level(level: int) -> int:
