@@ -3,7 +3,7 @@ SKILL_BRANCHES = ("botany", "commerce", "operations")
 
 
 class UnlockDefinition:
-    __slots__ = ("key", "kind", "level", "label")
+    __slots__ = ("key", "kind", "label", "level")
 
     def __init__(self, key: str, kind: str, level: int, label: str) -> None:
         self.key = key
