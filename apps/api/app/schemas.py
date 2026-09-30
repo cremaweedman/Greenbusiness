@@ -28,6 +28,7 @@ class StarterVarietyResponse(BaseModel):
     name: str
     grow_seconds: int
     base_yield: int
+    traits: list[str]
 
 
 class CropProductionResponse(BaseModel):
@@ -53,6 +54,13 @@ class InventoryItemResponse(BaseModel):
     quantity: int
 
 
+class InventoryLotResponse(BaseModel):
+    item_key: str
+    display_name: str
+    quality: str
+    quantity: int
+
+
 class PlantRequest(BaseModel):
     variety_key: str = Field(min_length=1, max_length=64)
 
@@ -60,6 +68,7 @@ class PlantRequest(BaseModel):
 class HarvestResponse(BaseModel):
     slot: ProductionSlotResponse
     inventory: list[InventoryItemResponse]
+    inventory_lots: list[InventoryLotResponse]
     harvested_item: InventoryItemResponse
     yield_quantity: int
     quality: str
@@ -67,17 +76,37 @@ class HarvestResponse(BaseModel):
 
 
 class ContractOfferResponse(BaseModel):
+    offer_id: str
+    offer_bucket: int
     key: str
     title: str
+    archetype: str
     item_key: str
     item_name: str
     required_quantity: int
+    required_quality: str | None
+    required_trait: str | None
     reward_cash: int
+    reward_reputation: int
+    min_level: int
+    min_reputation: int
+    specialized: bool
+    locked: bool
+    expires_at: datetime
 
 
 class PlayerContractResponse(BaseModel):
     id: uuid.UUID
+    offer_id: str
+    offer_bucket: int
     contract_key: str
+    archetype: str
+    item_key: str
+    required_quantity: int
+    required_quality: str | None
+    required_trait: str | None
+    reward_cash: int
+    reward_reputation: int
     status: str
     accepted_at: datetime
     completed_at: datetime | None
@@ -86,14 +115,28 @@ class PlayerContractResponse(BaseModel):
 class UpgradeOfferResponse(BaseModel):
     key: str
     name: str
+    tier: int
     cost_cash: int
     yield_bonus: int
+    min_level: int
+    prerequisite_key: str | None
+    locked: bool
+    locked_reason: str | None
+
+
+class SkillBranchResponse(BaseModel):
+    branch: str
+    points: int
 
 
 class EconomyActionResponse(BaseModel):
     cash: int
+    reputation: int
+    level: int
     inventory: list[InventoryItemResponse]
+    inventory_lots: list[InventoryLotResponse]
     active_contract: PlayerContractResponse | None
+    active_contracts: list[PlayerContractResponse]
     owned_upgrade_keys: list[str]
 
 
@@ -110,14 +153,21 @@ class PlayerResponse(BaseModel):
     slots: list[ProductionSlotResponse]
     level: int
     xp: int
+    next_level_xp: int | None
     reputation: int
+    skill_points_unspent: int
+    skill_branches: list[SkillBranchResponse]
+    unlocked_keys: list[str]
     tutorial_step: int
     tutorial_completed: bool
     inventory_container_id: uuid.UUID
     inventory: list[InventoryItemResponse]
+    inventory_lots: list[InventoryLotResponse]
     starter_varieties: list[StarterVarietyResponse]
     cash: int
     contract_offers: list[ContractOfferResponse]
+    contract_refresh_at: datetime
     active_contract: PlayerContractResponse | None
+    active_contracts: list[PlayerContractResponse]
     upgrade_offers: list[UpgradeOfferResponse]
     owned_upgrade_keys: list[str]
