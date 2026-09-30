@@ -22,17 +22,17 @@ from app.db.models import (
 )
 from app.errors import AppError
 from app.game_data.economy_catalog import (
-    CONTRACTS,
     CONTRACT_BY_KEY,
     CONTRACT_REFRESH_SECONDS,
+    CONTRACTS,
     ECONOMY_CONFIG_VERSION,
     MAX_ACTIVE_CONTRACTS,
     SPECIALIZED_OFFER_COUNT,
     STANDARD_OFFER_COUNT,
     STARTER_CONTRACT,
     STARTING_CASH,
-    UPGRADES,
     UPGRADE_BY_KEY,
+    UPGRADES,
     ContractDefinition,
     UpgradeDefinition,
 )
