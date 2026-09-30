@@ -120,6 +120,8 @@ type PlayerMission = {
   key: string;
   sequence: number;
   contact_key: string;
+  arc_key: string;
+  arc_title: string;
   title: string;
   description: string;
   objective_type: string;
@@ -128,6 +130,7 @@ type PlayerMission = {
   progress: number;
   status: "locked" | "active" | "completed" | string;
   reward: MissionReward;
+  inbox_message: string;
   completed_at: string | null;
 };
 
@@ -756,7 +759,11 @@ export default function AuthApp() {
             </div>
 
             <div>
-              <p className="section-label">Mission arc</p>
+              <p className="section-label">Narrative arcs</p>
+              <p className="empty-state">
+                {player.missions.filter((mission) => mission.status === "completed").length} completed ·{" "}
+                {player.missions.filter((mission) => mission.status === "active").length} active
+              </p>
               <div className="mission-list">
                 {player.missions.map((mission) => {
                   const percentage =
@@ -768,7 +775,11 @@ export default function AuthApp() {
                         <strong>{mission.title}</strong>
                         <em>{mission.status}</em>
                       </div>
+                      <p className="muted">{mission.arc_title}</p>
                       <p>{mission.description}</p>
+                      {mission.status === "completed" && (
+                        <p className="muted">Inbox: {mission.inbox_message}</p>
+                      )}
                       <div
                         className="progress-track"
                         aria-label={`${mission.progress} of ${mission.target}`}
@@ -815,7 +826,10 @@ export default function AuthApp() {
                         Harvest {item.harvest_quantity} · Contracts {item.contract_quantity}
                       </p>
                       {item.unlocked_cosmetic_keys.length > 0 && (
-                        <span className="cosmetic-unlock">Cosmetic hook unlocked</span>
+                        <span className="cosmetic-unlock">
+                          {item.unlocked_cosmetic_keys.length} cosmetic reward
+                          {item.unlocked_cosmetic_keys.length === 1 ? "" : "s"} unlocked
+                        </span>
                       )}
                     </article>
                   ))

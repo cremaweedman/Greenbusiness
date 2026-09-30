@@ -12,6 +12,7 @@ from app.audit import append_audit_event
 from app.db.models import (
     EconomyLedger,
     MissionEventReceipt,
+    MissionPoolAssignment,
     PlayerMission,
     PlayerVarietyMastery,
     Progression,
@@ -20,14 +21,15 @@ from app.db.models import (
 from app.errors import AppError
 from app.game_data.mission_catalog import (
     CONTACTS,
-    MASTERY_COSMETIC_THRESHOLD,
     MISSION_BY_KEY,
     MISSION_CONFIG_VERSION,
     MISSIONS,
-    cosmetic_key_for_variety,
+    cosmetic_keys_for_variety,
+    daily_period_key,
     daily_pool_keys,
     mastery_tier,
     next_mastery_threshold,
+    weekly_period_key,
     weekly_pool_keys,
 )
 from app.game_data.production_catalog import STARTER_VARIETY_BY_KEY
@@ -85,6 +87,42 @@ async def bootstrap_missions(session: AsyncSession, user_id: uuid.UUID) -> int:
                 break
 
     return created
+
+
+async def _persist_pool_assignments(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    period_type: str,
+    period_key: str,
+    mission_keys: list[str],
+) -> list[str]:
+    for slot_index, mission_key in enumerate(mission_keys):
+        stmt = (
+            insert(MissionPoolAssignment)
+            .values(
+                id=uuid.uuid4(),
+                user_id=user_id,
+                period_type=period_type,
+                period_key=period_key,
+                slot_index=slot_index,
+                mission_key=mission_key,
+                config_version=MISSION_CONFIG_VERSION,
+            )
+            .on_conflict_do_nothing()
+        )
+        await session.execute(stmt)
+
+    assignments = (
+        await session.scalars(
+            select(MissionPoolAssignment)
+            .where(MissionPoolAssignment.user_id == user_id)
+            .where(MissionPoolAssignment.period_type == period_type)
+            .where(MissionPoolAssignment.period_key == period_key)
+            .order_by(MissionPoolAssignment.slot_index)
+        )
+    ).all()
+    return [item.mission_key for item in assignments]
 
 
 async def _award_mission_reward(
@@ -178,7 +216,14 @@ def _objective_increment(
     amount: int,
     cash_earned: int,
     upgrade_key: str | None,
+    variety_key: str | None,
 ) -> int:
+    if (
+        objective_key is not None
+        and objective_type in {"plant", "harvest"}
+        and objective_key != variety_key
+    ):
+        return 0
     if objective_type == "cash_earned":
         return cash_earned if event_type == "contract_complete" else 0
     if objective_type == "upgrade_owned":
@@ -273,6 +318,7 @@ async def record_domain_event(
             amount=amount,
             cash_earned=cash_earned,
             upgrade_key=upgrade_key,
+            variety_key=variety_key,
         )
         if increment <= 0:
             continue
@@ -317,6 +363,8 @@ def _mission_response(model: PlayerMission) -> PlayerMissionResponse:
         key=definition.key,
         sequence=definition.sequence,
         contact_key=definition.contact_key,
+        arc_key=definition.arc_key,
+        arc_title=definition.arc_title,
         title=definition.title,
         description=definition.description,
         objective_type=definition.objective_type,
@@ -329,6 +377,7 @@ def _mission_response(model: PlayerMission) -> PlayerMissionResponse:
             xp=definition.reward_xp,
             reputation=definition.reward_reputation,
         ),
+        inbox_message=definition.inbox_message,
         completed_at=model.completed_at,
     )
 
@@ -336,11 +385,7 @@ def _mission_response(model: PlayerMission) -> PlayerMissionResponse:
 def _mastery_response(model: PlayerVarietyMastery) -> VarietyMasteryResponse:
     variety = STARTER_VARIETY_BY_KEY.get(model.variety_key)
     points = model.harvest_quantity + model.contract_quantity
-    cosmetics = (
-        [cosmetic_key_for_variety(model.variety_key)]
-        if points >= MASTERY_COSMETIC_THRESHOLD
-        else []
-    )
+    cosmetics = cosmetic_keys_for_variety(model.variety_key, points)
     return VarietyMasteryResponse(
         variety_key=model.variety_key,
         variety_name=variety.name if variety else model.variety_key,
@@ -380,6 +425,24 @@ async def meta_state(
     ).all()
 
     current_time = now or datetime.now(UTC)
+    day = current_time.date()
+    daily_keys = await _persist_pool_assignments(
+        session,
+        user_id=user_id,
+        period_type="daily",
+        period_key=daily_period_key(day),
+        mission_keys=daily_pool_keys(user_id, day),
+    )
+    weekly_keys = await _persist_pool_assignments(
+        session,
+        user_id=user_id,
+        period_type="weekly",
+        period_key=weekly_period_key(day),
+        mission_keys=weekly_pool_keys(user_id, day),
+    )
+    if persist_bootstrap:
+        await session.commit()
+
     mastery = [_mastery_response(item) for item in mastery_models]
     cosmetics = sorted(
         {
@@ -400,8 +463,8 @@ async def meta_state(
             for item in CONTACTS
         ],
         missions=[_mission_response(item) for item in mission_models],
-        daily_mission_keys=daily_pool_keys(user_id, current_time.date()),
-        weekly_mission_keys=weekly_pool_keys(user_id, current_time.date()),
+        daily_mission_keys=daily_keys,
+        weekly_mission_keys=weekly_keys,
         mastery=mastery,
         unlocked_cosmetic_keys=cosmetics,
     )
