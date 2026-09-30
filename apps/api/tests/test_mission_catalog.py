@@ -5,8 +5,8 @@ from datetime import date
 
 from app.game_data.mission_catalog import (
     CONTACTS,
-    MISSIONS,
     MISSION_CONFIG_VERSION,
+    MISSIONS,
     daily_pool_keys,
     weekly_pool_keys,
 )
