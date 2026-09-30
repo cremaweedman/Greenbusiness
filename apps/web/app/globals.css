@@ -516,3 +516,134 @@ input:focus {
     justify-items: stretch;
   }
 }
+
+
+.phone-panel {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  border: 1px solid #34473b;
+  border-radius: 8px;
+  background: #0c130f;
+}
+
+.phone-head,
+.mission-head,
+.mission-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.phone-head h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.pool-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pool-chips span,
+.cosmetic-unlock {
+  padding: 6px 9px;
+  border: 1px solid #4a624f;
+  border-radius: 999px;
+  background: #172119;
+  color: #badfc2;
+  font-size: 0.74rem;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.5fr 1fr;
+  gap: 14px;
+}
+
+.contact-list,
+.mission-list,
+.mastery-list {
+  display: grid;
+  gap: 9px;
+}
+
+.contact-card,
+.mission-card,
+.mastery-card {
+  display: grid;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid #2f4036;
+  border-radius: 8px;
+  background: #101712;
+}
+
+.contact-card > div {
+  display: grid;
+  gap: 3px;
+}
+
+.contact-card span,
+.contact-card p,
+.mission-card p,
+.mastery-card p,
+.mission-meta {
+  margin: 0;
+  color: #94a49a;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.mission-card.locked {
+  opacity: 0.58;
+}
+
+.mission-card.active {
+  border-color: #789d80;
+}
+
+.mission-card.completed {
+  border-color: #6d6540;
+  background: #17180f;
+}
+
+.mission-head span,
+.mission-head em {
+  color: #84968b;
+  font-size: 0.72rem;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.progress-track {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #09100c;
+}
+
+.progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #78bb8a, #d2b66e);
+}
+
+@media (max-width: 900px) {
+  .meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .phone-head,
+  .mission-head,
+  .mission-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
