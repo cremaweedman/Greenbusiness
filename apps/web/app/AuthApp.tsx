@@ -15,6 +15,7 @@ type StarterVariety = {
   name: string;
   grow_seconds: number;
   base_yield: number;
+  traits: string[];
 };
 
 type Crop = {
@@ -40,18 +41,45 @@ type InventoryItem = {
   quantity: number;
 };
 
+type InventoryLot = {
+  item_key: string;
+  display_name: string;
+  quality: string;
+  quantity: number;
+};
+
 type ContractOffer = {
+  offer_id: string;
+  offer_bucket: number;
   key: string;
   title: string;
+  archetype: string;
   item_key: string;
   item_name: string;
   required_quantity: number;
+  required_quality: string | null;
+  required_trait: string | null;
   reward_cash: number;
+  reward_reputation: number;
+  min_level: number;
+  min_reputation: number;
+  specialized: boolean;
+  locked: boolean;
+  expires_at: string;
 };
 
 type PlayerContract = {
   id: string;
+  offer_id: string;
+  offer_bucket: number;
   contract_key: string;
+  archetype: string;
+  item_key: string;
+  required_quantity: number;
+  required_quality: string | null;
+  required_trait: string | null;
+  reward_cash: number;
+  reward_reputation: number;
   status: string;
   accepted_at: string;
   completed_at: string | null;
@@ -60,8 +88,18 @@ type PlayerContract = {
 type UpgradeOffer = {
   key: string;
   name: string;
+  tier: number;
   cost_cash: number;
   yield_bonus: number;
+  min_level: number;
+  prerequisite_key: string | null;
+  locked: boolean;
+  locked_reason: string | null;
+};
+
+type SkillBranch = {
+  branch: string;
+  points: number;
 };
 
 type Player = {
@@ -77,15 +115,22 @@ type Player = {
   slots: Slot[];
   level: number;
   xp: number;
+  next_level_xp: number | null;
   reputation: number;
+  skill_points_unspent: number;
+  skill_branches: SkillBranch[];
+  unlocked_keys: string[];
   tutorial_step: number;
   tutorial_completed: boolean;
   inventory_container_id: string;
   inventory: InventoryItem[];
+  inventory_lots: InventoryLot[];
   starter_varieties: StarterVariety[];
   cash: number;
   contract_offers: ContractOffer[];
+  contract_refresh_at: string;
   active_contract: PlayerContract | null;
+  active_contracts: PlayerContract[];
   upgrade_offers: UpgradeOffer[];
   owned_upgrade_keys: string[];
 };
@@ -339,7 +384,7 @@ export default function AuthApp() {
     try {
       if (action === "accept") {
         await requestJson<PlayerContract>(
-          `/api/v1/economy/contracts/${target}/accept`,
+          `/api/v1/economy/offers/${encodeURIComponent(target)}/accept`,
           accessToken,
           { method: "POST" },
         );
@@ -409,8 +454,9 @@ export default function AuthApp() {
             <p className="eyebrow">STARTER ROOM ONLINE</p>
             <h1>{player.business_name}</h1>
             <p className="muted">
-              {player.display_name} - Level {player.level} - XP {player.xp} - Reputation{" "}
-              {player.reputation}
+              {player.display_name} - Level {player.level} - XP {player.xp}
+              {player.next_level_xp ? `/${player.next_level_xp}` : " (MAX)"} - Reputation{" "}
+              {player.reputation} - Skill points {player.skill_points_unspent}
             </p>
           </div>
           <div className="topbar-actions">
@@ -469,65 +515,91 @@ export default function AuthApp() {
             <div>
               <p className="section-label">Economy</p>
               <div className="economy-list">
+                <p className="empty-state">
+                  Offers refresh in {formatRemaining(player.contract_refresh_at, serverNow)}
+                </p>
+
                 {player.contract_offers.map((offer) => (
-                  <article key={offer.key} className="economy-card">
-                    <strong>{offer.title}</strong>
+                  <article
+                    key={offer.offer_id}
+                    className={offer.locked ? "economy-card locked" : "economy-card"}
+                  >
+                    <strong>
+                      {offer.specialized ? "Specialized · " : ""}
+                      {offer.title}
+                    </strong>
                     <span>
-                      Deliver {offer.required_quantity} {offer.item_name} · +{offer.reward_cash} Cash
+                      {offer.archetype} · Deliver {offer.required_quantity} {offer.item_name}
+                      {offer.required_quality ? ` · ${offer.required_quality} quality` : ""}
+                      {offer.required_trait ? ` · ${offer.required_trait} trait` : ""}
                     </span>
+                    <span>
+                      +{offer.reward_cash} Cash · +{offer.reward_reputation} Reputation
+                    </span>
+                    {offer.locked && (
+                      <span>
+                        Requires level {offer.min_level} / reputation {offer.min_reputation}
+                      </span>
+                    )}
                     <button
                       className="secondary"
-                      onClick={() => void runEconomyAction("accept", offer.key)}
-                      disabled={economyBusy !== null}
+                      onClick={() => void runEconomyAction("accept", offer.offer_id)}
+                      disabled={economyBusy !== null || offer.locked}
                     >
-                      Accept contract
+                      {offer.locked ? "Locked" : "Accept contract"}
                     </button>
                   </article>
                 ))}
 
-                {player.active_contract?.status === "active" && (
-                  <article className="economy-card">
-                    <strong>Active contract</strong>
-                    <span>Deliver the requested inventory to receive Cash.</span>
+                {player.active_contracts.map((contract) => (
+                  <article key={contract.id} className="economy-card">
+                    <strong>Active · {contract.contract_key}</strong>
+                    <span>
+                      Deliver {contract.required_quantity}
+                      {contract.required_quality ? ` · ${contract.required_quality} quality` : ""}
+                      {contract.required_trait ? ` · ${contract.required_trait} trait` : ""}
+                    </span>
+                    <span>
+                      +{contract.reward_cash} Cash · +{contract.reward_reputation} Reputation
+                    </span>
                     <button
                       className="primary"
-                      onClick={() =>
-                        void runEconomyAction("complete", player.active_contract?.id ?? "")
-                      }
+                      onClick={() => void runEconomyAction("complete", contract.id)}
                       disabled={economyBusy !== null}
                     >
                       Complete contract
                     </button>
                   </article>
-                )}
-
-                {player.active_contract?.status === "completed" && (
-                  <article className="economy-card complete">
-                    <strong>Starter contract complete</strong>
-                    <span>The first client relationship is secured.</span>
-                  </article>
-                )}
+                ))}
 
                 {player.upgrade_offers.map((upgrade) => (
-                  <article key={upgrade.key} className="economy-card">
-                    <strong>{upgrade.name}</strong>
+                  <article
+                    key={upgrade.key}
+                    className={upgrade.locked ? "economy-card locked" : "economy-card"}
+                  >
+                    <strong>{upgrade.name} · Tier {upgrade.tier}</strong>
                     <span>
                       {upgrade.cost_cash} Cash · +{upgrade.yield_bonus} yield per harvest
                     </span>
+                    {upgrade.locked_reason && <span>{upgrade.locked_reason}</span>}
                     <button
                       className="primary"
                       onClick={() => void runEconomyAction("upgrade", upgrade.key)}
-                      disabled={economyBusy !== null || player.cash < upgrade.cost_cash}
+                      disabled={
+                        economyBusy !== null ||
+                        upgrade.locked ||
+                        player.cash < upgrade.cost_cash
+                      }
                     >
-                      Buy upgrade
+                      {upgrade.locked ? "Locked" : "Buy upgrade"}
                     </button>
                   </article>
                 ))}
 
-                {player.owned_upgrade_keys.includes("starter-yield-boost") && (
+                {player.owned_upgrade_keys.length > 0 && (
                   <article className="economy-card complete">
-                    <strong>Efficient Racks owned</strong>
-                    <span>Future harvests receive +1 yield.</span>
+                    <strong>Owned upgrades</strong>
+                    <span>{player.owned_upgrade_keys.join(", ")}</span>
                   </article>
                 )}
               </div>

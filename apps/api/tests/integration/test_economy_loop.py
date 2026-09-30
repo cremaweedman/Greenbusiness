@@ -118,6 +118,7 @@ async def test_economic_loop_is_idempotent_and_upgrade_changes_yield(client: Asy
         assert completed_state["cash"] == 650
         assert completed_state["active_contract"]["status"] == "completed"
         assert completed_state["inventory"][0]["quantity"] == 0
+        assert completed_state["reputation"] == 5
 
         replayed = await client.post(
             f"/v1/economy/contracts/{contract_id}/complete",
@@ -162,7 +163,8 @@ async def test_economic_loop_is_idempotent_and_upgrade_changes_yield(client: Asy
         final_state = final.json()
         assert final_state["cash"] == 50
         assert final_state["owned_upgrade_keys"] == ["starter-yield-boost"]
-        assert final_state["upgrade_offers"] == []
+        assert final_state["upgrade_offers"][0]["key"] == "efficient-racks-2"
+        assert final_state["upgrade_offers"][0]["locked"] is True
 
         async with SessionLocal() as session:
             user = await session.scalar(select(User).where(User.email == email))

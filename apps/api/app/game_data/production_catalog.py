@@ -12,6 +12,7 @@ class StarterVariety:
     name: str
     grow_seconds: int
     base_yield: int
+    traits: tuple[str, ...]
 
     @property
     def item_key(self) -> str:
@@ -28,6 +29,15 @@ def _require_string(value: Any, field: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"Starter variety has invalid {field}.")
     return value.strip()
+
+
+def _require_traits(value: Any, key: str) -> tuple[str, ...]:
+    if not isinstance(value, list) or not value:
+        raise ValueError(f"Starter variety {key!r} has invalid traits.")
+    traits = tuple(_require_string(item, "trait") for item in value)
+    if len(set(traits)) != len(traits):
+        raise ValueError(f"Starter variety {key!r} has duplicate traits.")
+    return traits
 
 
 def load_starter_varieties() -> tuple[StarterVariety, ...]:
@@ -51,6 +61,7 @@ def load_starter_varieties() -> tuple[StarterVariety, ...]:
                 name=_require_string(record.get("name"), "name"),
                 grow_seconds=_require_positive_int(record.get("grow_seconds"), "grow_seconds", key),
                 base_yield=_require_positive_int(record.get("base_yield"), "base_yield", key),
+                traits=_require_traits(record.get("traits"), key),
             )
         )
     return tuple(varieties)

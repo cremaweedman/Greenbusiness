@@ -256,6 +256,98 @@ jobs:
           assert harvest["yield_quantity"] == 4
           PY
 
+      - name: Contracts progression E2E
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python - <<'PY' > /tmp/p3m2-register.json
+          import json
+          print(json.dumps({
+              "email": "ci-progression@example.com",
+              "password": "CI-progression-password-123",
+              "display_name": "CI Progression",
+          }))
+          PY
+
+          curl -fsS \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/p3m2-register.json \
+            http://localhost:8080/api/v1/auth/register \
+            > /tmp/p3m2-token.json
+
+          P3M2_TOKEN="$(python -c 'import json; print(json.load(open("/tmp/p3m2-token.json"))["access_token"])')"
+
+          curl -fsS \
+            -H "Authorization: Bearer $P3M2_TOKEN" \
+            http://localhost:8080/api/v1/player \
+            > /tmp/p3m2-player.json
+
+          python - <<'PY'
+          import json
+          player = json.load(open("/tmp/p3m2-player.json"))
+          offers = player["contract_offers"]
+          assert len(offers) == 4
+          assert sum(not offer["specialized"] for offer in offers) == 3
+          assert sum(offer["specialized"] for offer in offers) == 1
+          assert player["next_level_xp"] == 100
+          assert player["skill_points_unspent"] == 0
+          assert {item["branch"] for item in player["skill_branches"]} == {
+              "botany", "commerce", "operations"
+          }
+          assert "contracts-standard" in player["unlocked_keys"]
+          assert player["contract_refresh_at"] > player["server_time"]
+          PY
+
+          docker compose exec -T postgres psql \
+            -U greenbusiness -d greenbusiness -v ON_ERROR_STOP=1 \
+            -c "UPDATE progression SET level = 5, reputation = 100 WHERE user_id = (SELECT id FROM users WHERE email = 'ci-progression@example.com');"
+
+          curl -fsS \
+            -H "Authorization: Bearer $P3M2_TOKEN" \
+            http://localhost:8080/api/v1/player \
+            > /tmp/p3m2-unlocked.json
+
+          python - <<'PY' > /tmp/p3m2-offer-ids.txt
+          import json
+          player = json.load(open("/tmp/p3m2-unlocked.json"))
+          offers = player["contract_offers"]
+          assert len(offers) == 4
+          assert all(not offer["locked"] for offer in offers)
+          for offer in offers:
+              print(offer["offer_id"])
+          PY
+
+          mapfile -t OFFER_IDS < /tmp/p3m2-offer-ids.txt
+
+          for index in 0 1 2; do
+            curl -fsS \
+              -H "Authorization: Bearer $P3M2_TOKEN" \
+              -X POST \
+              "http://localhost:8080/api/v1/economy/offers/${OFFER_IDS[$index]}/accept" \
+              > "/tmp/p3m2-accept-$index.json"
+          done
+
+          FOURTH_STATUS="$(curl -sS -o /tmp/p3m2-fourth.json -w "%{http_code}" \
+            -H "Authorization: Bearer $P3M2_TOKEN" \
+            -X POST \
+            "http://localhost:8080/api/v1/economy/offers/${OFFER_IDS[3]}/accept")"
+          test "$FOURTH_STATUS" = "409"
+
+          curl -fsS \
+            -H "Authorization: Bearer $P3M2_TOKEN" \
+            http://localhost:8080/api/v1/player \
+            > /tmp/p3m2-final.json
+
+          python - <<'PY'
+          import json
+          player = json.load(open("/tmp/p3m2-final.json"))
+          assert len(player["active_contracts"]) == 3
+          assert player["level"] == 5
+          assert player["reputation"] == 100
+          assert "specialized-contracts" in player["unlocked_keys"]
+          PY
+
       - name: Teardown
         if: always()
         run: docker compose down -v
