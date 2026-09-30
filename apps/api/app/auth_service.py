@@ -14,6 +14,7 @@ from app.db.models import (
     Business,
     InventoryContainer,
     PlayerProfile,
+    PlayerSkillBranch,
     ProductionSlot,
     Progression,
     Room,
@@ -21,13 +22,15 @@ from app.db.models import (
 )
 from app.economy_service import bootstrap_wallet, economy_state
 from app.errors import AppError
+from app.game_data.progression_catalog import SKILL_BRANCHES, next_level_xp, unlocked_keys
 from app.production_service import (
     get_active_crops_by_slot,
+    inventory_lot_responses,
     inventory_responses,
     slot_response,
     starter_variety_responses,
 )
-from app.schemas import PlayerResponse
+from app.schemas import PlayerResponse, SkillBranchResponse
 from app.security import (
     create_access_token,
     hash_password,
@@ -69,10 +72,20 @@ async def register_user(
 
     profile = PlayerProfile(user_id=user.id, display_name=display_name.strip())
     business = Business(user_id=user.id, name=f"{display_name.strip()}'s GreenBusiness")
-    progression = Progression(user_id=user.id, level=1, xp=0, reputation=0)
+    progression = Progression(
+        user_id=user.id,
+        level=1,
+        xp=0,
+        reputation=0,
+        skill_points_unspent=0,
+    )
     inventory = InventoryContainer(user_id=user.id, kind="main")
+    skill_branches = [
+        PlayerSkillBranch(user_id=user.id, branch=branch_name, points=0)
+        for branch_name in SKILL_BRANCHES
+    ]
 
-    session.add_all([profile, business, progression, inventory])
+    session.add_all([profile, business, progression, inventory, *skill_branches])
     await session.flush()
     await bootstrap_wallet(session, user.id)
 
@@ -246,9 +259,14 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         )
     ).all()
     crops_by_slot = await get_active_crops_by_slot(session, [slot.id for slot in slots])
-    cash, contract_offers, active_contract, upgrade_offers, owned_upgrade_keys = (
-        await economy_state(session, user_id)
-    )
+    state = await economy_state(session, user_id, now=now)
+    skill_models = (
+        await session.scalars(
+            select(PlayerSkillBranch)
+            .where(PlayerSkillBranch.user_id == user_id)
+            .order_by(PlayerSkillBranch.branch)
+        )
+    ).all()
 
     return PlayerResponse(
         server_time=now,
@@ -263,17 +281,27 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         slots=[slot_response(slot, crops_by_slot.get(slot.id), now) for slot in slots],
         level=progression.level,
         xp=progression.xp,
+        next_level_xp=next_level_xp(progression.level),
         reputation=progression.reputation,
+        skill_points_unspent=progression.skill_points_unspent,
+        skill_branches=[
+            SkillBranchResponse(branch=item.branch, points=item.points)
+            for item in skill_models
+        ],
+        unlocked_keys=unlocked_keys(progression.level),
         tutorial_step=profile.tutorial_step,
         tutorial_completed=profile.tutorial_completed,
         inventory_container_id=inventory.id,
         inventory=await inventory_responses(session, inventory.id),
+        inventory_lots=await inventory_lot_responses(session, inventory.id),
         starter_varieties=starter_variety_responses(),
-        cash=cash,
-        contract_offers=contract_offers,
-        active_contract=active_contract,
-        upgrade_offers=upgrade_offers,
-        owned_upgrade_keys=owned_upgrade_keys,
+        cash=state.cash,
+        contract_offers=state.contract_offers,
+        contract_refresh_at=state.contract_refresh_at,
+        active_contract=state.active_contract,
+        active_contracts=state.active_contracts,
+        upgrade_offers=state.upgrade_offers,
+        owned_upgrade_keys=state.owned_upgrade_keys,
     )
 
 
