@@ -37,8 +37,8 @@ from app.game_data.economy_catalog import (
     UpgradeDefinition,
 )
 from app.game_data.production_catalog import STARTER_VARIETY_BY_KEY
-from app.production_service import inventory_lot_responses, inventory_responses
 from app.mission_service import record_domain_event
+from app.production_service import inventory_lot_responses, inventory_responses
 from app.schemas import (
     ContractOfferResponse,
     EconomyActionResponse,
