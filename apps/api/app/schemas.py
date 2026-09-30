@@ -138,12 +138,6 @@ class EconomyActionResponse(BaseModel):
     active_contract: PlayerContractResponse | None
     active_contracts: list[PlayerContractResponse]
     owned_upgrade_keys: list[str]
-    contacts: list[ContactResponse]
-    missions: list[PlayerMissionResponse]
-    daily_mission_keys: list[str]
-    weekly_mission_keys: list[str]
-    mastery: list[VarietyMasteryResponse]
-    unlocked_cosmetic_keys: list[str]
 
 
 class ContactResponse(BaseModel):
@@ -217,4 +211,10 @@ class PlayerResponse(BaseModel):
     active_contracts: list[PlayerContractResponse]
     upgrade_offers: list[UpgradeOfferResponse]
     owned_upgrade_keys: list[str]
+    contacts: list[ContactResponse]
+    missions: list[PlayerMissionResponse]
+    daily_mission_keys: list[str]
+    weekly_mission_keys: list[str]
+    mastery: list[VarietyMasteryResponse]
+    unlocked_cosmetic_keys: list[str]
 
