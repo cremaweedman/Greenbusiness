@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import StarterRoomScene from "./StarterRoomScene";
+import StarterRoom3DScene from "./StarterRoom3DScene";
 
 type Mode = "login" | "register";
 
@@ -1308,7 +1308,7 @@ export default function AuthApp() {
           </aside>
 
           <div className="room-board" aria-label="Starter production slots">
-            <StarterRoomScene
+            <StarterRoom3DScene
               slots={player.slots.map((slot) => {
                 const state = slotState(slot, serverNow);
                 return {
