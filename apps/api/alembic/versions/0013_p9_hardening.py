@@ -4,8 +4,8 @@ Revision ID: 0013_p9_hardening
 Revises: 0012_notifications_accessibility
 """
 
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
 
 revision = "0013_p9_hardening"
 down_revision = "0012_notifications_accessibility"
