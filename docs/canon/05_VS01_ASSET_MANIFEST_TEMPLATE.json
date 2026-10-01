@@ -514,6 +514,87 @@
         "shape progression",
         "works without color-only distinction"
       ]
+    },
+    {
+      "id": "GB-VS01-ROOM-001",
+      "priority": "P0",
+      "domain": "environment",
+      "name": "starter-room-shell",
+      "type": "webp",
+      "master_size": "3840x2160",
+      "runtime_size": "1920x1080",
+      "runtime_path": "environment/gb_environment_starter-room_shell_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "16:9",
+        "static room shell only",
+        "no stateful gameplay baked in",
+        "mobile-safe crop"
+      ]
+    },
+    {
+      "id": "GB-VS01-ROOM-002",
+      "priority": "P0",
+      "domain": "environment",
+      "name": "starter-storage-module",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "512x512",
+      "runtime_path": "environment/gb_room_storage_starter_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "starter-tier",
+        "independent upgradeable module"
+      ]
+    },
+    {
+      "id": "GB-VS01-ROOM-003",
+      "priority": "P0",
+      "domain": "environment",
+      "name": "contract-anchor",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "512x512",
+      "runtime_path": "environment/gb_room_contract-anchor_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "no baked text",
+        "independent module"
+      ]
+    },
+    {
+      "id": "GB-VS01-ROOM-004",
+      "priority": "P0",
+      "domain": "environment",
+      "name": "starter-workbench",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "512x512",
+      "runtime_path": "environment/gb_room_workbench_starter_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "practical small-business look",
+        "no laboratory styling"
+      ]
+    },
+    {
+      "id": "GB-VS01-ROOM-005",
+      "priority": "P0",
+      "domain": "environment",
+      "name": "starter-desk",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "512x512",
+      "runtime_path": "environment/gb_room_desk_starter_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "simple management setup",
+        "no sci-fi holograms"
+      ]
     }
   ],
   "approval_workflow": [
