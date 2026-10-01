@@ -22,7 +22,17 @@ Structural art is authored as 3D-first and rendered to deterministic 2D runtime 
 ## Current development state
 
 **Phase:** Phase 10 — Closed Alpha
-**Milestone:** P10-M1 — technical baseline validated; invited cohort execution pending
+**Milestone:** P10-3D-0 — interactive 3D Starter Room runtime spike under validation
+
+## 3D runtime
+
+GreenBusiness is now targeting a **3D Diorama Management Game** runtime:
+- Next.js + React for management UI;
+- Three.js + React Three Fiber for the interactive room;
+- GLB/GLTF assets authored via Blender;
+- FastAPI/Postgres/Redis remain server-authoritative.
+
+See [3D Runtime Architecture](./docs/art/3D_RUNTIME_ARCHITECTURE_V1.md).
 
 ## Requirements
 
