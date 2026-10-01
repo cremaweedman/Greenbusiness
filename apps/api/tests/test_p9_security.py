@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import jwt
 import pytest
 from pydantic import ValidationError
 
 from app.config import Settings, settings
-from app.rate_limit import RateLimitExceeded, RateLimitRule, enforce_rate_limit, reset_memory_rate_limits
+from app.rate_limit import (
+    RateLimitExceeded,
+    RateLimitRule,
+    enforce_rate_limit,
+    reset_memory_rate_limits,
+)
 from app.security import AdminPrincipal, require_admin_role
 
 
@@ -28,7 +34,7 @@ def test_production_rejects_insecure_defaults():
 
 def test_admin_roles_enforce_operator_boundary():
     require_admin_role(AdminPrincipal(actor_id="viewer", role="viewer"), minimum="viewer")
-    with pytest.raises(Exception):
+    with pytest.raises(jwt.InvalidTokenError):
         require_admin_role(AdminPrincipal(actor_id="viewer", role="viewer"), minimum="operator")
 
 
