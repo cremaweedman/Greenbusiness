@@ -1,7 +1,7 @@
 """closed alpha feedback and cohort instrumentation
 
-Revision ID: 0013_alpha_feedback
-Revises: 0012_notifications_accessibility
+Revision ID: 0014_alpha_feedback
+Revises: 0013_p9_hardening
 """
 
 import sqlalchemy as sa
@@ -9,8 +9,8 @@ from sqlalchemy.dialects import postgresql
 
 from alembic import op
 
-revision = "0013_alpha_feedback"
-down_revision = "0012_notifications_accessibility"
+revision = "0014_alpha_feedback"
+down_revision = "0013_p9_hardening"
 branch_labels = None
 depends_on = None
 
