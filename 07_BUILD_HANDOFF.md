@@ -47,6 +47,37 @@ Never silently invent a rule when the canon is explicit.
 
 ---
 
+# 2.1 Canonical presentation decision — 2D/2.5D runtime
+
+**Status: ACCEPTED — overrides the temporary real-time 3D spike.**
+
+GreenBusiness ships its core gameplay as a premium 2D/2.5D isometric management interface. The room may be authored from 3D masters, but runtime gameplay uses optimized layered raster/vector assets rather than a continuously rendered WebGL scene.
+
+Canonical pipeline:
+
+```text
+Concept / reference
+  -> Blender / Meshy / Tripo when useful
+  -> canonical 3D master in Blender
+  -> fixed isometric camera + lighting
+  -> deterministic state renders
+  -> WebP / AVIF / SVG runtime assets
+  -> Next.js layered scene + HTML UI + lightweight effects
+```
+
+Rules:
+- the player must not need orbit/pan camera controls for the core loop;
+- gameplay state remains DOM/API driven and server-authoritative;
+- room, slot, crop, upgrade and decoration assets preserve fixed camera, scale and anchors;
+- 3D masters are production sources, not mandatory runtime payloads;
+- Three.js/R3F is experimental only unless a later ADR explicitly re-approves it;
+- mobile/PWA performance and state readability take priority over real-time 3D fidelity;
+- `StarterRoom3DScene.tsx` is an experiment, not the target presentation architecture.
+
+Canonical runtime document: `docs/art/2D_RUNTIME_ARCHITECTURE_V1.md`.
+
+---
+
 # 3. Frozen architectural direction
 
 Initial production stack:
