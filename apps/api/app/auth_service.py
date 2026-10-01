@@ -14,8 +14,10 @@ from app.db.models import (
     AuthSession,
     Business,
     InventoryContainer,
+    PlayerEntitlement,
     PlayerProfile,
     PlayerSkillBranch,
+    PremiumWallet,
     ProductionSlot,
     Progression,
     Room,
@@ -371,6 +373,19 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
     ).all()
     crops_by_slot = await get_active_crops_by_slot(session, [slot.id for slot in slots])
     state = await economy_state(session, user_id, now=now)
+    premium_wallet = await session.scalar(select(PremiumWallet).where(PremiumWallet.user_id == user_id))
+    active_entitlement_keys = list(
+        (
+            await session.scalars(
+                select(PlayerEntitlement.entitlement_key)
+                .where(
+                    PlayerEntitlement.user_id == user_id,
+                    PlayerEntitlement.status == "active",
+                )
+                .order_by(PlayerEntitlement.entitlement_key)
+            )
+        ).all()
+    )
     meta = await meta_state(session, user_id, now=now, persist_bootstrap=True)
     skill_models = (
         await session.scalars(
@@ -408,6 +423,8 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         inventory_lots=await inventory_lot_responses(session, inventory.id),
         starter_varieties=starter_variety_responses(),
         cash=state.cash,
+        premium_credits=premium_wallet.credits if premium_wallet else 0,
+        active_entitlement_keys=active_entitlement_keys,
         contract_offers=state.contract_offers,
         contract_refresh_at=state.contract_refresh_at,
         active_contract=state.active_contract,

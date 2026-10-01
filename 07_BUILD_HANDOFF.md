@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 6 is completed and validated through P6-M1. Phase 7 is ready but not started.
+**Current state:** Phase 7 is completed and validated through P7-M1. Phase 8 is ready but not started.
 
 ---
 
@@ -340,10 +340,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 7 — Monetization & Entitlements`
+`Phase 8 — Push, Cross-Platform UX & Accessibility`
 
 ## Current milestone
-`P7-M1 — Monetization & Entitlements — READY, NOT STARTED`
+`P8-M1 — Push, Cross-Platform UX & Accessibility — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -432,13 +432,28 @@ Future agents/sessions must update this section after meaningful implementation.
 - LiveOps remote config now has an independent `clubs` feature flag and kill switch;
 - frontend exposes a Clubhouse panel with friend code, friend count, current club, invite code and weekly objective state;
 - P6-M1 integration test covers friend codes, invite accept, idempotent contribution, assist abuse limit, completed objective, idempotent reaction, idempotent reward claim and LiveOps clubs feature-disable behavior;
-- P6-M1 Docker/PostgreSQL validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test, production web build and HTTP smoke checks.
+- P6-M1 Docker/PostgreSQL validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test, production web build and HTTP smoke checks;
+- P7-M1 Monetization & Entitlements implemented;
+- migration `0011_monetization_entitlements` adds premium wallets, purchase ledger and player entitlements;
+- versioned `store_v1` catalog includes Starter Cosmetic Bundle, Credits S/M/L and Founder/Supporter Pack;
+- `/v1/store/catalog` exposes deterministic product metadata and keeps Season Pass disabled;
+- `/v1/store/me` exposes persistent premium credits, entitlements and purchase history;
+- `/v1/store/purchases/validate` validates sandbox receipts server-side and prevents duplicate/replayed receipts;
+- purchase ledger records provider, receipt id, receipt hash, product, credit delta, entitlement grants and status;
+- premium credits are deterministic and never randomize paid rewards;
+- cosmetics/supporter/no-ads entitlements persist by user and survive session/device changes;
+- `/v1/store/purchases/{purchase_id}/refund` reverses credits when safe and revokes entitlements idempotently;
+- `/v1/store/rewarded-ads/claim` adds an idempotent rewarded-ad framework without requiring ads for core play;
+- player bootstrap response now exposes `premium_credits` and active entitlement keys;
+- frontend exposes an ethical monetization sandbox panel with Credits balance, catalog products and sandbox purchase buttons;
+- P7-M1 integration test covers catalog, invalid receipt rejection, receipt replay prevention, cross-user receipt theft block, entitlement grant, refund/revocation, premium-credit reversal and rewarded-ad idempotency;
+- P7-M1 validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test and production web build.
 
 ## In progress
 - None.
 
 ## Next action
-Begin Phase 7 with Monetization & Entitlements exactly as scoped in `06_IMPLEMENTATION_ROADMAP.md`. Keep all purchase validation server-side and do not introduce Web3, trading, transferable assets or pay-to-win mechanics.
+Begin Phase 8 with Push, Cross-Platform UX & Accessibility exactly as scoped in `06_IMPLEMENTATION_ROADMAP.md`. Keep core gameplay usable without push, make notifications independently disableable and avoid punitive return mechanics.
 
 Local validation already passed without Docker:
 - `python -m ruff check apps\api\app apps\api\tests\test_liveops_foundation.py apps\api\tests\integration\test_liveops_admin_analytics.py`
@@ -452,7 +467,7 @@ Local validation already passed without Docker:
 Docker/PostgreSQL validation passed:
 - `docker compose up --build -d`
 - `docker compose exec -T api alembic upgrade head`
-- `docker compose exec -T api pytest -q` (`25 passed`)
+- `docker compose exec -T api pytest -q` (`27 passed`)
 - `docker compose exec -T api ruff check .`
 - `docker compose run --rm web npm run lint`
 - `docker compose run --rm web npm run typecheck`

@@ -291,6 +291,20 @@ class Wallet(Base):
     cash: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
+class PremiumWallet(Base):
+    __tablename__ = "premium_wallets"
+    __table_args__ = (CheckConstraint("credits >= 0", name="ck_premium_wallets_credits_nonnegative"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
+    credits: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
 class EconomyLedger(Base):
     __tablename__ = "economy_ledger"
 
@@ -338,6 +352,63 @@ class EconomyRequest(Base):
         server_default=func.now(),
         nullable=False,
     )
+
+
+class PurchaseLedger(Base):
+    __tablename__ = "purchase_ledger"
+    __table_args__ = (
+        UniqueConstraint("provider", "receipt_id", name="uq_purchase_ledger_provider_receipt"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    transaction_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, index=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    provider: Mapped[str] = mapped_column(String(32), nullable=False)
+    receipt_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    product_key: Mapped[str] = mapped_column(String(80), nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="granted")
+    premium_credits_delta: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    entitlement_keys: Mapped[list[str]] = mapped_column(JSONB, nullable=False, default=list)
+    receipt_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+        index=True,
+    )
+    refunded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class PlayerEntitlement(Base):
+    __tablename__ = "player_entitlements"
+    __table_args__ = (
+        UniqueConstraint("user_id", "entitlement_key", name="uq_player_entitlement_user_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    entitlement_key: Mapped[str] = mapped_column(String(96), nullable=False)
+    source_purchase_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("purchase_ledger.id", ondelete="SET NULL"),
+    )
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="active")
+    granted_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class PlayerContract(Base):

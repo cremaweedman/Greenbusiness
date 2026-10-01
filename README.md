@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 7 ready
-**Milestone:** P7-M1 — Monetization & Entitlements — READY, NOT STARTED
+**Phase:** Phase 8 ready
+**Milestone:** P8-M1 — Push, Cross-Platform UX & Accessibility — READY, NOT STARTED
 
 ## Requirements
 
@@ -38,6 +38,7 @@ Open:
 - Admin ledger inspection: http://localhost:8080/api/v1/admin/ledger
 - Admin economy dashboard: http://localhost:8080/api/v1/admin/dashboards/economy
 - Social state: http://localhost:8080/api/v1/social/me
+- Store catalog: http://localhost:8080/api/v1/store/catalog
 - FastAPI docs: http://localhost:8080/api/docs
 
 ## Local web-only development
@@ -87,4 +88,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 through P6-M1 are complete and validated. P6-M1 delivered the own social graph, friend codes/deep-link payloads, club lifecycle, invites, structured reactions, weekly club objectives, idempotent contribution ledger, limited assists, club rewards, anti-abuse limits and an independent LiveOps `clubs` feature flag. Continue from `07_BUILD_HANDOFF.md`.
+Phase 0 through P7-M1 are complete and validated. P7-M1 delivered product catalog, sandbox server-side receipt validation, purchase ledger, premium credits, persistent entitlements, refund/revocation handling, deterministic cosmetics/supporter packs, rewarded-ad claim framework and replay prevention. Continue from `07_BUILD_HANDOFF.md`.
