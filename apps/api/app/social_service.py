@@ -60,11 +60,11 @@ def _week_key(now: datetime | None = None) -> str:
 
 
 def _friend_code() -> str:
-    return f"GB{token_hex(3).upper()}"
+    return f"GB{token_hex(5).upper()}"
 
 
 def _invite_code() -> str:
-    return f"CL{token_hex(3).upper()}"
+    return f"CL{token_hex(5).upper()}"
 
 
 async def ensure_social_profile(session: AsyncSession, user_id: uuid.UUID) -> SocialProfile:
