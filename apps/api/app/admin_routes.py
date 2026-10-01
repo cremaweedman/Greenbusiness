@@ -6,7 +6,15 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.dependencies import get_admin_actor_id, get_current_user_id, get_db
+from app.config import settings
+
+from app.dependencies import (
+    get_admin_actor_id,
+    get_admin_bootstrap_principal,
+    get_admin_operator_id,
+    get_current_user_id,
+    get_db,
+)
 from app.liveops_service import (
     active_config,
     admin_cash_mutation,
@@ -23,6 +31,7 @@ from app.liveops_service import (
 )
 from app.schemas import (
     AdminCashMutationRequest,
+    AdminTokenResponse,
     AdminCashMutationResponse,
     AdminLedgerEntryResponse,
     AdminPlayerLookupResponse,
@@ -41,6 +50,8 @@ liveops_router = APIRouter(prefix="/liveops", tags=["liveops"])
 
 DbSession = Annotated[AsyncSession, Depends(get_db)]
 AdminActor = Annotated[str, Depends(get_admin_actor_id)]
+AdminOperator = Annotated[str, Depends(get_admin_operator_id)]
+AdminBootstrap = Annotated[AdminPrincipal, Depends(get_admin_bootstrap_principal)]
 CurrentUserId = Annotated[uuid.UUID, Depends(get_current_user_id)]
 
 
@@ -59,6 +70,17 @@ async def get_experiment_assignments(
         session,
         user_id=user_id,
         request_id=getattr(request.state, "request_id", None),
+    )
+
+
+@admin_router.post("/auth/token", response_model=AdminTokenResponse)
+async def issue_admin_token(principal: AdminBootstrap) -> AdminTokenResponse:
+    token = create_admin_access_token(principal)
+    return AdminTokenResponse(
+        access_token=token,
+        expires_in=settings.admin_token_ttl_seconds,
+        actor_id=principal.actor_id,
+        role=principal.role,
     )
 
 
@@ -84,7 +106,7 @@ async def publish_admin_config(
     body: LiveOpsConfigPublishRequest,
     request: Request,
     session: DbSession,
-    admin_actor: AdminActor,
+    admin_actor: AdminOperator,
 ) -> LiveOpsConfigResponse:
     return await publish_config(
         session,
@@ -99,7 +121,7 @@ async def rollback_admin_config(
     body: LiveOpsConfigRollbackRequest,
     request: Request,
     session: DbSession,
-    admin_actor: AdminActor,
+    admin_actor: AdminOperator,
 ) -> LiveOpsConfigResponse:
     return await rollback_config(
         session,
@@ -133,7 +155,7 @@ async def grant_cash(
     body: AdminCashMutationRequest,
     request: Request,
     session: DbSession,
-    admin_actor: AdminActor,
+    admin_actor: AdminOperator,
 ) -> AdminCashMutationResponse:
     return await admin_cash_mutation(
         session,
@@ -151,7 +173,7 @@ async def revoke_cash(
     body: AdminCashMutationRequest,
     request: Request,
     session: DbSession,
-    admin_actor: AdminActor,
+    admin_actor: AdminOperator,
 ) -> AdminCashMutationResponse:
     return await admin_cash_mutation(
         session,
