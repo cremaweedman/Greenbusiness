@@ -56,6 +56,14 @@ class ExperimentAssignmentResponse(BaseModel):
     assignments: dict[str, str]
 
 
+class AdminTokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
+    actor_id: str
+    role: str
+
+
 class AdminCashMutationRequest(BaseModel):
     user_id: uuid.UUID
     amount: int = Field(gt=0, le=100_000)
