@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 6 ready
-**Milestone:** P6-M1 — Social Layer: Clubs — READY, NOT STARTED
+**Phase:** Phase 7 ready
+**Milestone:** P7-M1 — Monetization & Entitlements — READY, NOT STARTED
 
 ## Requirements
 
@@ -37,6 +37,7 @@ Open:
 - Admin config history: http://localhost:8080/api/v1/admin/config/versions
 - Admin ledger inspection: http://localhost:8080/api/v1/admin/ledger
 - Admin economy dashboard: http://localhost:8080/api/v1/admin/dashboards/economy
+- Social state: http://localhost:8080/api/v1/social/me
 - FastAPI docs: http://localhost:8080/api/docs
 
 ## Local web-only development
@@ -86,4 +87,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 through P5-M1 are complete and validated. P5-M1 delivered versioned LiveOps config, admin-only publish/rollback, remote contract reward multipliers, deterministic experiment assignments, feature gates/kill switches, analytics-event persistence, audited admin Cash grants/revokes, ledger inspection and operational dashboard endpoints. Continue from `07_BUILD_HANDOFF.md`.
+Phase 0 through P6-M1 are complete and validated. P6-M1 delivered the own social graph, friend codes/deep-link payloads, club lifecycle, invites, structured reactions, weekly club objectives, idempotent contribution ledger, limited assists, club rewards, anti-abuse limits and an independent LiveOps `clubs` feature flag. Continue from `07_BUILD_HANDOFF.md`.
