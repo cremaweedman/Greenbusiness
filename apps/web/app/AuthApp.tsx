@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import StarterRoomScene from "./StarterRoomScene";
 
 type Mode = "login" | "register";
 
@@ -1037,22 +1038,17 @@ export default function AuthApp() {
           </aside>
 
           <div className="room-board" aria-label="Starter production slots">
-            <div className="room-scene" aria-hidden="true">
-              <div className="room-wall" />
-              <div className="room-floor">
-                {player.slots.map((slot) => {
-                  const state = slotState(slot, serverNow);
-                  return (
-                    <span
-                      key={slot.id}
-                      className={`iso-plot slot-${slot.slot_index} ${state}`}
-                    >
-                      <span />
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
+            <StarterRoomScene
+              slots={player.slots.map((slot) => {
+                const state = slotState(slot, serverNow);
+                return {
+                  id: slot.id,
+                  slotIndex: slot.slot_index,
+                  state: state === "available" ? "empty" : state,
+                  label: `Slot ${slot.slot_index + 1}: ${slot.crop?.variety_name ?? "available"}`,
+                };
+              })}
+            />
 
             <div className="slot-list">
               {player.slots.map((slot) => {
