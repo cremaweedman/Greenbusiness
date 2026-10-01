@@ -31,8 +31,8 @@ from app.liveops_service import (
 )
 from app.schemas import (
     AdminCashMutationRequest,
-    AdminTokenResponse,
     AdminCashMutationResponse,
+    AdminTokenResponse,
     AdminLedgerEntryResponse,
     AdminPlayerLookupResponse,
     AnalyticsEventResponse,
@@ -44,6 +44,8 @@ from app.schemas import (
     LiveOpsConfigResponse,
     LiveOpsConfigRollbackRequest,
 )
+
+from app.security import AdminPrincipal, create_admin_access_token
 
 admin_router = APIRouter(prefix="/admin", tags=["admin"])
 liveops_router = APIRouter(prefix="/liveops", tags=["liveops"])
