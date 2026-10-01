@@ -1003,3 +1003,32 @@ input:focus {
   color: inherit;
   font: inherit;
 }
+
+
+/* 3D Starter Room spike */
+.starter-room-3d {
+  position: relative;
+  width: 100%;
+  min-height: 360px;
+  overflow: hidden;
+  border: 1px solid #35483d;
+  border-radius: 8px;
+  background: #0d120f;
+}
+
+.starter-room-3d canvas {
+  display: block;
+  width: 100% !important;
+  height: 360px !important;
+  touch-action: pan-y;
+}
+
+@media (max-width: 520px) {
+  .starter-room-3d {
+    min-height: 290px;
+  }
+
+  .starter-room-3d canvas {
+    height: 290px !important;
+  }
+}
