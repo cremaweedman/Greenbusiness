@@ -245,6 +245,81 @@ class ClubRewardClaimResponse(BaseModel):
     idempotent: bool = False
 
 
+class StoreProductResponse(BaseModel):
+    key: str
+    title: str
+    product_type: str
+    price_cents: int
+    currency_code: str
+    premium_credits: int
+    entitlement_keys: list[str]
+    cosmetic_keys: list[str]
+    consumable: bool
+    disabled: bool = False
+
+
+class StoreCatalogResponse(BaseModel):
+    products: list[StoreProductResponse]
+    season_pass_enabled: bool = False
+
+
+class ReceiptValidationRequest(BaseModel):
+    provider: str = Field(default="sandbox", min_length=3, max_length=32)
+    receipt_id: str = Field(min_length=8, max_length=128)
+    product_key: str = Field(min_length=3, max_length=80)
+
+
+class PurchaseLedgerResponse(BaseModel):
+    id: uuid.UUID
+    transaction_id: uuid.UUID
+    provider: str
+    receipt_id: str
+    product_key: str
+    status: str
+    premium_credits_delta: int
+    entitlement_keys: list[str]
+    created_at: datetime
+    refunded_at: datetime | None
+
+
+class EntitlementResponse(BaseModel):
+    entitlement_key: str
+    status: str
+    granted_at: datetime
+    revoked_at: datetime | None
+
+
+class MonetizationStateResponse(BaseModel):
+    premium_credits: int
+    entitlements: list[EntitlementResponse]
+    purchases: list[PurchaseLedgerResponse]
+
+
+class PurchaseValidationResponse(BaseModel):
+    purchase: PurchaseLedgerResponse
+    premium_credits: int
+    entitlements: list[EntitlementResponse]
+    duplicate_receipt: bool = False
+
+
+class PurchaseRefundResponse(BaseModel):
+    purchase: PurchaseLedgerResponse
+    premium_credits: int
+    revoked_entitlement_keys: list[str]
+    idempotent: bool = False
+
+
+class RewardedAdClaimRequest(BaseModel):
+    placement_key: str = Field(default="store_bonus", min_length=3, max_length=48)
+    impression_id: str = Field(min_length=8, max_length=128)
+
+
+class RewardedAdClaimResponse(BaseModel):
+    placement_key: str
+    reward_cash: int
+    idempotent: bool = False
+
+
 class ClubResponse(BaseModel):
     id: uuid.UUID
     name: str
@@ -461,6 +536,8 @@ class PlayerResponse(BaseModel):
     inventory_lots: list[InventoryLotResponse]
     starter_varieties: list[StarterVarietyResponse]
     cash: int
+    premium_credits: int
+    active_entitlement_keys: list[str]
     contract_offers: list[ContractOfferResponse]
     contract_refresh_at: datetime
     active_contract: PlayerContractResponse | None

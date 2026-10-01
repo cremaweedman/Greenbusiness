@@ -188,6 +188,30 @@ type SocialState = {
   pending_invites: { id: string; club_id: string; club_name: string; status: string }[];
 };
 
+type StoreProduct = {
+  key: string;
+  title: string;
+  product_type: string;
+  price_cents: number;
+  currency_code: string;
+  premium_credits: number;
+  entitlement_keys: string[];
+  cosmetic_keys: string[];
+  consumable: boolean;
+  disabled: boolean;
+};
+
+type StoreCatalog = {
+  products: StoreProduct[];
+  season_pass_enabled: boolean;
+};
+
+type PurchaseValidation = {
+  purchase: { id: string; product_key: string; status: string; premium_credits_delta: number };
+  premium_credits: number;
+  duplicate_receipt: boolean;
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -213,6 +237,8 @@ type Player = {
   inventory_lots: InventoryLot[];
   starter_varieties: StarterVariety[];
   cash: number;
+  premium_credits: number;
+  active_entitlement_keys: string[];
   contract_offers: ContractOffer[];
   contract_refresh_at: string;
   active_contract: PlayerContract | null;
@@ -272,6 +298,12 @@ async function getSocialState(accessToken: string): Promise<SocialState> {
   return requestJson<SocialState>("/api/v1/social/me", accessToken);
 }
 
+async function getStoreCatalog(): Promise<StoreCatalog> {
+  const response = await fetch("/api/v1/store/catalog", { cache: "no-store" });
+  if (!response.ok) throw new Error(await parseError(response));
+  return (await response.json()) as StoreCatalog;
+}
+
 function formatRemaining(readyAt: string, now: number): string {
   const remainingSeconds = Math.max(0, Math.ceil((new Date(readyAt).getTime() - now) / 1000));
   if (remainingSeconds === 0) return "Ready";
@@ -296,6 +328,7 @@ export default function AuthApp() {
   const [mode, setMode] = useState<Mode>("register");
   const [player, setPlayer] = useState<Player | null>(null);
   const [social, setSocial] = useState<SocialState | null>(null);
+  const [storeCatalog, setStoreCatalog] = useState<StoreCatalog | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(true);
@@ -358,6 +391,22 @@ export default function AuthApp() {
     }
 
     void restoreSession();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadCatalog() {
+      try {
+        const catalog = await getStoreCatalog();
+        if (mounted) setStoreCatalog(catalog);
+      } catch {
+        if (mounted) setStoreCatalog(null);
+      }
+    }
+    void loadCatalog();
     return () => {
       mounted = false;
     };
@@ -600,6 +649,35 @@ export default function AuthApp() {
     }
   }
 
+  async function buySandboxProduct(productKey: string) {
+    if (!accessToken) return;
+    setError(null);
+    setNotice(null);
+    try {
+      const receiptId = `sandbox:${productKey}:${crypto.randomUUID()}`;
+      const result = await requestJson<PurchaseValidation>(
+        "/api/v1/store/purchases/validate",
+        accessToken,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            provider: "sandbox",
+            receipt_id: receiptId,
+            product_key: productKey,
+          }),
+        },
+      );
+      await refreshPlayer();
+      setNotice(
+        result.purchase.premium_credits_delta > 0
+          ? `Sandbox purchase granted ${result.purchase.premium_credits_delta} Credits.`
+          : "Sandbox entitlement granted.",
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Store action failed.");
+    }
+  }
+
   if (restoring) {
     return (
       <section className="panel" aria-live="polite">
@@ -628,6 +706,9 @@ export default function AuthApp() {
           <div className="topbar-actions">
             <div className="cash-chip" aria-label={`Cash balance ${player.cash}`}>
               Cash <strong>{player.cash}</strong>
+            </div>
+            <div className="cash-chip" aria-label={`Credits balance ${player.premium_credits}`}>
+              Credits <strong>{player.premium_credits}</strong>
             </div>
             <button className="secondary compact" onClick={logout} disabled={submitting}>
               Sign out
@@ -669,6 +750,36 @@ export default function AuthApp() {
               </button>
             </div>
           )}
+        </section>
+
+        <section className="store-panel" aria-label="Store and entitlements">
+          <div>
+            <p className="section-label">Store</p>
+            <h2>Ethical monetization sandbox</h2>
+            <p className="muted">
+              Season Pass disabled · {player.active_entitlement_keys.length} active entitlements
+            </p>
+          </div>
+          <div className="store-grid">
+            {(storeCatalog?.products ?? []).slice(0, 3).map((product) => (
+              <article key={product.key} className="store-card">
+                <strong>{product.title}</strong>
+                <span>
+                  {product.price_cents / 100} {product.currency_code} ·{" "}
+                  {product.premium_credits > 0
+                    ? `${product.premium_credits} Credits`
+                    : `${product.entitlement_keys.length} entitlement(s)`}
+                </span>
+                <button
+                  className="secondary compact"
+                  disabled={product.disabled}
+                  onClick={() => void buySandboxProduct(product.key)}
+                >
+                  Sandbox buy
+                </button>
+              </article>
+            ))}
+          </div>
         </section>
 
         <div className="game-grid">
