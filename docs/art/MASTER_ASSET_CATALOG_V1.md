@@ -14,6 +14,9 @@ Purpose: Single source for all currently known visual assets and their generatio
 - Every runtime asset must pass the Art Bible and QA checklist.
 - GLB/GLTF files are production-source/intermediate assets unless a later ADR explicitly approves a specific real-time 3D use.
 - All gameplay renders must preserve the canonical isometric camera, scale, anchor points, lighting rig and state-family consistency.
+- Portrait mobile is the primary composition target: critical gameplay objects must remain readable in a ~390×844 viewport and survive 360–430 px widths.
+- Decorative edges may crop; essential gameplay objects may not depend on wide desktop framing.
+- Runtime assets should ship responsive variants where the payload reduction is material.
 - If a game-data item is added later, this catalog must be extended.
 
 ## Current inventory
