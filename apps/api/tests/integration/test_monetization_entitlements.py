@@ -6,9 +6,17 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
 
+from app.config import settings
 from app.db.models import PlayerEntitlement, PremiumWallet, PurchaseLedger, User, Wallet
 from app.db.session import SessionLocal
 from app.main import app
+
+
+@pytest.fixture(autouse=True)
+def sandbox_runtime(monkeypatch):
+    monkeypatch.setattr(settings, "app_env", "test")
+    monkeypatch.setattr(settings, "sandbox_monetization_enabled", True)
+    monkeypatch.setattr(settings, "sandbox_rewarded_ads_enabled", True)
 
 
 @pytest.fixture
@@ -188,3 +196,35 @@ async def test_store_receipts_entitlements_refunds_and_rewarded_ads_are_safe(
             assert cash_wallet.cash == 525
     finally:
         await _cleanup(buyer_email, other_email)
+
+
+@pytest.mark.asyncio
+async def test_sandbox_store_is_hidden_when_disabled(client: AsyncClient, monkeypatch):
+    email = f"p9-disabled-{uuid.uuid4()}@example.com"
+    try:
+        token = await _register(client, email)
+        headers = {"Authorization": f"Bearer {token}"}
+        monkeypatch.setattr(settings, "sandbox_monetization_enabled", False)
+        monkeypatch.setattr(settings, "sandbox_rewarded_ads_enabled", False)
+
+        purchase = await client.post(
+            "/v1/store/purchases/validate",
+            headers=headers,
+            json={
+                "provider": "sandbox",
+                "receipt_id": "sandbox:credits-small:blocked",
+                "product_key": "credits-small",
+            },
+        )
+        assert purchase.status_code == 404
+        assert purchase.json()["error"]["code"] == "STORE_SANDBOX_DISABLED"
+
+        ad = await client.post(
+            "/v1/store/rewarded-ads/claim",
+            headers=headers,
+            json={"placement_key": "store_bonus", "impression_id": "blocked-impression"},
+        )
+        assert ad.status_code == 404
+        assert ad.json()["error"]["code"] == "REWARDED_ADS_DISABLED"
+    finally:
+        await _cleanup(email)
