@@ -492,15 +492,15 @@ export default function AuthApp() {
       return;
     }
     let mounted = true;
-    async function loadDecorations() {
+    async function loadDecorations(authToken: string) {
       try {
-        const state = await getDecorationState(token);
+        const state = await getDecorationState(authToken);
         if (mounted) setDecorations(state);
       } catch {
         if (mounted) setDecorations(null);
       }
     }
-    void loadDecorations();
+    void loadDecorations(token);
     return () => {
       mounted = false;
     };
