@@ -55,7 +55,16 @@ async def test_production_loop_persists_harvests_once_and_updates_inventory(clie
             "aurora-drift",
             "ember-leaf",
             "moon-sprout",
+            "velvet-mist",
+            "cinder-bloom",
+            "jade-comet",
+            "sunset-veil",
+            "opal-rush",
+            "northstar",
+            "quiet-thunder",
         ]
+        assert [variety["locked"] for variety in state["starter_varieties"][:3]] == [False, False, False]
+        assert all(variety["locked"] for variety in state["starter_varieties"][3:])
         assert len(state["slots"]) == 3
         assert state["tutorial_step"] == 0
         assert state["tutorial_completed"] is False
@@ -161,5 +170,28 @@ async def test_production_rejects_unknown_variety(client: AsyncClient):
         )
         assert response.status_code == 400
         assert response.json()["error"]["code"] == "PRODUCTION_VARIETY_INVALID"
+    finally:
+        await _cleanup(email)
+
+
+@pytest.mark.asyncio
+async def test_production_rejects_level_locked_variety(client: AsyncClient):
+    email = f"p10-locked-{uuid.uuid4()}@example.com"
+    try:
+        access_token = await _register(client, email)
+        auth = {"Authorization": f"Bearer {access_token}"}
+        player = (await client.get("/v1/player", headers=auth)).json()
+
+        response = await client.post(
+            f"/v1/production/slots/{player['slots'][0]['id']}/plant",
+            headers=auth,
+            json={"variety_key": "quiet-thunder"},
+        )
+        assert response.status_code == 403
+        assert response.json()["error"]["code"] == "PRODUCTION_VARIETY_LOCKED"
+        assert response.json()["error"]["details"] == {
+            "required_level": 16,
+            "current_level": 1,
+        }
     finally:
         await _cleanup(email)
