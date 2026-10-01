@@ -660,3 +660,33 @@ class AlphaRetentionDashboardResponse(BaseModel):
     open_blockers: int
     open_major: int
     feedback_new: int
+
+
+class DecorationItemResponse(BaseModel):
+    key: str
+    name: str
+    category: str
+    cost_cash: int
+    min_level: int
+    owned: bool
+    equipped_slot: int | None
+    locked: bool
+
+
+class DecorationStateResponse(BaseModel):
+    cash: int
+    items: list[DecorationItemResponse]
+
+
+class DecorationPurchaseResponse(BaseModel):
+    cash: int
+    item: DecorationItemResponse
+
+
+class DecorationEquipRequest(BaseModel):
+    slot_index: int = Field(ge=0, le=11)
+
+
+class DecorationEquipResponse(BaseModel):
+    decoration_key: str
+    slot_index: int

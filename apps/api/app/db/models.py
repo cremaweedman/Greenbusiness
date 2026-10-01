@@ -951,3 +951,48 @@ class AlphaFeedback(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
+
+
+class PlayerDecoration(Base):
+    __tablename__ = "player_decorations"
+    __table_args__ = (
+        UniqueConstraint("user_id", "decoration_key", name="uq_player_decoration_user_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    decoration_key: Mapped[str] = mapped_column(String(80), nullable=False)
+    purchased_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+
+class RoomDecoration(Base):
+    __tablename__ = "room_decorations"
+    __table_args__ = (
+        UniqueConstraint("room_id", "slot_index", name="uq_room_decoration_slot"),
+        UniqueConstraint("room_id", "decoration_key", name="uq_room_decoration_key"),
+        CheckConstraint("slot_index BETWEEN 0 AND 11", name="ck_room_decoration_slot"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    room_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("rooms.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    slot_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    decoration_key: Mapped[str] = mapped_column(String(80), nullable=False)
+    equipped_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
