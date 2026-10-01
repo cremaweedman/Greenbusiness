@@ -23,6 +23,130 @@ class TokenResponse(BaseModel):
     expires_in: int
 
 
+class LiveOpsConfigPayload(BaseModel):
+    seasons: dict[str, dict[str, str]] = Field(default_factory=dict)
+    featured_traits: list[str] = Field(default_factory=list)
+    feature_flags: dict[str, bool] = Field(default_factory=dict)
+    kill_switches: dict[str, bool] = Field(default_factory=dict)
+    content_toggles: dict[str, bool] = Field(default_factory=dict)
+    contract_multipliers: dict[str, float] = Field(default_factory=dict)
+    event_windows: dict[str, dict[str, str]] = Field(default_factory=dict)
+    notification_copy: dict[str, str] = Field(default_factory=dict)
+    experiments: dict[str, list[str]] = Field(default_factory=dict)
+
+
+class LiveOpsConfigResponse(BaseModel):
+    version: int
+    config: LiveOpsConfigPayload
+    created_by: str
+    restored_from_version: int | None
+    created_at: datetime
+
+
+class LiveOpsConfigPublishRequest(BaseModel):
+    config: LiveOpsConfigPayload
+
+
+class LiveOpsConfigRollbackRequest(BaseModel):
+    source_version: int = Field(ge=1)
+
+
+class ExperimentAssignmentResponse(BaseModel):
+    config_version: int
+    assignments: dict[str, str]
+
+
+class AdminCashMutationRequest(BaseModel):
+    user_id: uuid.UUID
+    amount: int = Field(gt=0, le=100_000)
+    reason: str = Field(min_length=3, max_length=160)
+
+
+class AdminCashMutationResponse(BaseModel):
+    user_id: uuid.UUID
+    cash: int
+    cash_delta: int
+    transaction_id: uuid.UUID
+
+
+class AdminLedgerEntryResponse(BaseModel):
+    id: uuid.UUID
+    transaction_id: uuid.UUID
+    user_id: uuid.UUID
+    currency: str
+    amount: int
+    source_or_sink: str
+    reference_type: str
+    reference_id: str
+    config_version: str
+    balance_before: int
+    balance_after: int
+    created_at: datetime
+
+
+class WalletDistributionBucketResponse(BaseModel):
+    label: str
+    min_cash: int
+    max_cash: int | None
+    wallet_count: int
+
+
+class AnalyticsEventResponse(BaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID | None
+    event_name: str
+    category: str
+    payload: dict[str, object]
+    request_id: str | None
+    created_at: datetime
+
+
+class EconomyDashboardResponse(BaseModel):
+    currency: str
+    minted: int
+    burned: int
+    wallet_count: int
+    total_wallet_cash: int
+    min_wallet_cash: int
+    max_wallet_cash: int
+    wallet_distribution: list[WalletDistributionBucketResponse]
+
+
+class FunnelStepResponse(BaseModel):
+    event_name: str
+    count: int
+
+
+class CoreFunnelResponse(BaseModel):
+    steps: list[FunnelStepResponse]
+
+
+class CoreLoopDashboardResponse(BaseModel):
+    tutorial_started: int
+    tutorial_completed: int
+    registered: int
+    planted: int
+    cared: int
+    harvested: int
+    contracts_accepted: int
+    contracts_completed: int
+    upgrades_purchased: int
+    missions_completed: int
+    failed_requests: int
+
+
+class AdminPlayerLookupResponse(BaseModel):
+    user_id: uuid.UUID
+    email: str
+    status: str
+    display_name: str | None
+    cash: int | None
+    level: int | None
+    reputation: int | None
+    tutorial_step: int | None
+    tutorial_completed: bool | None
+
+
 class StarterVarietyResponse(BaseModel):
     key: str
     name: str

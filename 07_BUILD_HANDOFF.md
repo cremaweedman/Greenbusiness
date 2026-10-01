@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 4 is completed and validated through P4-M2. Phase 5 is ready but not started.
+**Current state:** Phase 5 is completed and validated through P5-M1. Phase 6 is ready but not started.
 
 ---
 
@@ -340,10 +340,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 5 — LiveOps, Remote Config, Analytics & Admin`
+`Phase 6 — Social Layer: Clubs`
 
 ## Current milestone
-`P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — READY, NOT STARTED`
+`P6-M1 — Social Layer: Clubs — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -400,12 +400,51 @@ Future agents/sessions must update this section after meaningful implementation.
 - PostgreSQL tests cover mission-pool persistence, mastery thresholds and replay protection;
 - frontend exposes narrative arcs, completion history/inbox messages and mastery cosmetic counts;
 - final P4-M2 branch CI is green: backend, frontend and compose-smoke.
+- P5-M1 LiveOps/admin foundation started;
+- migration `0009_liveops_admin_analytics` adds immutable LiveOps config versions and analytics events;
+- active LiveOps config is exposed through `/v1/liveops/config`;
+- remote config payload now includes seasons, featured traits, content toggles, event windows, notification copy, kill switches and experiments;
+- deterministic authenticated experiment assignments are exposed through `/v1/liveops/experiments`;
+- admin access is separated from player JWTs through `X-Admin-Key`;
+- admin endpoints added for active config, config publish, config rollback, player lookup, economy dashboard, core-funnel dashboard and recent analytics events;
+- published config versions are not mutated; rollback creates a new active version restored from an earlier version;
+- production, contract and upgrade actions are guarded by LiveOps feature flags/kill switches;
+- active LiveOps contract multipliers now change newly generated contract rewards and are snapshotted into accepted contracts;
+- admin config history endpoint exposes immutable published/restored versions;
+- admin ledger inspection endpoint exposes recent economy ledger entries, optionally filtered by player;
+- audited admin Cash grant/revoke endpoints implemented for dev/test operations;
+- economy dashboard now includes wallet distribution buckets in addition to minted/burned totals;
+- auth, production and economy core actions emit canonical analytics events with payload sanitization;
+- mission completion now emits canonical analytics events;
+- request middleware records best-effort performance analytics and failed-request error analytics without storing credentials;
+- admin core-loop dashboard added for tutorial, production, contract, upgrade, mission and failed-request funnel counts;
+- P5-M1 integration test extended for publish, feature disable, rollback, audit trail, analytics emission, admin Cash mutation, ledger inspection and economy dashboard;
+- P5-M1 Docker/PostgreSQL validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test and HTTP smoke checks.
 
 ## In progress
-- none.
+- None.
 
 ## Next action
-**STOP HERE.** When development resumes, begin P5-M1 exactly as specified above. Phase 5 code has not been started in this closing task.
+Begin Phase 6 with the Social Layer: Clubs foundation exactly as scoped in `06_IMPLEMENTATION_ROADMAP.md`.
+
+Local validation already passed without Docker:
+- `python -m ruff check apps\api\app apps\api\tests\test_liveops_foundation.py apps\api\tests\integration\test_liveops_admin_analytics.py`
+- `python -m compileall apps\api\app apps\api\tests\test_liveops_foundation.py apps\api\tests\integration\test_liveops_admin_analytics.py`
+- `python -m pytest apps\api\tests\test_liveops_foundation.py`
+- `npm run lint`
+- `npm run typecheck`
+- `npm test`
+- `npm run build`
+
+Docker/PostgreSQL validation passed:
+- `docker compose up --build -d`
+- `docker compose exec -T api alembic upgrade head`
+- `docker compose exec -T api pytest -q` (`24 passed`)
+- `docker compose exec -T api ruff check .`
+- `docker compose run --rm web npm run lint`
+- `docker compose run --rm web npm run typecheck`
+- `docker compose run --rm web npm test`
+- HTTP smoke passed for `/api/health/live`, `/api/health/ready` and `/api/v1/system/ping`.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
@@ -413,7 +452,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - final art assets for VS-01 are not yet production-complete unless separately committed.
 
 ## Do not do next
-- do not start clubs;
+- do not start monetization;
 - do not add payments;
 - do not add Web3;
 - do not create dozens of varieties;
