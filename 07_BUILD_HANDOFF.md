@@ -548,18 +548,24 @@ Future agents/sessions must update this section after meaningful implementation.
 - final P10 technical-baseline Security Scan is green.
 
 ## In progress
-- P10-3D-0 runtime spike is implemented with Three.js/React Three Fiber procedural geometry and constrained camera controls;
-- 3D runtime architecture is documented in `docs/art/3D_RUNTIME_ARCHITECTURE_V1.md`;
-- CI/build/mobile performance validation for the 3D spike;
-- real invited Closed Alpha cohort execution;
+- P10-ART-1 production-quality 2.5D Starter Room vertical slice;
+- final fixed-camera isometric room composition;
+- deterministic slot/crop state renders;
+- integration of optimized WebP/AVIF/SVG scene assets into the existing Next.js gameplay surface;
+- real invited Closed Alpha cohort execution after the visual vertical slice is credible;
 - alpha economy/pacing validation from measured player behavior;
 - D1 and early D7 cohort observation;
 - return-to-timer and club-adoption analysis;
-- final art/content production pass for the starter location;
 - blocker/major feedback triage before Phase 11.
 
+## Historical experiment
+- the Three.js/React Three Fiber procedural Starter Room spike was implemented and validated as a technical experiment;
+- the spike is not the production target;
+- `docs/art/3D_RUNTIME_ARCHITECTURE_V1.md` is superseded;
+- do not continue by replacing its primitives with runtime GLB assets.
+
 ## Next action
-**VALIDATE P10-3D-0 — 3D RUNTIME SPIKE.** GreenBusiness has changed product direction to a real-time 3D diorama management scene while retaining the existing server-authoritative backend and HTML management UI. Complete CI/build validation, test desktop/mobile performance and interaction, and confirm the production/economy loop is unaffected. If the spike passes, proceed to P10-3D-1 GLB Starter Room before running the invited Closed Alpha.
+**BUILD P10-ART-1 — PRODUCTION 2.5D STARTER ROOM.** Produce the canonical Starter Room through the 3D-master-to-isometric-render pipeline, integrate the resulting layered assets into Next.js, preserve the existing server-authoritative gameplay loop, and validate desktop/mobile readability before inviting the Closed Alpha cohort.
 
 Local validation already passed without Docker:
 - `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
