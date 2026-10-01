@@ -1,0 +1,30 @@
+{
+  "name": "GreenBusiness",
+  "short_name": "GreenBusiness",
+  "description": "A server-authoritative asynchronous business sim.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d120f",
+  "theme_color": "#102016",
+  "orientation": "portrait-primary",
+  "categories": ["games", "simulation"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Production room",
+      "url": "/?deep_link=production"
+    },
+    {
+      "name": "Clubhouse",
+      "url": "/?deep_link=club"
+    }
+  ]
+}

@@ -320,6 +320,57 @@ class RewardedAdClaimResponse(BaseModel):
     idempotent: bool = False
 
 
+class NotificationPreferenceResponse(BaseModel):
+    production_enabled: bool
+    events_enabled: bool
+    social_enabled: bool
+    quiet_hours_enabled: bool
+    quiet_hours_start: str
+    quiet_hours_end: str
+    timezone: str
+    updated_at: datetime | None
+
+
+class NotificationPreferenceUpdateRequest(BaseModel):
+    production_enabled: bool | None = None
+    events_enabled: bool | None = None
+    social_enabled: bool | None = None
+    quiet_hours_enabled: bool | None = None
+    quiet_hours_start: str | None = Field(default=None, pattern=r"^\d{2}:\d{2}$")
+    quiet_hours_end: str | None = Field(default=None, pattern=r"^\d{2}:\d{2}$")
+    timezone: str | None = Field(default=None, min_length=3, max_length=64)
+
+
+class PushTokenRegisterRequest(BaseModel):
+    platform: str = Field(min_length=3, max_length=24)
+    token: str = Field(min_length=12, max_length=512)
+
+
+class PushTokenResponse(BaseModel):
+    id: uuid.UUID
+    platform: str
+    token_label: str
+    enabled: bool
+    created_at: datetime | None
+    updated_at: datetime | None
+
+
+class NotificationStateResponse(BaseModel):
+    preferences: NotificationPreferenceResponse
+    push_tokens: list[PushTokenResponse]
+    deep_links: dict[str, str]
+    pwa: dict[str, bool | str]
+
+
+class PlatformReadinessResponse(BaseModel):
+    pwa_installable: bool
+    android_packaging_path: str
+    ios_packaging_path: str
+    ios_release_requires_policy_review: bool
+    core_gameplay_requires_push: bool = False
+    punitive_return_mechanics: bool = False
+
+
 class ClubResponse(BaseModel):
     id: uuid.UUID
     name: str

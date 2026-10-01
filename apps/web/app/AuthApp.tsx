@@ -212,6 +212,21 @@ type PurchaseValidation = {
   duplicate_receipt: boolean;
 };
 
+type NotificationState = {
+  preferences: {
+    production_enabled: boolean;
+    events_enabled: boolean;
+    social_enabled: boolean;
+    quiet_hours_enabled: boolean;
+    quiet_hours_start: string;
+    quiet_hours_end: string;
+    timezone: string;
+  };
+  push_tokens: { id: string; platform: string; token_label: string; enabled: boolean }[];
+  deep_links: Record<string, string>;
+  pwa: Record<string, boolean | string>;
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -304,12 +319,23 @@ async function getStoreCatalog(): Promise<StoreCatalog> {
   return (await response.json()) as StoreCatalog;
 }
 
+async function getNotificationState(accessToken: string): Promise<NotificationState> {
+  return requestJson<NotificationState>("/api/v1/notifications/me", accessToken);
+}
+
 function formatRemaining(readyAt: string, now: number): string {
   const remainingSeconds = Math.max(0, Math.ceil((new Date(readyAt).getTime() - now) / 1000));
   if (remainingSeconds === 0) return "Ready";
   const minutes = Math.floor(remainingSeconds / 60);
   const seconds = remainingSeconds % 60;
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+function absoluteTimestamp(value: string): string {
+  return new Date(value).toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 }
 
 function tutorialObjective(player: Player): string {
@@ -329,6 +355,7 @@ export default function AuthApp() {
   const [player, setPlayer] = useState<Player | null>(null);
   const [social, setSocial] = useState<SocialState | null>(null);
   const [storeCatalog, setStoreCatalog] = useState<StoreCatalog | null>(null);
+  const [notifications, setNotifications] = useState<NotificationState | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(true);
@@ -349,6 +376,11 @@ export default function AuthApp() {
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+    void navigator.serviceWorker.register("/sw.js");
   }, []);
 
   useEffect(() => {
@@ -379,10 +411,17 @@ export default function AuthApp() {
         } catch {
           restoredSocial = null;
         }
+        let restoredNotifications: NotificationState | null = null;
+        try {
+          restoredNotifications = await getNotificationState(token.access_token);
+        } catch {
+          restoredNotifications = null;
+        }
         if (!mounted) return;
         setAccessToken(token.access_token);
         applyPlayerState(restored);
         setSocial(restoredSocial);
+        setNotifications(restoredNotifications);
       } catch {
         // A missing/expired session is a normal anonymous state.
       } finally {
@@ -446,6 +485,11 @@ export default function AuthApp() {
     } catch {
       setSocial(null);
     }
+    try {
+      setNotifications(await getNotificationState(token));
+    } catch {
+      setNotifications(null);
+    }
   }
 
   async function authenticate(endpoint: "login" | "register", payload: object) {
@@ -472,9 +516,16 @@ export default function AuthApp() {
       } catch {
         currentSocial = null;
       }
+      let currentNotifications: NotificationState | null = null;
+      try {
+        currentNotifications = await getNotificationState(token.access_token);
+      } catch {
+        currentNotifications = null;
+      }
       setAccessToken(token.access_token);
       applyPlayerState(currentPlayer);
       setSocial(currentSocial);
+      setNotifications(currentNotifications);
       setSelectedVariety(currentPlayer.starter_varieties[0]?.key ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
@@ -505,9 +556,16 @@ export default function AuthApp() {
       } catch {
         currentSocial = null;
       }
+      let currentNotifications: NotificationState | null = null;
+      try {
+        currentNotifications = await getNotificationState(token.access_token);
+      } catch {
+        currentNotifications = null;
+      }
       setAccessToken(token.access_token);
       applyPlayerState(currentPlayer);
       setSocial(currentSocial);
+      setNotifications(currentNotifications);
       setSelectedVariety(currentPlayer.starter_varieties[0]?.key ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Creator access failed.");
@@ -628,6 +686,7 @@ export default function AuthApp() {
       setAccessToken(null);
       setPlayer(null);
       setSocial(null);
+      setNotifications(null);
       setSelectedVariety(null);
       setSubmitting(false);
     }
@@ -654,6 +713,11 @@ export default function AuthApp() {
     setError(null);
     setNotice(null);
     try {
+      const product = storeCatalog?.products.find((item) => item.key === productKey);
+      const confirmed = window.confirm(
+        `Confirm sandbox purchase: ${product?.title ?? productKey}. Premium spend and entitlement grants always require confirmation.`,
+      );
+      if (!confirmed) return;
       const receiptId = `sandbox:${productKey}:${crypto.randomUUID()}`;
       const result = await requestJson<PurchaseValidation>(
         "/api/v1/store/purchases/validate",
@@ -675,6 +739,22 @@ export default function AuthApp() {
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Store action failed.");
+    }
+  }
+
+  async function toggleNotificationCategory(
+    key: "production_enabled" | "events_enabled" | "social_enabled",
+  ) {
+    if (!accessToken || !notifications) return;
+    setError(null);
+    try {
+      await requestJson("/api/v1/notifications/preferences", accessToken, {
+        method: "PATCH",
+        body: JSON.stringify({ [key]: !notifications.preferences[key] }),
+      });
+      setNotifications(await getNotificationState(accessToken));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Notification update failed.");
     }
   }
 
@@ -779,6 +859,43 @@ export default function AuthApp() {
                 </button>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className="notification-panel" aria-label="Notifications and accessibility">
+          <div>
+            <p className="section-label">Notifications</p>
+            <h2>Convenience, never coercion</h2>
+            <p className="muted">
+              Core gameplay works without push · Quiet hours{" "}
+              {notifications?.preferences.quiet_hours_start ?? "22:00"}-
+              {notifications?.preferences.quiet_hours_end ?? "08:00"}
+            </p>
+            <p className="muted">
+              PWA installable · Offline read cache · Deep links ready for production, club and store
+            </p>
+          </div>
+          <div className="notification-grid" role="group" aria-label="Notification categories">
+            {[
+              ["production_enabled", "Production timers"],
+              ["events_enabled", "Events & seasons"],
+              ["social_enabled", "Club & social"],
+            ].map(([key, label]) => {
+              const typedKey = key as "production_enabled" | "events_enabled" | "social_enabled";
+              const enabled = notifications?.preferences[typedKey] ?? false;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  className={enabled ? "toggle-card enabled" : "toggle-card"}
+                  onClick={() => void toggleNotificationCategory(typedKey)}
+                  aria-pressed={enabled}
+                >
+                  <strong>{enabled ? "On" : "Off"}</strong>
+                  <span>{label}</span>
+                </button>
+              );
+            })}
           </div>
         </section>
 
@@ -955,7 +1072,9 @@ export default function AuthApp() {
                           <span style={{ width: isReady ? "100%" : "48%" }} />
                         </div>
                         <div className="slot-meta">
-                          <span>{remaining}</span>
+                          <span title={`Ready at ${absoluteTimestamp(slot.crop.ready_at)}`}>
+                            {remaining} · {absoluteTimestamp(slot.crop.ready_at)}
+                          </span>
                           <span>{slot.crop.cared_at ? "Cared" : "Care optional"}</span>
                         </div>
                         <div className="slot-actions">
