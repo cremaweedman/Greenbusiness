@@ -908,3 +908,46 @@ class ClubRewardClaim(Base):
     transaction_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
     claimed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
+
+
+class AlphaFeedback(Base):
+    __tablename__ = "alpha_feedback"
+    __table_args__ = (
+        CheckConstraint("kind IN ('bug','feedback')", name="ck_alpha_feedback_kind"),
+        CheckConstraint(
+            "severity IN ('blocker','major','minor','suggestion')",
+            name="ck_alpha_feedback_severity",
+        ),
+        CheckConstraint(
+            "status IN ('new','triaged','resolved','wont_fix')",
+            name="ck_alpha_feedback_status",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    kind: Mapped[str] = mapped_column(String(16), nullable=False)
+    severity: Mapped[str] = mapped_column(String(16), nullable=False)
+    category: Mapped[str] = mapped_column(String(48), nullable=False)
+    message: Mapped[str] = mapped_column(String(2000), nullable=False)
+    build_sha: Mapped[str | None] = mapped_column(String(64))
+    liveops_version: Mapped[int | None] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="new", index=True)
+    triaged_by: Mapped[str | None] = mapped_column(String(128))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        index=True,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )

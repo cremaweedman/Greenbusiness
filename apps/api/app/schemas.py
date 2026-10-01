@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -612,3 +613,47 @@ class PlayerResponse(BaseModel):
     mastery: list[VarietyMasteryResponse]
     unlocked_cosmetic_keys: list[str]
 
+
+
+class AlphaFeedbackCreateRequest(BaseModel):
+    kind: Literal["bug", "feedback"]
+    severity: Literal["blocker", "major", "minor", "suggestion"]
+    category: str = Field(min_length=2, max_length=48)
+    message: str = Field(min_length=3, max_length=2000)
+    build_sha: str | None = Field(default=None, max_length=64)
+    liveops_version: int | None = Field(default=None, ge=0)
+
+
+class AlphaFeedbackTriageRequest(BaseModel):
+    status: Literal["new", "triaged", "resolved", "wont_fix"]
+    severity: Literal["blocker", "major", "minor", "suggestion"] | None = None
+
+
+class AlphaFeedbackResponse(BaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    kind: str
+    severity: str
+    category: str
+    message: str
+    build_sha: str | None
+    liveops_version: int | None
+    status: str
+    triaged_by: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class AlphaRetentionDashboardResponse(BaseModel):
+    cohort_size: int
+    tutorial_completed: int
+    first_harvest_users: int
+    d1_eligible: int
+    d1_returned: int
+    d1_rate: float
+    d7_eligible: int
+    d7_returned: int
+    d7_rate: float
+    open_blockers: int
+    open_major: int
+    feedback_new: int

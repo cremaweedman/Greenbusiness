@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.admin_routes import admin_router, liveops_router
+from app.alpha_routes import admin_alpha_router, alpha_router
 from app.auth_routes import auth_router, player_router
 from app.economy_routes import economy_router
 from app.monetization_routes import store_router
@@ -20,6 +21,8 @@ router.include_router(notification_router)
 router.include_router(platform_router)
 router.include_router(liveops_router)
 router.include_router(admin_router)
+router.include_router(alpha_router)
+router.include_router(admin_alpha_router)
 
 
 @router.get("/system/ping")
