@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import logging
 import time
@@ -17,6 +18,7 @@ from app.security_events import security_event
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 logger = logging.getLogger("greenbusiness.api")
+_analytics_tasks: set[asyncio.Task[None]] = set()
 
 app = FastAPI(title="GreenBusiness API", version="0.9.0")
 app.add_exception_handler(AppError, app_error_handler)
@@ -30,6 +32,8 @@ _RATE_LIMITS: tuple[tuple[str, str, RateLimitRule], ...] = (
     ("POST", "/v1/admin/auth/token", RateLimitRule("admin-bootstrap", 8, 60)),
     ("POST", "/v1/store/purchases/validate", RateLimitRule("store-purchase", 20, 60)),
     ("POST", "/v1/store/rewarded-ads/claim", RateLimitRule("rewarded-ad", 20, 60)),
+    ("POST", "/v1/social/friends/redeem", RateLimitRule("friend-code-redeem", 20, 60)),
+    ("POST", "/v1/clubs/join", RateLimitRule("club-code-join", 20, 60)),
 )
 
 
@@ -39,6 +43,12 @@ def _rate_rule(request: Request) -> RateLimitRule | None:
     for expected_method, expected_path, rule in _RATE_LIMITS:
         if method == expected_method and path == expected_path:
             return rule
+    if (
+        method == "POST"
+        and path.startswith("/v1/store/purchases/")
+        and path.endswith("/refund")
+    ):
+        return RateLimitRule("store-refund", 10, 60)
     if path.startswith("/v1/admin/"):
         return RateLimitRule("admin-api", 120, 60)
     if path.startswith(("/v1/social/", "/v1/clubs/")):
@@ -114,13 +124,27 @@ async def security_and_request_middleware(request: Request, call_next):
         raise
 
     duration_ms = (time.perf_counter() - start) * 1000
-    await _record_request_analytics(
-        request,
-        request_id=request_id,
-        status_code=response.status_code,
-        duration_ms=duration_ms,
-        failed=response.status_code >= 400,
-    )
+    if response.status_code >= 400:
+        await _record_request_analytics(
+            request,
+            request_id=request_id,
+            status_code=response.status_code,
+            duration_ms=duration_ms,
+            failed=True,
+        )
+    elif _sample_success_request(request_id):
+        task = asyncio.create_task(
+            _record_request_analytics(
+                request,
+                request_id=request_id,
+                status_code=response.status_code,
+                duration_ms=duration_ms,
+                failed=False,
+                apply_sampling=False,
+            )
+        )
+        _analytics_tasks.add(task)
+        task.add_done_callback(_analytics_tasks.discard)
     response.headers["X-Request-ID"] = request_id
     return _security_headers(response)
 
@@ -142,10 +166,11 @@ async def _record_request_analytics(
     status_code: int,
     duration_ms: float,
     failed: bool,
+    apply_sampling: bool = True,
 ) -> None:
     if request.url.path.startswith("/health"):
         return
-    if not failed and not _sample_success_request(request_id):
+    if apply_sampling and not failed and not _sample_success_request(request_id):
         return
 
     payload = {
