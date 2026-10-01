@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "asset_family": "starter-slot",
+  "source_of_truth": "art/3d/masters/slots/gb_slot_starter_master_v01.blend",
+  "root_object": "ROOT_SLOT_STARTER",
+  "camera": "CAM_SLOT_MASTER",
+  "units": "METRIC",
+  "unit_scale": 1,
+  "floor_z": 0,
+  "render": {
+    "master_width": 1536,
+    "master_height": 1536,
+    "transparent": true,
+    "engine_preference": "BLENDER_EEVEE_NEXT",
+    "file_format": "PNG",
+    "color_mode": "RGBA"
+  },
+  "state_collections": [
+    "STATE_EMPTY",
+    "STATE_PLANTED",
+    "STATE_GROWING",
+    "STATE_READY",
+    "STATE_LOCKED",
+    "STATE_ATTENTION",
+    "STATE_BOOSTED"
+  ],
+  "immutable_across_states": [
+    "camera",
+    "root transform",
+    "chassis geometry",
+    "object scale",
+    "frame silhouette",
+    "render crop",
+    "ground contact"
+  ],
+  "palette": {
+    "forest_950": "#0D120F",
+    "forest_900": "#102016",
+    "forest_700": "#244D2E",
+    "forest_500": "#547A5D",
+    "mint_300": "#93CF9F",
+    "cream_100": "#F4F0E6",
+    "gold_300": "#E0BA78"
+  }
+}
