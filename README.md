@@ -16,6 +16,7 @@ Canonical project repository for GreenBusiness.
 - [3D art production pipeline](./docs/art/3D_PRODUCTION_PIPELINE_V1.md)
 - [3D asset source-of-truth](./docs/art/3D_ASSET_SOURCE_OF_TRUTH.md)
 - [2D/2.5D runtime architecture](./docs/art/2D_RUNTIME_ARCHITECTURE_V1.md)
+- [Mobile-first UX](./docs/MOBILE_FIRST_UX_V1.md)
 - [Master Asset Catalog](./docs/art/MASTER_ASSET_CATALOG_V1.md)
 - [Machine-readable Asset Prompts](./art/prompts/MASTER_ASSET_PROMPTS_V1.json)
 - [Blender tooling](./tools/blender/README.md)
@@ -29,7 +30,7 @@ Structural art is authored 3D-first where useful, then rendered to deterministic
 
 ## Runtime presentation — canonical
 
-GreenBusiness targets a **premium 2D/2.5D isometric management-game runtime**:
+GreenBusiness targets a **premium mobile-first 2D/2.5D isometric management-game runtime**:
 - Next.js + React for the gameplay UI and scene composition;
 - layered WebP/AVIF/SVG assets for the interactive room;
 - Blender/Meshy/Tripo may be used upstream to author consistent 3D masters;
@@ -37,6 +38,8 @@ GreenBusiness targets a **premium 2D/2.5D isometric management-game runtime**:
 - CSS/Canvas/Web Animations may provide lightweight particles, highlights and transitions;
 - Three.js / React Three Fiber are non-canonical experiments and must not become a dependency of the core gameplay loop without a new explicit architecture decision;
 - FastAPI/Postgres/Redis remain server-authoritative.
+- Primary gameplay target: mobile portrait (390×844 baseline, 360–430 px width test range).
+- Mobile uses bottom navigation + contextual bottom sheets; persistent desktop sidebars are non-canonical.
 
 See [2D/2.5D Runtime Architecture](./docs/art/2D_RUNTIME_ARCHITECTURE_V1.md). The former [3D Runtime Architecture](./docs/art/3D_RUNTIME_ARCHITECTURE_V1.md) is superseded.
 
