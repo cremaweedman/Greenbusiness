@@ -209,7 +209,7 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P10-M1 — Content Completion & Closed Alpha — READY, NOT STARTED**
+**P10-M1 — Content Completion & Closed Alpha — IN PROGRESS**
 
 ## Goal
 Validate GreenBusiness with a small invited player cohort before expanding scope or entering soft launch.
@@ -259,7 +259,7 @@ Do not mark P10-M1 complete until:
 - no blocker remains that prevents Phase 11 soft launch;
 - backend/frontend/full-stack CI remains green.
 
-**Current status:** ready, not started.
+**Current status:** technical alpha baseline implemented and validated; real invited-cohort execution remains pending.
 
 ---
 
@@ -503,16 +503,29 @@ Future agents/sessions must update this section after meaningful implementation.
 - backup/restore drill helper, security disclosure, hardening runbook and privacy/terms/IP input docs are committed;
 - final P9 CI is green: backend, frontend and compose-smoke;
 - final P9 Security Scan is green.
+- P10 technical alpha baseline is implemented on `feat/p10-m1-closed-alpha`;
+- fictional variety catalog expanded to 10 entries with server-authoritative level gates;
+- three compact skill trees are functional: Botany boosts yield, Commerce improves contract Cash, Operations reduces grow time;
+- 40-item cosmetic decoration catalog implemented with ledger-backed Cash purchase and persistent room equip slots;
+- alpha feedback/bug reporting is persistent and severity-tagged, with admin triage;
+- explicit invited alpha cohort membership prevents retention dashboards from being polluted by dev/creator accounts;
+- alpha dashboard measures tutorial completion, first harvest, D1, D7 and open blocker/major feedback;
+- first versioned Closed Alpha LiveOps mini-arc, Night Market Week, is authored and schema-tested;
+- web app exposes skill allocation, decoration purchase/equip and Closed Alpha feedback submission;
+- migrations `0014_alpha_feedback`, `0015_decorations` and `0016_alpha_cohort` are chained after P9;
+- final P10 technical-baseline CI is green: backend, frontend and compose-smoke;
+- final P10 technical-baseline Security Scan is green.
 
 ## In progress
-- P10 alpha content baseline;
-- fictional variety catalog expanded from 3 to 10 entries;
-- level-gated variety unlocks added through level 16;
-- API/UI expose locked varieties without permitting server-side bypass;
-- closed-alpha operational preparation remains pending before real cohort execution.
+- real invited Closed Alpha cohort execution;
+- alpha economy/pacing validation from measured player behavior;
+- D1 and early D7 cohort observation;
+- return-to-timer and club-adoption analysis;
+- final art/content production pass for the starter location;
+- blocker/major feedback triage before Phase 11.
 
 ## Next action
-**CONTINUE P10-M1.** Complete the remaining alpha content and operational readiness work. Do not start Phase 11 soft launch before real closed-alpha acceptance criteria are met.
+**RUN P10-M1 CLOSED ALPHA.** Deploy the isolated alpha environment, enroll invited testers through the explicit alpha cohort API, publish the versioned Night Market LiveOps mini-arc, collect tagged feedback, and observe tutorial/first-harvest/D1/D7/economy/club metrics. Do not start Phase 11 until real cohort acceptance criteria are met.
 
 Local validation already passed without Docker:
 - `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
