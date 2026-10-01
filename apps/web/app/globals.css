@@ -800,6 +800,183 @@ input:focus {
 }
 
 
+/* VS-01 modular Starter Room scene */
+.starter-room-scene {
+  position: relative;
+  min-height: 320px;
+  overflow: hidden;
+  border: 1px solid #35483d;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(34, 47, 39, 0.82), rgba(10, 16, 13, 0.98)),
+    #111a14;
+  isolation: isolate;
+}
+
+.starter-room-shell {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.starter-room-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 43%;
+  border-bottom: 1px solid rgba(147, 207, 159, 0.14);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    rgba(23, 35, 28, 0.92);
+  background-size: 44px 44px;
+}
+
+.starter-room-shell::after {
+  content: "";
+  position: absolute;
+  inset: 57% 0 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(26, 43, 32, 0.92), rgba(14, 23, 18, 0.98));
+  background-size: 48px 48px, 48px 48px, auto;
+}
+
+.scene-module,
+.scene-slot {
+  position: absolute;
+  z-index: 2;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.scene-module {
+  width: 18%;
+  min-width: 72px;
+  aspect-ratio: 1;
+}
+
+.scene-storage {
+  left: 5%;
+  top: 8%;
+}
+
+.scene-contracts {
+  right: 5%;
+  top: 8%;
+}
+
+.scene-workbench {
+  left: 7%;
+  bottom: 5%;
+}
+
+.scene-desk {
+  right: 7%;
+  bottom: 5%;
+}
+
+.scene-placeholder,
+.scene-slot-placeholder {
+  position: absolute;
+  inset: 12%;
+  display: block;
+  border: 1px solid rgba(147, 207, 159, 0.24);
+  border-radius: 10px;
+  background:
+    linear-gradient(145deg, rgba(36, 77, 46, 0.52), rgba(13, 18, 15, 0.68));
+  box-shadow: inset 0 0 0 1px rgba(244, 240, 230, 0.025);
+}
+
+.scene-module[style*="background-image"] .scene-placeholder,
+.scene-slot[style*="background-image"] .scene-slot-placeholder {
+  opacity: 0.38;
+}
+
+.scene-slot-band {
+  position: absolute;
+  inset: 31% 18% 23%;
+  z-index: 3;
+}
+
+.scene-slot {
+  top: 50%;
+  width: 28%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+
+.scene-slot-0 {
+  left: 17%;
+}
+
+.scene-slot-1 {
+  left: 50%;
+}
+
+.scene-slot-2 {
+  left: 83%;
+}
+
+.scene-slot-placeholder {
+  inset: 8%;
+  border: 2px solid #3d563f;
+  background:
+    radial-gradient(circle at 50% 50%, #2f4036 0 18%, transparent 19%),
+    linear-gradient(145deg, #101a14, #19251d);
+}
+
+.scene-slot.ready .scene-slot-placeholder {
+  border-color: #e0ba78;
+  background:
+    radial-gradient(circle at 50% 50%, #e0ba78 0 24%, transparent 25%),
+    linear-gradient(145deg, #16251b, #203128);
+  box-shadow:
+    inset 0 0 0 1px rgba(244, 240, 230, 0.04),
+    0 0 22px rgba(224, 186, 120, 0.15);
+}
+
+.scene-slot.planted .scene-slot-placeholder,
+.scene-slot.growing .scene-slot-placeholder {
+  border-color: #547a5d;
+  background:
+    radial-gradient(circle at 50% 50%, #93cf9f 0 16%, transparent 17%),
+    linear-gradient(145deg, #101a14, #1d2f22);
+}
+
+.scene-slot.locked .scene-slot-placeholder {
+  opacity: 0.48;
+  border-style: dashed;
+}
+
+@media (max-width: 520px) {
+  .starter-room-scene {
+    min-height: 245px;
+  }
+
+  .scene-module {
+    width: 22%;
+  }
+
+  .scene-slot-band {
+    inset: 34% 6% 19%;
+  }
+
+  .scene-storage,
+  .scene-workbench {
+    left: 2%;
+  }
+
+  .scene-contracts,
+  .scene-desk {
+    right: 2%;
+  }
+}
+
 .alpha-feedback-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
