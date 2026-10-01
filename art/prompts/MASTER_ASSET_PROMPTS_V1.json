@@ -57,7 +57,7 @@
       "method": "3d-first",
       "priority": "P0",
       "phase": "3D-1",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state EMPTY. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. GLB-ready structural asset."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state EMPTY. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. Blender-master structural asset; render approved fixed-camera isometric WebP/AVIF runtime variants."
     },
     {
       "status": "TODO",
@@ -67,7 +67,7 @@
       "method": "3d-first",
       "priority": "P0",
       "phase": "3D-1",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state PLANTED. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. GLB-ready structural asset."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state PLANTED. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. Blender-master structural asset; render approved fixed-camera isometric WebP/AVIF runtime variants."
     },
     {
       "status": "TODO",
@@ -77,7 +77,7 @@
       "method": "3d-first",
       "priority": "P0",
       "phase": "3D-1",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state GROWING. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. GLB-ready structural asset."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state GROWING. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. Blender-master structural asset; render approved fixed-camera isometric WebP/AVIF runtime variants."
     },
     {
       "status": "TODO",
@@ -87,7 +87,7 @@
       "method": "3d-first",
       "priority": "P0",
       "phase": "3D-1",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state READY. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. GLB-ready structural asset."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state READY. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. Blender-master structural asset; render approved fixed-camera isometric WebP/AVIF runtime variants."
     },
     {
       "status": "TODO",
@@ -97,7 +97,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-3",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state LOCKED. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. GLB-ready structural asset."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state LOCKED. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. Blender-master structural asset; render approved fixed-camera isometric WebP/AVIF runtime variants."
     },
     {
       "status": "TODO",
@@ -107,7 +107,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-3",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state ATTENTION. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. GLB-ready structural asset."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state ATTENTION. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. Blender-master structural asset; render approved fixed-camera isometric WebP/AVIF runtime variants."
     },
     {
       "status": "TODO",
@@ -117,7 +117,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-3",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state BOOSTED. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. GLB-ready structural asset."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the canonical starter production slot state BOOSTED. Use the exact same chassis, scale, camera, root transform and materials as gb_slot_starter_master_v01. Only state-specific tray contents, lock/warning/boost overlays or local emissive effects may change. Blender-master structural asset; render approved fixed-camera isometric WebP/AVIF runtime variants."
     },
     {
       "status": "TODO",
@@ -128,7 +128,7 @@
       "method": "3d-first",
       "priority": "P0",
       "phase": "3D-1",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the compact Starter Room architectural shell only: floor, walls, structural trim, permanent practical fixtures and warm window/ceiling light anchors. Keep central gameplay area open. No baked furniture, slots or characters. Isolated modular asset where applicable, GLB-ready, correct floor pivot and clean topology."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create the compact Starter Room architectural shell only: floor, walls, structural trim, permanent practical fixtures and warm window/ceiling light anchors. Keep central gameplay area open. No baked furniture, slots or characters. Isolated modular Blender master where applicable, correct floor pivot and clean topology; export approved fixed-camera isometric WebP/AVIF runtime asset."
     },
     {
       "status": "TODO",
@@ -139,7 +139,7 @@
       "method": "3d-first",
       "priority": "P0",
       "phase": "3D-1",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a modest modular starter storage unit with practical shelves, crates and neutral botanical-business supplies. Upgradeable, clean, not cluttered. Isolated modular asset where applicable, GLB-ready, correct floor pivot and clean topology."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a modest modular starter storage unit with practical shelves, crates and neutral botanical-business supplies. Upgradeable, clean, not cluttered. Isolated modular Blender master where applicable, correct floor pivot and clean topology; export approved fixed-camera isometric WebP/AVIF runtime asset."
     },
     {
       "status": "TODO",
@@ -150,7 +150,7 @@
       "method": "3d-first",
       "priority": "P0",
       "phase": "3D-1",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a compact contracts/order station with board, terminal or pinned card surfaces but no readable text. It must clearly read as the business order hub. Isolated modular asset where applicable, GLB-ready, correct floor pivot and clean topology."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a compact contracts/order station with board, terminal or pinned card surfaces but no readable text. It must clearly read as the business order hub. Isolated modular Blender master where applicable, correct floor pivot and clean topology; export approved fixed-camera isometric WebP/AVIF runtime asset."
     },
     {
       "status": "TODO",
@@ -161,7 +161,7 @@
       "method": "3d-first",
       "priority": "P0",
       "phase": "3D-1",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a practical starter workbench with simple tools, trays and packaging/preparation cues. Not laboratory equipment. Isolated modular asset where applicable, GLB-ready, correct floor pivot and clean topology."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a practical starter workbench with simple tools, trays and packaging/preparation cues. Not laboratory equipment. Isolated modular Blender master where applicable, correct floor pivot and clean topology; export approved fixed-camera isometric WebP/AVIF runtime asset."
     },
     {
       "status": "TODO",
@@ -172,7 +172,7 @@
       "method": "3d-first",
       "priority": "P0",
       "phase": "3D-1",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a small management desk with laptop/terminal, notebook and practical office supplies. Modest, contemporary, non-luxury. Isolated modular asset where applicable, GLB-ready, correct floor pivot and clean topology."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a small management desk with laptop/terminal, notebook and practical office supplies. Modest, contemporary, non-luxury. Isolated modular Blender master where applicable, correct floor pivot and clean topology; export approved fixed-camera isometric WebP/AVIF runtime asset."
     },
     {
       "status": "TODO",
@@ -183,7 +183,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a practical tier-1 rack upgrade, modest capacity, simple modular construction and affordable starter-business finish. GLB-ready, room-placement pivot at floor level."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create a practical tier-1 rack upgrade, modest capacity, simple modular construction and affordable starter-business finish. Blender master with room-placement pivot at floor level; export approved fixed-camera isometric WebP/AVIF runtime asset."
     },
     {
       "status": "TODO",
@@ -194,7 +194,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create tier-2 of the same rack family, visibly improved organization, capacity and task lighting while preserving family silhouette. GLB-ready, room-placement pivot at floor level."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create tier-2 of the same rack family, visibly improved organization, capacity and task lighting while preserving family silhouette. Blender master with room-placement pivot at floor level; export approved fixed-camera isometric WebP/AVIF runtime asset."
     },
     {
       "status": "TODO",
@@ -205,7 +205,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create tier-3 of the same rack family, optimized and premium but not futuristic, with clear progression from tier 2. GLB-ready, room-placement pivot at floor level."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create tier-3 of the same rack family, optimized and premium but not futuristic, with clear progression from tier 2. Blender master with room-placement pivot at floor level; export approved fixed-camera isometric WebP/AVIF runtime asset."
     },
     {
       "status": "TODO",
@@ -502,7 +502,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Warm Lantern, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 1: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Warm Lantern, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 1: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -513,7 +513,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Paper Pendant, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 2: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Paper Pendant, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 2: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -524,7 +524,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Neon Leaf, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 5: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Neon Leaf, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 5: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -535,7 +535,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Track Lights, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 7: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Track Lights, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 7: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -546,7 +546,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Moon Lamp, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 10: premium, collectible and visually memorable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Moon Lamp, a decorative lighting object with warm practical illumination. Category: lighting. It should feel appropriate to unlock around level 10: premium, collectible and visually memorable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -557,7 +557,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Canvas Chair, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 1: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Canvas Chair, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 1: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -568,7 +568,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Low Bench, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 2: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Low Bench, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 2: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -579,7 +579,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Modular Sofa, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 6: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Modular Sofa, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 6: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -590,7 +590,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Reading Stool, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 4: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Reading Stool, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 4: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -601,7 +601,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Lounge Pod, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 12: premium, collectible and visually memorable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Lounge Pod, a comfortable seating object for the workshop/social corner. Category: seating. It should feel appropriate to unlock around level 12: premium, collectible and visually memorable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -612,7 +612,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Ceramic Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 1: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Ceramic Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 1: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -623,7 +623,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Tall Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 2: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Tall Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 2: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -634,7 +634,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Hanging Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 4: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Hanging Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 4: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -645,7 +645,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Stone Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 6: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Stone Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 6: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -656,7 +656,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Glass Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 11: premium, collectible and visually memorable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Glass Planter, a decorative planter object for non-gameplay ambient plants. Category: planters. It should feel appropriate to unlock around level 11: premium, collectible and visually memorable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -667,7 +667,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Grid Poster, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 1: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Grid Poster, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 1: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -678,7 +678,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create District Map, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 3: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create District Map, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 3: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -689,7 +689,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Botanical Print, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 4: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Botanical Print, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 4: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -700,7 +700,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Abstract Panel, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 7: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Abstract Panel, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 7: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -711,7 +711,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Founder Plaque, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 15: premium, collectible and visually memorable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Founder Plaque, a wall-mounted decorative piece. Category: wall. It should feel appropriate to unlock around level 15: premium, collectible and visually memorable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -722,7 +722,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Woven Rug, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 1: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Woven Rug, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 1: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -733,7 +733,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Checker Rug, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 3: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Checker Rug, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 3: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -744,7 +744,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Cork Mat, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 2: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Cork Mat, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 2: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -755,7 +755,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Terrazzo Inlay, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 8: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Terrazzo Inlay, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 8: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -766,7 +766,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Soft Runner, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 6: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Soft Runner, a floor decoration or surface accent. Category: floor. It should feel appropriate to unlock around level 6: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -777,7 +777,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Crate Stack, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 1: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Crate Stack, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 1: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -788,7 +788,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Label Shelf, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 2: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Label Shelf, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 2: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -799,7 +799,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Metal Locker, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 5: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Metal Locker, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 5: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -810,7 +810,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Display Cabinet, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 9: premium, collectible and visually memorable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Display Cabinet, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 9: premium, collectible and visually memorable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -821,7 +821,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Archive Drawers, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 13: premium, collectible and visually memorable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Archive Drawers, a decorative storage/furniture piece. Category: storage. It should feel appropriate to unlock around level 13: premium, collectible and visually memorable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -832,7 +832,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Small Sculpture, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 3: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Small Sculpture, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 3: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -843,7 +843,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Kinetic Mobile, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 6: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Kinetic Mobile, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 6: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -854,7 +854,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Color Study, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 5: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Color Study, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 5: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -865,7 +865,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Glass Orb, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 10: premium, collectible and visually memorable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Glass Orb, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 10: premium, collectible and visually memorable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -876,7 +876,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create District Trophy, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 18: premium, collectible and visually memorable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create District Trophy, a tasteful art object or sculpture. Category: art. It should feel appropriate to unlock around level 18: premium, collectible and visually memorable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -887,7 +887,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Counter Clock, a small utility/decor object. Category: utility. It should feel appropriate to unlock around level 2: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Counter Clock, a small utility/decor object. Category: utility. It should feel appropriate to unlock around level 2: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -898,7 +898,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Notice Board, a small utility/decor object. Category: utility. It should feel appropriate to unlock around level 3: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Notice Board, a small utility/decor object. Category: utility. It should feel appropriate to unlock around level 3: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -909,7 +909,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Welcome Sign, a decorative sign/banner form with no baked readable text. Category: signage. It should feel appropriate to unlock around level 2: simple and affordable. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Welcome Sign, a decorative sign/banner form with no baked readable text. Category: signage. It should feel appropriate to unlock around level 2: simple and affordable. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -920,7 +920,7 @@
       "method": "3d-first",
       "priority": "P1",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Open Hours Sign, a decorative sign/banner form with no baked readable text. Category: signage. It should feel appropriate to unlock around level 4: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Open Hours Sign, a decorative sign/banner form with no baked readable text. Category: signage. It should feel appropriate to unlock around level 4: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
@@ -931,7 +931,7 @@
       "method": "3d-first",
       "priority": "P2",
       "phase": "3D-4",
-      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Club Banner, a decorative sign/banner form with no baked readable text. Category: signage. It should feel appropriate to unlock around level 8: more distinctive and refined. Isolated GLB-ready prop, correct floor/wall pivot, no readable text."
+      "prompt": "Original GreenBusiness asset. Stylized 3D diorama management-game art, Botanical Workshop Diorama direction, clean readable silhouette, matte forest-green and neutral materials, warm practical lighting, restrained cream and gold accents, contemporary small-business aesthetic, premium but approachable, original IP, no text, no watermark, no cyberpunk, no photorealism. Create Club Banner, a decorative sign/banner form with no baked readable text. Category: signage. It should feel appropriate to unlock around level 8: more distinctive and refined. Isolated Blender-master prop with correct floor/wall pivot; export approved fixed-camera isometric WebP/AVIF runtime asset, no readable text."
     },
     {
       "status": "TODO",
