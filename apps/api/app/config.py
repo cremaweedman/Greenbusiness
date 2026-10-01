@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     refresh_cookie_name: str = "gb_refresh"
     cookie_secure: bool = False
     admin_api_key: str = "development-admin-change-me"
+    creator_access_enabled: bool = True
+    creator_email: str = "creator@greenbusiness.local"
+    creator_display_name: str = "Creator"
 
     storage_backend: str = "local"
     storage_local_path: str = "/data/greenbusiness"

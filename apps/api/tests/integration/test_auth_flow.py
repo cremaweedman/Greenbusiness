@@ -159,3 +159,42 @@ async def test_login_recovers_same_player_state(client: AsyncClient):
         assert [slot["id"] for slot in after["slots"]] == [slot["id"] for slot in before["slots"]]
     finally:
         await _cleanup(email)
+
+
+@pytest.mark.asyncio
+async def test_dev_creator_access_creates_reusable_passwordless_session(client: AsyncClient):
+    email = "creator@greenbusiness.local"
+
+    try:
+        first = await client.post("/v1/auth/dev/creator")
+        assert first.status_code == 200
+        first_access = first.json()["access_token"]
+        assert client.cookies.get("gb_refresh")
+
+        player = await client.get(
+            "/v1/player",
+            headers={"Authorization": f"Bearer {first_access}"},
+        )
+        assert player.status_code == 200
+        state = player.json()
+        assert state["email"] == email
+        assert state["display_name"] == "Creator"
+        assert state["cash"] == 500
+
+        second = await client.post("/v1/auth/dev/creator")
+        assert second.status_code == 200
+        second_player = await client.get(
+            "/v1/player",
+            headers={"Authorization": f"Bearer {second.json()['access_token']}"},
+        )
+        assert second_player.status_code == 200
+        assert second_player.json()["user_id"] == state["user_id"]
+
+        async with SessionLocal() as session:
+            assert (
+                await session.scalar(
+                    select(func.count()).select_from(User).where(User.email == email)
+                )
+            ) == 1
+    finally:
+        await _cleanup(email)

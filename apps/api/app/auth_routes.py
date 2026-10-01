@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth_service import (
     get_player_state,
+    login_or_create_creator_user,
     login_user,
     register_user,
     revoke_refresh_token,
@@ -74,6 +75,20 @@ async def login(
         session,
         email=body.email,
         password=body.password,
+        request_id=getattr(request.state, "request_id", None),
+    )
+    _set_refresh_cookie(response, refresh_token)
+    return TokenResponse(access_token=access_token, expires_in=settings.jwt_access_ttl_seconds)
+
+
+@auth_router.post("/dev/creator", response_model=TokenResponse)
+async def creator_access(
+    request: Request,
+    response: Response,
+    session: DbSession,
+) -> TokenResponse:
+    _, access_token, refresh_token = await login_or_create_creator_user(
+        session,
         request_id=getattr(request.state, "request_id", None),
     )
     _set_refresh_cookie(response, refresh_token)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime, timedelta
+from secrets import token_urlsafe
 
 import jwt
 from sqlalchemy import select
@@ -51,29 +52,20 @@ async def _get_user(session: AsyncSession, user_id: uuid.UUID) -> User | None:
     return await session.get(User, user_id)
 
 
-async def register_user(
+async def _bootstrap_player_account(
     session: AsyncSession,
     *,
     email: str,
-    password: str,
+    password_hash: str,
     display_name: str,
-    request_id: str | None,
-) -> tuple[User, str, str]:
-    normalized = normalize_email(email)
-    existing = await _get_user_by_email(session, normalized)
-    if existing is not None:
-        raise AppError(
-            "AUTH_EMAIL_EXISTS",
-            "An account with this email already exists.",
-            status_code=409,
-        )
-
-    user = User(email=normalized, password_hash=hash_password(password))
+) -> tuple[User, PlayerProfile]:
+    clean_display_name = display_name.strip() or "Creator"
+    user = User(email=normalize_email(email), password_hash=password_hash)
     session.add(user)
     await session.flush()
 
-    profile = PlayerProfile(user_id=user.id, display_name=display_name.strip())
-    business = Business(user_id=user.id, name=f"{display_name.strip()}'s GreenBusiness")
+    profile = PlayerProfile(user_id=user.id, display_name=clean_display_name)
+    business = Business(user_id=user.id, name=f"{clean_display_name}'s GreenBusiness")
     progression = Progression(
         user_id=user.id,
         level=1,
@@ -103,7 +95,18 @@ async def register_user(
             ProductionSlot(room_id=room.id, slot_index=2, status="available"),
         ]
     )
+    return user, profile
 
+
+async def _issue_session(
+    session: AsyncSession,
+    *,
+    user: User,
+    event_type: str,
+    request_id: str | None,
+    analytics_event_name: str,
+    analytics_payload: dict[str, object] | None = None,
+) -> tuple[str, str]:
     refresh_token = new_refresh_token()
     auth_session = AuthSession(
         user_id=user.id,
@@ -111,27 +114,119 @@ async def register_user(
         expires_at=datetime.now(UTC) + timedelta(seconds=settings.refresh_ttl_seconds),
     )
     session.add(auth_session)
-
     await append_audit_event(
         session,
-        event_type="auth.user_registered",
+        event_type=event_type,
         actor_type="user",
         actor_id=str(user.id),
         target_type="user",
         target_id=str(user.id),
         request_id=request_id,
-        payload={"email": normalized},
+        payload=analytics_payload or {},
     )
     await record_analytics_event(
         session,
-        event_name="auth.user_registered",
+        event_name=analytics_event_name,
         user_id=user.id,
-        payload={"tutorial_step": profile.tutorial_step},
+        payload=analytics_payload,
         request_id=request_id,
+    )
+    return create_access_token(user.id), refresh_token
+
+
+async def register_user(
+    session: AsyncSession,
+    *,
+    email: str,
+    password: str,
+    display_name: str,
+    request_id: str | None,
+) -> tuple[User, str, str]:
+    normalized = normalize_email(email)
+    existing = await _get_user_by_email(session, normalized)
+    if existing is not None:
+        raise AppError(
+            "AUTH_EMAIL_EXISTS",
+            "An account with this email already exists.",
+            status_code=409,
+        )
+
+    user, profile = await _bootstrap_player_account(
+        session,
+        email=normalized,
+        password_hash=hash_password(password),
+        display_name=display_name,
+    )
+
+    access_token, refresh_token = await _issue_session(
+        session,
+        user=user,
+        event_type="auth.user_registered",
+        request_id=request_id,
+        analytics_event_name="auth.user_registered",
+        analytics_payload={"tutorial_step": profile.tutorial_step},
     )
 
     await session.commit()
-    return user, create_access_token(user.id), refresh_token
+    return user, access_token, refresh_token
+
+
+def _creator_access_allowed() -> bool:
+    return settings.creator_access_enabled and settings.app_env.lower() in {
+        "development",
+        "local",
+        "test",
+    }
+
+
+async def login_or_create_creator_user(
+    session: AsyncSession,
+    *,
+    request_id: str | None,
+) -> tuple[User, str, str]:
+    if not _creator_access_allowed():
+        raise AppError(
+            "CREATOR_ACCESS_DISABLED",
+            "Creator access is disabled outside local development.",
+            status_code=404,
+        )
+
+    normalized = normalize_email(settings.creator_email)
+    user = await _get_user_by_email(session, normalized)
+    profile: PlayerProfile | None = None
+    if user is None:
+        user, profile = await _bootstrap_player_account(
+            session,
+            email=normalized,
+            password_hash=hash_password(token_urlsafe(48)),
+            display_name=settings.creator_display_name,
+        )
+        event_type = "auth.creator_created"
+        analytics_event_name = "auth.creator_created"
+    else:
+        if user.status != "active":
+            raise AppError("AUTH_ACCOUNT_INACTIVE", "Creator account is inactive.", status_code=403)
+        event_type = "auth.creator_login"
+        analytics_event_name = "auth.creator_login"
+
+    access_token, refresh_token = await _issue_session(
+        session,
+        user=user,
+        event_type=event_type,
+        request_id=request_id,
+        analytics_event_name=analytics_event_name,
+        analytics_payload={"creator_access": True},
+    )
+    if profile is not None:
+        await record_analytics_event(
+            session,
+            event_name="auth.user_registered",
+            user_id=user.id,
+            payload={"tutorial_step": profile.tutorial_step, "creator_access": True},
+            request_id=request_id,
+        )
+    await session.commit()
+    return user, access_token, refresh_token
 
 
 async def login_user(

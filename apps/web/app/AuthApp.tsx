@@ -434,6 +434,39 @@ export default function AuthApp() {
     }
   }
 
+  async function enterAsCreator() {
+    setSubmitting(true);
+    setError(null);
+    setNotice(null);
+    try {
+      if (apiStatus === "offline") {
+        throw new Error("API is offline. Start the backend, then try again.");
+      }
+      const response = await fetch("/api/v1/auth/dev/creator", {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error(await parseError(response));
+
+      const token = (await response.json()) as TokenResponse;
+      const currentPlayer = await getPlayer(token.access_token);
+      let currentSocial: SocialState | null = null;
+      try {
+        currentSocial = await getSocialState(token.access_token);
+      } catch {
+        currentSocial = null;
+      }
+      setAccessToken(token.access_token);
+      applyPlayerState(currentPlayer);
+      setSocial(currentSocial);
+      setSelectedVariety(currentPlayer.starter_varieties[0]?.key ?? null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Creator access failed.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -1050,6 +1083,10 @@ export default function AuthApp() {
           {submitting ? "Working..." : mode === "register" ? "Start business" : "Sign in"}
         </button>
       </form>
+
+      <button className="secondary creator-access" onClick={() => void enterAsCreator()} disabled={submitting}>
+        Entrar como creador
+      </button>
     </section>
   );
 }

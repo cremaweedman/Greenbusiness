@@ -158,6 +158,10 @@ input:focus {
   background: #121b16;
 }
 
+.creator-access {
+  margin-top: 12px;
+}
+
 .error {
   margin: 0;
   padding: 10px 12px;
