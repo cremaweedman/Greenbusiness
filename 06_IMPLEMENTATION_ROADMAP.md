@@ -21,6 +21,8 @@ A phase is complete only when:
 ### Product constraints that remain frozen until soft launch
 
 - Runtime presentation is 2D/2.5D isometric. 3D may be used to author source art, but core gameplay must not depend on a real-time 3D renderer.
+- Primary platform is mobile portrait. Design starts at ~390×844 CSS px and must pass 360–430 px widths before desktop polish.
+- Mobile information architecture uses bottom navigation and contextual bottom sheets; no persistent left sidebar or desktop-only core action.
 
 - Original IP only. Do not copy Weeds names, characters, dialogue, art, UI, music or protected expression.
 - Adult management/tycoon framing.
@@ -70,7 +72,7 @@ Create a reproducible production-grade skeleton that boots from a clean clone.
 
 ### Frontend
 - Next.js + TypeScript
-- responsive/mobile-first shell
+- mobile-portrait-first shell with safe-area handling, bottom navigation and contextual bottom sheets
 - API client
 - auth/session shell
 - design tokens
@@ -673,6 +675,11 @@ Completed:
 
 ### P10-ART-1 — Production Starter Room
 Deliver:
+- portrait-mobile-first composition at 390×844 baseline;
+- 360 px minimum-width pass;
+- bottom navigation shell;
+- contextual crop/slot bottom sheet;
+- no persistent left navigation on mobile;
 - room shell/background;
 - 3 production-slot positions;
 - canonical starter slot family;
@@ -681,12 +688,12 @@ Deliver:
 - workbench;
 - desk;
 - deterministic isometric exports;
-- responsive interaction hotspots;
+- thumb-friendly interaction hotspots (minimum 44×44 CSS px);
 - HTML timers/state overlays.
 
 Gate:
 - visual quality is close to shippable;
-- desktop/mobile composition remains readable;
+- mobile portrait composition is primary; tablet/desktop remain compatible;
 - frontend lint/typecheck/test/build green;
 - compose-smoke and Security Scan remain green;
 - normal gameplay loop remains intact.
@@ -715,6 +722,9 @@ Add:
 
 ### P10-ART-5 — Optimization
 Add:
+- starter-room initial visual payload target <= 2 MB where practical;
+- responsive mobile image variants;
+- safe-area and virtual-keyboard QA;
 - responsive asset variants;
 - lazy loading/preloading policy;
 - WebP/AVIF compression budgets;
