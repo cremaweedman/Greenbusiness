@@ -651,70 +651,76 @@ After P0-M1, continue inside Phase 0 until its Definition of Done is fully satis
 
 ---
 
-## P10-3D — Diorama Runtime Migration
+## P10-ART — 2.5D Visual Production & Vertical Slice
 
 ### Objective
-Validate GreenBusiness as a real-time 3D diorama management game before the invited Closed Alpha.
+Deliver a production-quality isometric Starter Room before the invited Closed Alpha.
 
 ### Architecture
 - retain FastAPI/Postgres/Redis server authority;
-- retain Next.js/React for text-heavy UI;
-- add Three.js + React Three Fiber for the room/gameplay scene;
-- consume optimized GLB/GLTF authored through Blender;
-- do not move contracts, inventory, store or settings into 3D.
+- retain Next.js/React for gameplay UI and scene composition;
+- use optimized WebP/AVIF/SVG assets in the runtime;
+- use Blender/Meshy/Tripo only as upstream art-production tools where useful;
+- preserve a fixed isometric camera, lighting rig, scale and anchor system;
+- do not make core gameplay dependent on WebGL, Three.js or runtime GLB/GLTF.
 
-### P10-3D-0 — Runtime Spike
+### P10-ART-0 — Direction lock
+Completed:
+- real-time 3D spike evaluated;
+- 2D/2.5D isometric presentation selected;
+- `docs/art/2D_RUNTIME_ARCHITECTURE_V1.md` is canonical;
+- former 3D runtime architecture marked superseded.
+
+### P10-ART-1 — Production Starter Room
 Deliver:
-- procedural 3D Starter Room;
-- 3 visible production slots;
-- server-state mapping into the scene;
-- constrained orbit/zoom;
-- desktop/mobile responsive viewport;
-- fallback-safe HTML gameplay.
+- room shell/background;
+- 3 production-slot positions;
+- canonical starter slot family;
+- storage;
+- contracts station;
+- workbench;
+- desk;
+- deterministic isometric exports;
+- responsive interaction hotspots;
+- HTML timers/state overlays.
 
 Gate:
+- visual quality is close to shippable;
+- desktop/mobile composition remains readable;
 - frontend lint/typecheck/test/build green;
-- compose-smoke green;
-- security scan green;
-- normal gameplay loop remains intact;
-- acceptable mobile interaction and >=30 FPS target on a representative mid-range device.
+- compose-smoke and Security Scan remain green;
+- normal gameplay loop remains intact.
 
-### P10-3D-1 — GLB Starter Room
-Replace procedural primitives with:
-- room shell;
-- canonical starter slot;
-- storage;
-- contract anchor;
-- workbench;
-- desk.
-
-### P10-3D-2 — Crops
+### P10-ART-2 — Starter crops
 Add:
 - Aurora Drift;
 - Ember Leaf;
 - Moon Sprout;
-- growth-stage meshes or state variants.
+- planted/growing/ready visual states;
+- consistent crop scale, lighting and anchors.
 
-### P10-3D-3 — Direct Interaction
+### P10-ART-3 — Interaction & feedback
 Add:
 - slot selection by tap/click;
-- visual plant/grow/ready/harvest transitions;
-- HTML action surfaces remain accessible and authoritative.
+- plant/grow/ready/harvest visual transitions;
+- lightweight particles/highlights where useful;
+- accessible HTML alternatives for every core action.
 
-### P10-3D-4 — Upgrades & Decoration
+### P10-ART-4 — Upgrades & decorations
 Add:
 - rack tiers;
-- room evolution;
-- owned decoration placement;
-- visual progression.
+- visible room evolution;
+- first P0/P1 decorations;
+- deterministic equipped-state composition.
 
-### P10-3D-5 — Optimization
+### P10-ART-5 — Optimization
 Add:
-- compressed GLB;
-- KTX2/Basis where practical;
-- quality tiers;
-- asset preload priorities;
-- 3D load/FPS telemetry.
+- responsive asset variants;
+- lazy loading/preloading policy;
+- WebP/AVIF compression budgets;
+- alpha-texture and memory budgets;
+- visual loading/error telemetry where useful.
 
 ### Decision gate
-Do not run the real invited Closed Alpha on the old 2D room if P10-3D-0 succeeds. If P10-3D-0 fails mobile/performance/reliability gates, revert the runtime scene and keep 3D as an authoring pipeline only.
+Run the invited Closed Alpha only after P10-ART-1 produces a credible, near-shippable visual vertical slice. Do not expand the full 93-asset catalog before the Starter Room proves the final art direction.
+
