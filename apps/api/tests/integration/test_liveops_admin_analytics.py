@@ -12,6 +12,15 @@ from app.db.session import SessionLocal
 from app.main import app
 
 
+@pytest.fixture(autouse=True)
+def admin_runtime(monkeypatch):
+    monkeypatch.setattr(settings, "app_env", "test")
+    monkeypatch.setattr(settings, "admin_api_key", "integration-admin-bootstrap-key-1234567890")
+    monkeypatch.setattr(settings, "admin_jwt_secret", "integration-admin-jwt-secret-123456789012345")
+    monkeypatch.setattr(settings, "admin_actor_id", "integration-admin")
+    monkeypatch.setattr(settings, "admin_role", "superadmin")
+
+
 @pytest.fixture
 async def client():
     transport = ASGITransport(app=app)
@@ -72,7 +81,13 @@ async def test_liveops_publish_disable_and_rollback_are_audited(client: AsyncCli
     try:
         access_token = await _register(client, email)
         auth = {"Authorization": f"Bearer {access_token}"}
-        admin = {"X-Admin-Key": settings.admin_api_key}
+        admin_bootstrap = await client.post(
+            "/v1/admin/auth/token",
+            headers={"X-Admin-Key": settings.admin_api_key},
+        )
+        assert admin_bootstrap.status_code == 200
+        assert admin_bootstrap.json()["actor_id"] == "integration-admin"
+        admin = {"Authorization": f"Bearer {admin_bootstrap.json()['access_token']}"}
 
         player = await client.get("/v1/player", headers=auth)
         assert player.status_code == 200
