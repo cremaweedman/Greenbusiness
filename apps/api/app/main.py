@@ -41,7 +41,7 @@ def _rate_rule(request: Request) -> RateLimitRule | None:
             return rule
     if path.startswith("/v1/admin/"):
         return RateLimitRule("admin-api", 120, 60)
-    if path.startswith("/v1/social/") or path.startswith("/v1/clubs/"):
+    if path.startswith(("/v1/social/", "/v1/clubs/")):
         return RateLimitRule("social-api", 120, 60)
     return None
 
