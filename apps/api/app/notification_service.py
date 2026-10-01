@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import base64
 import uuid
 from hashlib import sha256
 
+from cryptography.fernet import Fernet, InvalidToken
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.db.models import NotificationPreference, PushToken
 from app.schemas import (
     NotificationPreferenceResponse,
@@ -30,6 +33,30 @@ def _valid_time(value: str) -> bool:
 
 def _token_hash(token: str) -> str:
     return sha256(token.encode()).hexdigest()
+
+
+def _token_cipher() -> Fernet:
+    key = settings.push_token_encryption_key.strip()
+    if key:
+        try:
+            return Fernet(key.encode("utf-8"))
+        except (ValueError, TypeError) as exc:
+            raise RuntimeError("PUSH_TOKEN_ENCRYPTION_KEY is not a valid Fernet key") from exc
+    derived = base64.urlsafe_b64encode(sha256(settings.jwt_secret.encode("utf-8")).digest())
+    return Fernet(derived)
+
+
+def _encrypt_push_token(token: str) -> str:
+    return _token_cipher().encrypt(token.encode("utf-8")).decode("utf-8")
+
+
+def decrypt_push_token(model: PushToken) -> str | None:
+    if not model.token_ciphertext:
+        return None
+    try:
+        return _token_cipher().decrypt(model.token_ciphertext.encode("utf-8")).decode("utf-8")
+    except InvalidToken:
+        return None
 
 
 def _token_label(token: str) -> str:
@@ -154,6 +181,7 @@ async def register_push_token(
             user_id=user_id,
             platform=platform_key,
             token_hash=hashed,
+            token_ciphertext=_encrypt_push_token(token),
             token_label=_token_label(token),
             enabled=True,
         )
@@ -161,6 +189,7 @@ async def register_push_token(
         await session.flush()
     else:
         model.platform = platform_key
+        model.token_ciphertext = _encrypt_push_token(token)
         model.enabled = True
     await session.commit()
     await session.refresh(model)

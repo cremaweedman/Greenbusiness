@@ -1,4 +1,4 @@
-const CACHE_NAME = "greenbusiness-read-cache-v1";
+const CACHE_NAME = "greenbusiness-read-cache-v2";
 const READ_CACHE_URLS = ["/", "/offline.html", "/manifest.webmanifest", "/icon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -17,14 +17,24 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+function isCacheableRequest(request) {
+  if (request.method !== "GET") return false;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return false;
+  if (url.pathname.startsWith("/api/")) return false;
+  if (READ_CACHE_URLS.includes(url.pathname)) return true;
+  if (url.pathname.startsWith("/_next/static/")) return true;
+  return /\.(?:css|js|svg|png|jpg|jpeg|webp|woff2?)$/i.test(url.pathname);
+}
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
-  if (request.method !== "GET") return;
-  if (new URL(request.url).pathname.startsWith("/api/")) return;
+  if (!isCacheableRequest(request)) return;
 
   event.respondWith(
     fetch(request)
       .then((response) => {
+        if (!response.ok) return response;
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         return response;

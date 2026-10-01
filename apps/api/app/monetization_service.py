@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.audit import append_audit_event
+from app.config import settings
 from app.db.models import EconomyLedger, PlayerEntitlement, PremiumWallet, PurchaseLedger, Wallet
 from app.errors import AppError
 from app.game_data.store_catalog import PRODUCT_BY_KEY, PRODUCTS, STORE_CONFIG_VERSION, StoreProduct
@@ -22,8 +23,50 @@ from app.schemas import (
     StoreCatalogResponse,
     StoreProductResponse,
 )
+from app.security_events import security_event
 
 REWARDED_AD_CASH = 25
+
+
+def _sandbox_runtime_allowed(enabled: bool) -> bool:
+    return enabled and settings.app_env.lower() in {"development", "local", "test"}
+
+
+def _require_sandbox_purchase_runtime(provider: str) -> None:
+    if provider == "sandbox":
+        if not _sandbox_runtime_allowed(settings.sandbox_monetization_enabled):
+            security_event("store.sandbox_purchase_blocked", provider=provider)
+            raise AppError(
+                "STORE_SANDBOX_DISABLED",
+                "Sandbox purchases are disabled.",
+                status_code=404,
+            )
+        return
+    raise AppError(
+        "STORE_PROVIDER_UNSUPPORTED",
+        "No production payment provider is configured yet.",
+        status_code=501,
+    )
+
+
+def _require_sandbox_refunds() -> None:
+    if not _sandbox_runtime_allowed(settings.sandbox_monetization_enabled):
+        security_event("store.sandbox_refund_blocked")
+        raise AppError(
+            "STORE_SANDBOX_DISABLED",
+            "Sandbox refunds are disabled.",
+            status_code=404,
+        )
+
+
+def _require_sandbox_rewarded_ads() -> None:
+    if not _sandbox_runtime_allowed(settings.sandbox_rewarded_ads_enabled):
+        security_event("store.rewarded_ad_sandbox_blocked")
+        raise AppError(
+            "REWARDED_ADS_DISABLED",
+            "Rewarded-ad sandbox claims are disabled.",
+            status_code=404,
+        )
 
 
 def _product_response(product: StoreProduct) -> StoreProductResponse:
@@ -53,12 +96,7 @@ def _receipt_hash(*, provider: str, receipt_id: str, product_key: str) -> str:
 
 
 def _validate_sandbox_receipt(provider: str, receipt_id: str, product_key: str) -> None:
-    if provider != "sandbox":
-        raise AppError(
-            "STORE_PROVIDER_UNSUPPORTED",
-            "Only sandbox receipts are supported in this phase.",
-            status_code=400,
-        )
+    _require_sandbox_purchase_runtime(provider)
     expected_prefix = f"sandbox:{product_key}:"
     if not receipt_id.startswith(expected_prefix):
         raise AppError(
@@ -161,6 +199,13 @@ async def validate_purchase_receipt(
     )
     if existing is not None:
         if existing.user_id != user_id:
+            security_event(
+                "store.receipt_replay_cross_user",
+                user_id=str(user_id),
+                purchase_user_id=str(existing.user_id),
+                provider=provider,
+                product_key=product_key,
+            )
             raise AppError(
                 "STORE_RECEIPT_REPLAYED",
                 "Receipt has already been claimed by another player.",
@@ -259,6 +304,7 @@ async def refund_purchase(
     purchase_id: uuid.UUID,
     request_id: str | None = None,
 ) -> PurchaseRefundResponse:
+    _require_sandbox_refunds()
     purchase = await session.scalar(
         select(PurchaseLedger)
         .where(PurchaseLedger.id == purchase_id, PurchaseLedger.user_id == user_id)
@@ -333,6 +379,7 @@ async def claim_rewarded_ad(
     impression_id: str,
     request_id: str | None = None,
 ) -> RewardedAdClaimResponse:
+    _require_sandbox_rewarded_ads()
     reference_id = f"rewarded_ad:{placement_key}:{impression_id}"
     existing = await session.scalar(
         select(EconomyLedger).where(

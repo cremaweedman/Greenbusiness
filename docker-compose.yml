@@ -13,11 +13,35 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:8.2-alpine
+    command: ["redis-server","--save","","--appendonly","no"]
+    healthcheck:
+      test: ["CMD","redis-cli","ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   api:
     build: ./apps/api
     environment:
       APP_ENV: ${APP_ENV:-development}
       DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://greenbusiness:change-me@postgres:5432/greenbusiness}
+      JWT_SECRET: ${JWT_SECRET:-development-only-change-me}
+      JWT_ISSUER: ${JWT_ISSUER:-greenbusiness}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:-development-admin-change-me}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-development-admin-jwt-change-me}
+      ADMIN_ACTOR_ID: ${ADMIN_ACTOR_ID:-local-admin}
+      ADMIN_ROLE: ${ADMIN_ROLE:-superadmin}
+      CREATOR_ACCESS_ENABLED: ${CREATOR_ACCESS_ENABLED:-false}
+      SANDBOX_MONETIZATION_ENABLED: ${SANDBOX_MONETIZATION_ENABLED:-true}
+      SANDBOX_REWARDED_ADS_ENABLED: ${SANDBOX_REWARDED_ADS_ENABLED:-true}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED:-true}
+      RATE_LIMIT_BACKEND: ${RATE_LIMIT_BACKEND:-redis}
+      PUSH_TOKEN_ENCRYPTION_KEY: ${PUSH_TOKEN_ENCRYPTION_KEY:-}
+      ANALYTICS_REQUEST_SAMPLE_RATE: ${ANALYTICS_REQUEST_SAMPLE_RATE:-0.1}
       STORAGE_BACKEND: ${STORAGE_BACKEND:-local}
       STORAGE_LOCAL_PATH: ${STORAGE_LOCAL_PATH:-/data/greenbusiness}
       S3_ENDPOINT: ${S3_ENDPOINT:-}
@@ -27,6 +51,8 @@ services:
       S3_SECRET_KEY: ${S3_SECRET_KEY:-}
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD","python","-c","import urllib.request; urllib.request.urlopen('http://localhost:8000/health/live')"]

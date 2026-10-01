@@ -4,7 +4,7 @@ import uuid
 from hashlib import sha256
 from typing import Any
 
-from sqlalchemy import desc, func, select
+from sqlalchemy import desc, func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.audit import append_audit_event
@@ -35,6 +35,7 @@ from app.schemas import (
 )
 
 ACTIVE_CONFIG_META_KEY = "liveops.active_config_version"
+LIVEOPS_CONFIG_LOCK_KEY = 1196573267
 ANALYTICS_SECRET_KEYS = {
     "authorization",
     "cookie",
@@ -225,6 +226,10 @@ async def _database_now(session: AsyncSession):
 
 
 async def _next_config_version(session: AsyncSession) -> int:
+    await session.execute(
+        text("SELECT pg_advisory_xact_lock(:lock_key)"),
+        {"lock_key": LIVEOPS_CONFIG_LOCK_KEY},
+    )
     value = await session.scalar(select(func.max(LiveOpsConfigVersion.version)))
     return int(value or 0) + 1
 

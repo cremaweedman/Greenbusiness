@@ -9,6 +9,7 @@ from sqlalchemy import select
 from app.db.models import PushToken, User
 from app.db.session import SessionLocal
 from app.main import app
+from app.notification_service import decrypt_push_token
 
 
 @pytest.fixture
@@ -139,5 +140,7 @@ async def test_notification_preferences_tokens_and_platform_readiness_are_safe(
             rows = (await session.scalars(select(PushToken))).all()
             assert "web-push-token-abcdef123456" not in {row.token_hash for row in rows}
             assert any(row.token_label == "…123456" for row in rows)
+            assert all(row.token_ciphertext != "web-push-token-abcdef123456" for row in rows)
+            assert any(decrypt_push_token(row) == "web-push-token-abcdef123456" for row in rows)
     finally:
         await _cleanup(email)

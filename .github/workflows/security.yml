@@ -1,0 +1,31 @@
+name: Security Scan
+
+on:
+  push:
+    branches: ["main", "feat/**"]
+  pull_request:
+  schedule:
+    - cron: "17 4 * * 1"
+
+jobs:
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Filesystem vulnerability, secret and misconfiguration scan
+        run: |
+          docker run --rm             -v "$PWD:/work"             -w /work             aquasec/trivy:0.74.0             fs             --scanners vuln,secret,misconfig             --severity HIGH,CRITICAL             --ignore-unfixed             --exit-code 1             .
+
+      - name: Build scan images
+        run: |
+          docker build -t greenbusiness-api:security apps/api
+          docker build -t greenbusiness-web:security apps/web
+
+      - name: Scan API image
+        run: |
+          docker run --rm             -v /var/run/docker.sock:/var/run/docker.sock             aquasec/trivy:0.74.0             image             --severity HIGH,CRITICAL             --ignore-unfixed             --exit-code 1             greenbusiness-api:security
+
+      - name: Scan web image
+        run: |
+          docker run --rm             -v /var/run/docker.sock:/var/run/docker.sock             aquasec/trivy:0.74.0             image             --severity HIGH,CRITICAL             --ignore-unfixed             --exit-code 1             greenbusiness-web:security

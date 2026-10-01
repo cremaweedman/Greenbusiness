@@ -12,6 +12,15 @@ from app.db.session import SessionLocal
 from app.main import app
 
 
+@pytest.fixture(autouse=True)
+def admin_runtime(monkeypatch):
+    monkeypatch.setattr(settings, "app_env", "test")
+    monkeypatch.setattr(settings, "admin_api_key", "social-admin-bootstrap-key-1234567890")
+    monkeypatch.setattr(settings, "admin_jwt_secret", "social-admin-jwt-secret-123456789012345")
+    monkeypatch.setattr(settings, "admin_actor_id", "social-test-admin")
+    monkeypatch.setattr(settings, "admin_role", "superadmin")
+
+
 @pytest.fixture
 async def client():
     transport = ASGITransport(app=app)
@@ -179,7 +188,12 @@ async def test_social_club_lifecycle_is_idempotent_limited_and_rewarded(client: 
         assert reward_replay.json()["idempotent"] is True
         assert reward_replay.json()["cash_delta"] == 0
 
-        admin = {"X-Admin-Key": settings.admin_api_key}
+        admin_bootstrap = await client.post(
+            "/v1/admin/auth/token",
+            headers={"X-Admin-Key": settings.admin_api_key},
+        )
+        assert admin_bootstrap.status_code == 200
+        admin = {"Authorization": f"Bearer {admin_bootstrap.json()['access_token']}"}
         disabled = await client.post(
             "/v1/admin/config/publish",
             headers=admin,
