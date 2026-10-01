@@ -450,6 +450,7 @@ class PushToken(Base):
     )
     platform: Mapped[str] = mapped_column(String(24), nullable=False)
     token_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    token_ciphertext: Mapped[str | None] = mapped_column(String(1024), nullable=True)
     token_label: Mapped[str] = mapped_column(String(32), nullable=False)
     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
