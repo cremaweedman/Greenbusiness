@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 8 is completed and validated through P8-M1. Phase 9 is ready but not started.
+**Current state:** Phase 9 is completed and validated through P9-M1. Phase 10 Closed Alpha is ready but not started.
 
 ---
 
@@ -159,7 +159,22 @@ Current repository status:
 - 4 original contacts are implemented;
 - daily/weekly mission assignments persist per period;
 - mastery supports 3 cosmetic-only thresholds;
-- narrative history/inbox metadata is exposed to the frontend.
+- narrative history/inbox metadata is exposed to the frontend;
+- P9 production hardening is implemented and validated;
+- insecure production defaults fail closed;
+- sandbox purchases/refunds/rewarded ads are disabled outside development/local/test;
+- admin access uses short-lived admin JWTs with viewer/operator/superadmin role boundaries;
+- sensitive auth/admin/store/social endpoints are rate limited with Redis required in production-like environments;
+- CSP/security headers, exploit/replay logging and request correlation are implemented;
+- push delivery tokens are encrypted at rest while retaining one-way hashes for dedupe;
+- LiveOps config publishing is concurrency-safe through PostgreSQL advisory locking;
+- social profile creation uses savepoints instead of full transaction rollback;
+- request performance analytics are sampled and successful-request writes are dispatched asynchronously;
+- service-worker caching is allow-listed and excludes `/api/`;
+- API/web containers run non-root and the web image uses a minimal standalone runtime;
+- backup/restore drill, privacy/terms/IP inputs and security disclosure docs are committed;
+- dependency, filesystem, secret, misconfiguration and container scans are automated with Trivy;
+- CI and Security Scan are green on the final P9 branch state.
 
 Implementation is active. Documentation completeness must not be confused with full game completeness.
 
@@ -194,45 +209,55 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P9-M1 — Security, Fraud, Reliability & Production Hardening — READY, NOT STARTED**
+**P10-M1 — Content Completion & Closed Alpha — READY, NOT STARTED**
 
 ## Goal
-Bring GreenBusiness up to closed-alpha production standards without expanding gameplay scope.
+Validate GreenBusiness with a small invited player cohort before expanding scope or entering soft launch.
 
-## Planned deliverables
-- rate limiting for sensitive endpoints;
-- replay/exploit logging for consequential economy and purchase paths;
-- structured logs and request correlation;
-- CSP/security headers;
-- backup/restore runbook and local restore drill;
-- Sentry/error-monitoring adapter points or documented integration seam;
-- dependency/container scanning workflow;
-- data retention, privacy policy and Terms/Community-rule implementation inputs;
-- trademark/IP clearance checkpoint;
-- PostgreSQL integration tests for security/replay/hardening invariants;
-- full Docker E2E for health/readiness/security headers and migration release flow.
+## Alpha content target
+- 1 complete district/location;
+- 10–12 fictional varieties;
+- 20–25 levels;
+- 3 compact skill trees;
+- 25–40 missions;
+- 40–60 decorations;
+- club weekly objective;
+- minimum one LiveOps mini-arc;
+- first complete economy configuration.
 
-## Explicitly excluded from P9-M1
-- new gameplay systems;
-- marketplace/open chat;
-- production iOS release before policy review;
+## Closed-alpha operating work
+- finalize the playable content gaps required by the alpha target;
+- seed/reset a clean alpha environment;
+- invite a small instrumented cohort;
+- capture tagged player feedback and bug reports;
+- measure tutorial completion, first harvest, return-to-timer behavior and early D1/D7 cohorts;
+- inspect economy source/sink behavior and affordability;
+- inspect club adoption/retention impact;
+- verify ethical cosmetic/supporter monetization value without P2W pressure;
+- resolve blocker exploits/crashes before soft launch.
+
+## Explicitly excluded from P10-M1
+- paid user acquisition;
+- worldwide/public launch;
+- open chat;
+- free P2P marketplace;
+- Web3/NFT/cash-out;
 - Kubernetes/microservices;
-- real payment-provider launch credentials.
+- production iOS release before policy review.
 
 ---
 
-# 9. P9-M1 acceptance criteria
+# 9. P10-M1 acceptance criteria
 
-Do not mark P9-M1 complete until:
-- duplicate harvest/purchase replay tests still pass;
-- sensitive endpoints have rate-limit or abuse-control coverage;
-- security headers/CSP are present in the deployed web/API path;
-- economic exploit attempts are logged without storing secrets;
-- backup and restore drill steps are documented and tested locally;
-- dependency/container scanning is wired into the workflow or documented with a reproducible command;
-- data retention, privacy-policy inputs and Terms/Community-rule inputs are documented;
-- P0/P1 security issues discovered during the pass are fixed or explicitly tracked;
-- backend/frontend/full-stack CI is green.
+Do not mark P10-M1 complete until:
+- alpha content target is materially complete;
+- invited-user feedback is tagged and triaged;
+- economy exploits found in alpha are resolved;
+- tutorial completion is measurable;
+- D1 and early D7 cohorts are measurable;
+- crash/API blocker issues are resolved or explicitly blocking;
+- no blocker remains that prevents Phase 11 soft launch;
+- backend/frontend/full-stack CI remains green.
 
 **Current status:** ready, not started.
 
@@ -336,10 +361,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 9 — Security, Fraud, Reliability & Production Hardening`
+`Phase 10 — Content Completion & Closed Alpha`
 
 ## Current milestone
-`P9-M1 — Security, Fraud, Reliability & Production Hardening — READY, NOT STARTED`
+`P10-M1 — Content Completion & Closed Alpha — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -459,13 +484,31 @@ Future agents/sessions must update this section after meaningful implementation.
 - timer displays now include absolute ready timestamps in addition to relative countdowns;
 - keyboard focus-visible outlines, reduced-motion CSS, scalable text baseline, aria labels and color-independent On/Off indicators are implemented;
 - P8-M1 integration test covers notification defaults, preference updates, invalid quiet-hour rejection, push-token replay/idempotency, token disable, unsupported platform rejection and platform readiness;
-- P8-M1 validation passed with Alembic head, full backend pytest (`28 passed`), backend Ruff, frontend lint/typecheck/test and production web build.
+- P8-M1 validation passed with Alembic head, full backend pytest (`28 passed`), backend Ruff, frontend lint/typecheck/test and production web build;
+- P9-M1 production-like configuration now fails closed on weak JWT/admin secrets, development DB credentials, insecure cookies, creator access, sandbox monetization, disabled rate limiting, non-Redis production rate limiting and missing push-token encryption;
+- creator access is opt-in and development/local/test only;
+- sandbox purchase, refund and rewarded-ad flows are development/local/test only and production provider paths fail closed;
+- receipt replay/cross-user abuse and rate-limit abuse emit sanitized security events;
+- admin bootstrap exchanges a strong key for short-lived admin JWTs and role boundaries separate viewer/operator/superadmin capabilities;
+- sensitive auth/admin/store/social routes have explicit abuse limits with Redis-backed production enforcement;
+- API/Nginx security headers and CSP are present;
+- push tokens now persist encrypted ciphertext plus a dedupe hash/label;
+- LiveOps config version allocation is serialized with a PostgreSQL advisory transaction lock;
+- social-code allocation uses nested transactions/savepoints and friend/invite codes use a larger entropy space;
+- request analytics sampling is configurable and successful-request telemetry is dispatched asynchronously;
+- service-worker read cache is allow-listed and excludes API traffic;
+- API and web containers run as non-root users;
+- web runtime uses Next standalone output and removes npm/dev dependency trees from the final image;
+- automated Security Scan covers filesystem vulnerabilities, secrets, misconfiguration and API/web images;
+- backup/restore drill helper, security disclosure, hardening runbook and privacy/terms/IP input docs are committed;
+- final P9 CI is green: backend, frontend and compose-smoke;
+- final P9 Security Scan is green.
 
 ## In progress
-- None.
+- none.
 
 ## Next action
-Begin Phase 9 with Security, Fraud, Reliability & Production Hardening exactly as scoped in `06_IMPLEMENTATION_ROADMAP.md`. Keep this focused on alpha hardening: rate limits, replay/exploit logging, security headers, backup/restore drill, monitoring seams, dependency/container scanning and policy inputs.
+**STOP HERE.** When development resumes, begin P10-M1 Closed Alpha exactly as specified above. Do not start Phase 11 soft launch before alpha acceptance criteria are met.
 
 Local validation already passed without Docker:
 - `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
