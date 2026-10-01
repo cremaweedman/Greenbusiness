@@ -580,3 +580,30 @@ Stop and report rather than silently changing product direction if:
 - current milestone cannot pass its acceptance criteria.
 
 For normal technical choices inside the frozen architecture, make the engineering decision and proceed.
+
+
+---
+
+## Art production pipeline decision
+
+VS-01 structural art now follows a hybrid production pipeline:
+
+- structural assets: concept → Tripo/Meshy → Blender canonical master → deterministic 2D renders;
+- portraits/mission/store art: 2D-first;
+- brand/UI icons: vector-first;
+- starter crops: accepted 2D visual direction unless future animation needs justify 3D.
+
+Canonical references:
+- `docs/art/3D_PRODUCTION_PIPELINE_V1.md`
+- `docs/art/3D_ASSET_SOURCE_OF_TRUTH.md`
+- `art/3d/specs/slot_master_v1.json`
+- `tools/blender/greenbusiness_scene_setup.py`
+
+Immediate art-production next step:
+1. create/import the starter slot base mesh;
+2. clean and normalize it in Blender;
+3. freeze `CAM_SLOT_MASTER` after EMPTY approval;
+4. derive PLANTED/GROWING/READY from the same master;
+5. render and integrate runtime WebP assets.
+
+Do not use independently generated 2D slot states as final production assets.
