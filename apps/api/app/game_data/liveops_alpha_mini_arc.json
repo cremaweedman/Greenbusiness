@@ -1,0 +1,54 @@
+{
+  "config": {
+    "seasons": {
+      "closed-alpha-night-market": {
+        "title": "Night Market Week",
+        "chapter": "After-hours demand rises across the district for one alpha week.",
+        "status": "closed-alpha"
+      }
+    },
+    "featured_traits": [
+      "night",
+      "premium"
+    ],
+    "feature_flags": {
+      "production": true,
+      "contracts": true,
+      "upgrades": true,
+      "missions": true,
+      "clubs": true
+    },
+    "kill_switches": {
+      "production": false,
+      "contracts": false,
+      "upgrades": false,
+      "missions": false,
+      "clubs": false
+    },
+    "content_toggles": {
+      "closed_alpha_night_market": true,
+      "decorations": true
+    },
+    "contract_multipliers": {
+      "default_cash": 1.1,
+      "default_reputation": 1.05
+    },
+    "event_windows": {
+      "closed-alpha-night-market": {
+        "start": "2026-10-02T18:00:00Z",
+        "end": "2026-10-09T18:00:00Z"
+      }
+    },
+    "notification_copy": {
+      "event_start": "Night Market Week is live. After-hours demand is active.",
+      "event_mid": "Night Market demand continues. Returning later never destroys production.",
+      "event_end": "Night Market Week closes soon. Existing production remains safe."
+    },
+    "experiments": {
+      "alpha-timer-copy": [
+        "control",
+        "absolute-ready-emphasis"
+      ]
+    }
+  }
+}

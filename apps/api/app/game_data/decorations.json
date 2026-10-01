@@ -1,0 +1,285 @@
+{
+  "version": "decorations_v1",
+  "items": [
+    {
+      "key": "warm-lantern",
+      "name": "Warm Lantern",
+      "category": "lighting",
+      "cost_cash": 120,
+      "min_level": 1
+    },
+    {
+      "key": "paper-pendant",
+      "name": "Paper Pendant",
+      "category": "lighting",
+      "cost_cash": 160,
+      "min_level": 2
+    },
+    {
+      "key": "neon-leaf",
+      "name": "Neon Leaf",
+      "category": "lighting",
+      "cost_cash": 260,
+      "min_level": 5
+    },
+    {
+      "key": "track-lights",
+      "name": "Track Lights",
+      "category": "lighting",
+      "cost_cash": 340,
+      "min_level": 7
+    },
+    {
+      "key": "moon-lamp",
+      "name": "Moon Lamp",
+      "category": "lighting",
+      "cost_cash": 480,
+      "min_level": 10
+    },
+    {
+      "key": "canvas-chair",
+      "name": "Canvas Chair",
+      "category": "seating",
+      "cost_cash": 140,
+      "min_level": 1
+    },
+    {
+      "key": "low-bench",
+      "name": "Low Bench",
+      "category": "seating",
+      "cost_cash": 190,
+      "min_level": 2
+    },
+    {
+      "key": "modular-sofa",
+      "name": "Modular Sofa",
+      "category": "seating",
+      "cost_cash": 380,
+      "min_level": 6
+    },
+    {
+      "key": "reading-stool",
+      "name": "Reading Stool",
+      "category": "seating",
+      "cost_cash": 220,
+      "min_level": 4
+    },
+    {
+      "key": "lounge-pod",
+      "name": "Lounge Pod",
+      "category": "seating",
+      "cost_cash": 520,
+      "min_level": 12
+    },
+    {
+      "key": "ceramic-planter",
+      "name": "Ceramic Planter",
+      "category": "planters",
+      "cost_cash": 130,
+      "min_level": 1
+    },
+    {
+      "key": "tall-planter",
+      "name": "Tall Planter",
+      "category": "planters",
+      "cost_cash": 180,
+      "min_level": 2
+    },
+    {
+      "key": "hanging-planter",
+      "name": "Hanging Planter",
+      "category": "planters",
+      "cost_cash": 240,
+      "min_level": 4
+    },
+    {
+      "key": "stone-planter",
+      "name": "Stone Planter",
+      "category": "planters",
+      "cost_cash": 310,
+      "min_level": 6
+    },
+    {
+      "key": "glass-planter",
+      "name": "Glass Planter",
+      "category": "planters",
+      "cost_cash": 460,
+      "min_level": 11
+    },
+    {
+      "key": "grid-poster",
+      "name": "Grid Poster",
+      "category": "wall",
+      "cost_cash": 100,
+      "min_level": 1
+    },
+    {
+      "key": "district-map",
+      "name": "District Map",
+      "category": "wall",
+      "cost_cash": 170,
+      "min_level": 3
+    },
+    {
+      "key": "botanical-print",
+      "name": "Botanical Print",
+      "category": "wall",
+      "cost_cash": 230,
+      "min_level": 4
+    },
+    {
+      "key": "abstract-panel",
+      "name": "Abstract Panel",
+      "category": "wall",
+      "cost_cash": 300,
+      "min_level": 7
+    },
+    {
+      "key": "founder-plaque",
+      "name": "Founder Plaque",
+      "category": "wall",
+      "cost_cash": 600,
+      "min_level": 15
+    },
+    {
+      "key": "woven-rug",
+      "name": "Woven Rug",
+      "category": "floor",
+      "cost_cash": 150,
+      "min_level": 1
+    },
+    {
+      "key": "checker-rug",
+      "name": "Checker Rug",
+      "category": "floor",
+      "cost_cash": 200,
+      "min_level": 3
+    },
+    {
+      "key": "cork-mat",
+      "name": "Cork Mat",
+      "category": "floor",
+      "cost_cash": 120,
+      "min_level": 2
+    },
+    {
+      "key": "terrazzo-inlay",
+      "name": "Terrazzo Inlay",
+      "category": "floor",
+      "cost_cash": 360,
+      "min_level": 8
+    },
+    {
+      "key": "soft-runner",
+      "name": "Soft Runner",
+      "category": "floor",
+      "cost_cash": 280,
+      "min_level": 6
+    },
+    {
+      "key": "crate-stack",
+      "name": "Crate Stack",
+      "category": "storage",
+      "cost_cash": 110,
+      "min_level": 1
+    },
+    {
+      "key": "label-shelf",
+      "name": "Label Shelf",
+      "category": "storage",
+      "cost_cash": 180,
+      "min_level": 2
+    },
+    {
+      "key": "metal-locker",
+      "name": "Metal Locker",
+      "category": "storage",
+      "cost_cash": 260,
+      "min_level": 5
+    },
+    {
+      "key": "display-cabinet",
+      "name": "Display Cabinet",
+      "category": "storage",
+      "cost_cash": 420,
+      "min_level": 9
+    },
+    {
+      "key": "archive-drawers",
+      "name": "Archive Drawers",
+      "category": "storage",
+      "cost_cash": 500,
+      "min_level": 13
+    },
+    {
+      "key": "small-sculpture",
+      "name": "Small Sculpture",
+      "category": "art",
+      "cost_cash": 200,
+      "min_level": 3
+    },
+    {
+      "key": "kinetic-mobile",
+      "name": "Kinetic Mobile",
+      "category": "art",
+      "cost_cash": 320,
+      "min_level": 6
+    },
+    {
+      "key": "color-study",
+      "name": "Color Study",
+      "category": "art",
+      "cost_cash": 270,
+      "min_level": 5
+    },
+    {
+      "key": "glass-orb",
+      "name": "Glass Orb",
+      "category": "art",
+      "cost_cash": 440,
+      "min_level": 10
+    },
+    {
+      "key": "district-trophy",
+      "name": "District Trophy",
+      "category": "art",
+      "cost_cash": 650,
+      "min_level": 18
+    },
+    {
+      "key": "counter-clock",
+      "name": "Counter Clock",
+      "category": "utility",
+      "cost_cash": 140,
+      "min_level": 2
+    },
+    {
+      "key": "notice-board",
+      "name": "Notice Board",
+      "category": "utility",
+      "cost_cash": 190,
+      "min_level": 3
+    },
+    {
+      "key": "welcome-sign",
+      "name": "Welcome Sign",
+      "category": "signage",
+      "cost_cash": 160,
+      "min_level": 2
+    },
+    {
+      "key": "open-hours-sign",
+      "name": "Open Hours Sign",
+      "category": "signage",
+      "cost_cash": 210,
+      "min_level": 4
+    },
+    {
+      "key": "club-banner",
+      "name": "Club Banner",
+      "category": "signage",
+      "cost_cash": 350,
+      "min_level": 8
+    }
+  ]
+}

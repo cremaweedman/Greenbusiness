@@ -16,6 +16,7 @@ from app.db.models import (
     InventoryItem,
     InventoryLot,
     PlayerContract,
+    PlayerSkillBranch,
     PlayerUpgrade,
     Progression,
     Wallet,
@@ -37,6 +38,13 @@ from app.game_data.economy_catalog import (
     UpgradeDefinition,
 )
 from app.game_data.production_catalog import STARTER_VARIETY_BY_KEY
+from app.game_data.progression_catalog import (
+    SKILL_BRANCHES,
+    SKILL_MAX_POINTS,
+    commerce_cash_multiplier,
+    skill_branch_label,
+    skill_next_tier_label,
+)
 from app.liveops_service import (
     apply_contract_multiplier,
     contract_reward_multipliers,
@@ -49,6 +57,7 @@ from app.schemas import (
     ContractOfferResponse,
     EconomyActionResponse,
     PlayerContractResponse,
+    SkillBranchResponse,
     UpgradeOfferResponse,
 )
 
@@ -229,6 +238,71 @@ async def _inventory_for_update(session: AsyncSession, user_id: uuid.UUID) -> In
     return inventory
 
 
+async def _skill_points(session: AsyncSession, user_id: uuid.UUID, branch: str) -> int:
+    return int(
+        await session.scalar(
+            select(PlayerSkillBranch.points).where(
+                PlayerSkillBranch.user_id == user_id,
+                PlayerSkillBranch.branch == branch,
+            )
+        )
+        or 0
+    )
+
+
+async def allocate_skill_point(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    branch: str,
+    request_id: str | None,
+) -> SkillBranchResponse:
+    if branch not in SKILL_BRANCHES:
+        raise AppError("SKILL_BRANCH_INVALID", "Skill branch is invalid.", status_code=400)
+    progression = await session.scalar(
+        select(Progression).where(Progression.user_id == user_id).with_for_update()
+    )
+    skill = await session.scalar(
+        select(PlayerSkillBranch)
+        .where(PlayerSkillBranch.user_id == user_id, PlayerSkillBranch.branch == branch)
+        .with_for_update()
+    )
+    if progression is None or skill is None:
+        raise AppError("PLAYER_STATE_INCOMPLETE", "Player skill state is incomplete.", status_code=500)
+    if progression.skill_points_unspent <= 0:
+        raise AppError("SKILL_POINTS_EMPTY", "No unspent skill points are available.", status_code=409)
+    if skill.points >= SKILL_MAX_POINTS:
+        raise AppError("SKILL_BRANCH_MAXED", "Skill branch is already maxed.", status_code=409)
+
+    progression.skill_points_unspent -= 1
+    skill.points += 1
+    await append_audit_event(
+        session,
+        event_type="progression.skill_allocated",
+        actor_type="user",
+        actor_id=str(user_id),
+        target_type="skill_branch",
+        target_id=branch,
+        request_id=request_id,
+        payload={"branch": branch, "points": skill.points},
+    )
+    await record_analytics_event(
+        session,
+        event_name="progression.skill_allocated",
+        user_id=user_id,
+        payload={"branch": branch, "points": skill.points},
+        request_id=request_id,
+    )
+    await session.commit()
+    return SkillBranchResponse(
+        branch=branch,
+        label=skill_branch_label(branch),
+        points=skill.points,
+        max_points=SKILL_MAX_POINTS,
+        next_tier=skill_next_tier_label(branch, skill.points),
+    )
+
+
 async def _owned_upgrade_keys(session: AsyncSession, user_id: uuid.UUID) -> list[str]:
     return list(
         (
@@ -319,6 +393,9 @@ async def economy_state(
     accepted_offer_ids = {contract.offer_id for contract in contracts}
     cash_multiplier, reputation_multiplier, _liveops_version = await contract_reward_multipliers(
         session
+    )
+    cash_multiplier *= commerce_cash_multiplier(
+        await _skill_points(session, user_id, "commerce")
     )
     offers = [
         offer
@@ -493,6 +570,9 @@ async def accept_offer(
     progression = await _progression_for_update(session, user_id)
     cash_multiplier, reputation_multiplier, liveops_version = await contract_reward_multipliers(
         session
+    )
+    cash_multiplier *= commerce_cash_multiplier(
+        await _skill_points(session, user_id, "commerce")
     )
     current_offers = generate_contract_offers(
         user_id=user_id,

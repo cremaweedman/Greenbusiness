@@ -15,6 +15,7 @@ from app.db.models import (
     InventoryItem,
     InventoryLot,
     PlayerProfile,
+    PlayerSkillBranch,
     PlayerUpgrade,
     ProductionSlot,
     Progression,
@@ -23,7 +24,12 @@ from app.db.models import (
 from app.errors import AppError
 from app.game_data.economy_catalog import UPGRADE_BY_KEY
 from app.game_data.production_catalog import STARTER_VARIETIES, STARTER_VARIETY_BY_KEY
-from app.game_data.progression_catalog import awarded_skill_points, level_for_xp
+from app.game_data.progression_catalog import (
+    awarded_skill_points,
+    botany_yield_bonus,
+    level_for_xp,
+    operations_grow_multiplier,
+)
 from app.liveops_service import record_analytics_event
 from app.mission_service import record_domain_event
 from app.schemas import (
@@ -39,7 +45,7 @@ XP_PER_HARVEST_UNIT = 5
 ACTIVE_SLOT_CONSTRAINT = "uq_crop_productions_active_slot"
 
 
-def starter_variety_responses() -> list[StarterVarietyResponse]:
+def starter_variety_responses(player_level: int) -> list[StarterVarietyResponse]:
     return [
         StarterVarietyResponse(
             key=variety.key,
@@ -47,6 +53,8 @@ def starter_variety_responses() -> list[StarterVarietyResponse]:
             grow_seconds=variety.grow_seconds,
             base_yield=variety.base_yield,
             traits=list(variety.traits),
+            min_level=variety.min_level,
+            locked=player_level < variety.min_level,
         )
         for variety in STARTER_VARIETIES
     ]
@@ -227,17 +235,43 @@ async def plant_crop(
             status_code=400,
         )
 
+    progression = await session.scalar(
+        select(Progression).where(Progression.user_id == user_id)
+    )
+    if progression is None:
+        raise AppError("PLAYER_STATE_INCOMPLETE", "Player progression is missing.", status_code=500)
+    if progression.level < variety.min_level:
+        raise AppError(
+            "PRODUCTION_VARIETY_LOCKED",
+            "Variety is not unlocked at the current level.",
+            status_code=403,
+            details={"required_level": variety.min_level, "current_level": progression.level},
+        )
+
     slot = await _get_owned_slot(session, user_id, slot_id)
     active_crop = await _get_active_crop(session, slot.id)
     if active_crop is not None:
         raise AppError("PRODUCTION_SLOT_OCCUPIED", "Production slot is already planted.", status_code=409)
 
+    operations_points = int(
+        await session.scalar(
+            select(PlayerSkillBranch.points).where(
+                PlayerSkillBranch.user_id == user_id,
+                PlayerSkillBranch.branch == "operations",
+            )
+        )
+        or 0
+    )
+    grow_seconds = max(
+        30,
+        round(variety.grow_seconds * operations_grow_multiplier(operations_points)),
+    )
     now = _now()
     crop = CropProduction(
         slot_id=slot.id,
         variety_key=variety.key,
         planted_at=now,
-        ready_at=now + timedelta(seconds=variety.grow_seconds),
+        ready_at=now + timedelta(seconds=grow_seconds),
     )
     slot.status = "planted"
     session.add(crop)
@@ -360,6 +394,16 @@ async def harvest_crop(
 
     variety = STARTER_VARIETY_BY_KEY[crop.variety_key]
     care_bonus = 1 if crop.cared_at is not None else 0
+    botany_points = int(
+        await session.scalar(
+            select(PlayerSkillBranch.points).where(
+                PlayerSkillBranch.user_id == user_id,
+                PlayerSkillBranch.branch == "botany",
+            )
+        )
+        or 0
+    )
+    skill_bonus = botany_yield_bonus(botany_points)
     owned_upgrade_keys = set(
         (
             await session.scalars(
@@ -373,7 +417,7 @@ async def harvest_crop(
         if key in UPGRADE_BY_KEY
     )
     quality = "cared" if crop.cared_at is not None else "standard"
-    yield_quantity = variety.base_yield + care_bonus + upgrade_bonus
+    yield_quantity = variety.base_yield + care_bonus + upgrade_bonus + skill_bonus
     xp_reward = yield_quantity * XP_PER_HARVEST_UNIT
     item_key = variety.item_key
 
@@ -449,6 +493,7 @@ async def harvest_crop(
             "quality": quality,
             "xp_reward": xp_reward,
             "upgrade_bonus": upgrade_bonus,
+            "skill_bonus": skill_bonus,
             "level": progression.level,
         },
     )

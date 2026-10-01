@@ -908,3 +908,120 @@ class ClubRewardClaim(Base):
     transaction_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
     claimed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
+
+
+class AlphaFeedback(Base):
+    __tablename__ = "alpha_feedback"
+    __table_args__ = (
+        CheckConstraint("kind IN ('bug','feedback')", name="ck_alpha_feedback_kind"),
+        CheckConstraint(
+            "severity IN ('blocker','major','minor','suggestion')",
+            name="ck_alpha_feedback_severity",
+        ),
+        CheckConstraint(
+            "status IN ('new','triaged','resolved','wont_fix')",
+            name="ck_alpha_feedback_status",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    kind: Mapped[str] = mapped_column(String(16), nullable=False)
+    severity: Mapped[str] = mapped_column(String(16), nullable=False)
+    category: Mapped[str] = mapped_column(String(48), nullable=False)
+    message: Mapped[str] = mapped_column(String(2000), nullable=False)
+    build_sha: Mapped[str | None] = mapped_column(String(64))
+    liveops_version: Mapped[int | None] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="new", index=True)
+    triaged_by: Mapped[str | None] = mapped_column(String(128))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        index=True,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+
+class PlayerDecoration(Base):
+    __tablename__ = "player_decorations"
+    __table_args__ = (
+        UniqueConstraint("user_id", "decoration_key", name="uq_player_decoration_user_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    decoration_key: Mapped[str] = mapped_column(String(80), nullable=False)
+    purchased_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+
+class RoomDecoration(Base):
+    __tablename__ = "room_decorations"
+    __table_args__ = (
+        UniqueConstraint("room_id", "slot_index", name="uq_room_decoration_slot"),
+        UniqueConstraint("room_id", "decoration_key", name="uq_room_decoration_key"),
+        CheckConstraint("slot_index BETWEEN 0 AND 11", name="ck_room_decoration_slot"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    room_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("rooms.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    slot_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    decoration_key: Mapped[str] = mapped_column(String(80), nullable=False)
+    equipped_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+
+class AlphaCohortMember(Base):
+    __tablename__ = "alpha_cohort_members"
+    __table_args__ = (
+        UniqueConstraint("user_id", name="uq_alpha_cohort_member_user"),
+        CheckConstraint(
+            "status IN ('active','paused','completed','removed')",
+            name="ck_alpha_cohort_member_status",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+        index=True,
+    )
+    wave: Mapped[str] = mapped_column(String(32), nullable=False, default="wave-1")
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="active", index=True)
+    enrolled_by: Mapped[str] = mapped_column(String(128), nullable=False)
+    enrolled_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        index=True,
+    )

@@ -17,6 +17,8 @@ type StarterVariety = {
   grow_seconds: number;
   base_yield: number;
   traits: string[];
+  min_level: number;
+  locked: boolean;
 };
 
 type Crop = {
@@ -100,7 +102,10 @@ type UpgradeOffer = {
 
 type SkillBranch = {
   branch: string;
+  label: string;
   points: number;
+  max_points: number;
+  next_tier: string | null;
 };
 
 type Contact = {
@@ -211,6 +216,22 @@ type PurchaseValidation = {
   purchase: { id: string; product_key: string; status: string; premium_credits_delta: number };
   premium_credits: number;
   duplicate_receipt: boolean;
+};
+
+type DecorationItem = {
+  key: string;
+  name: string;
+  category: string;
+  cost_cash: number;
+  min_level: number;
+  owned: boolean;
+  equipped_slot: number | null;
+  locked: boolean;
+};
+
+type DecorationState = {
+  cash: number;
+  items: DecorationItem[];
 };
 
 type NotificationState = {
@@ -324,6 +345,10 @@ async function getNotificationState(accessToken: string): Promise<NotificationSt
   return requestJson<NotificationState>("/api/v1/notifications/me", accessToken);
 }
 
+async function getDecorationState(accessToken: string): Promise<DecorationState> {
+  return requestJson<DecorationState>("/api/v1/decorations/me", accessToken);
+}
+
 function formatRemaining(readyAt: string, now: number): string {
   const remainingSeconds = Math.max(0, Math.ceil((new Date(readyAt).getTime() - now) / 1000));
   if (remainingSeconds === 0) return "Ready";
@@ -357,12 +382,21 @@ export default function AuthApp() {
   const [social, setSocial] = useState<SocialState | null>(null);
   const [storeCatalog, setStoreCatalog] = useState<StoreCatalog | null>(null);
   const [notifications, setNotifications] = useState<NotificationState | null>(null);
+  const [decorations, setDecorations] = useState<DecorationState | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [actionSlotId, setActionSlotId] = useState<string | null>(null);
   const [economyBusy, setEconomyBusy] = useState<string | null>(null);
+  const [skillBusy, setSkillBusy] = useState<string | null>(null);
+  const [decorationBusy, setDecorationBusy] = useState<string | null>(null);
+  const [feedbackKind, setFeedbackKind] = useState<"bug" | "feedback">("feedback");
+  const [feedbackSeverity, setFeedbackSeverity] = useState<
+    "blocker" | "major" | "minor" | "suggestion"
+  >("suggestion");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [feedbackBusy, setFeedbackBusy] = useState(false);
   const [apiStatus, setApiStatus] = useState<ApiStatus>("checking");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -453,6 +487,27 @@ export default function AuthApp() {
   }, []);
 
   useEffect(() => {
+    const token = accessToken;
+    if (!token) {
+      setDecorations(null);
+      return;
+    }
+    let mounted = true;
+    async function loadDecorations(authToken: string) {
+      try {
+        const state = await getDecorationState(authToken);
+        if (mounted) setDecorations(state);
+      } catch {
+        if (mounted) setDecorations(null);
+      }
+    }
+    void loadDecorations(token);
+    return () => {
+      mounted = false;
+    };
+  }, [accessToken]);
+
+  useEffect(() => {
     let mounted = true;
 
     async function checkApi() {
@@ -491,6 +546,11 @@ export default function AuthApp() {
     } catch {
       setNotifications(null);
     }
+    try {
+      setDecorations(await getDecorationState(token));
+    } catch {
+      setDecorations(null);
+    }
   }
 
   async function authenticate(endpoint: "login" | "register", payload: object) {
@@ -527,7 +587,7 @@ export default function AuthApp() {
       applyPlayerState(currentPlayer);
       setSocial(currentSocial);
       setNotifications(currentNotifications);
-      setSelectedVariety(currentPlayer.starter_varieties[0]?.key ?? null);
+      setSelectedVariety(currentPlayer.starter_varieties.find((item) => !item.locked)?.key ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
     } finally {
@@ -567,7 +627,7 @@ export default function AuthApp() {
       applyPlayerState(currentPlayer);
       setSocial(currentSocial);
       setNotifications(currentNotifications);
-      setSelectedVariety(currentPlayer.starter_varieties[0]?.key ?? null);
+      setSelectedVariety(currentPlayer.starter_varieties.find((item) => !item.locked)?.key ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Creator access failed.");
     } finally {
@@ -676,6 +736,27 @@ export default function AuthApp() {
     }
   }
 
+  async function allocateSkill(branch: string) {
+    if (!accessToken) return;
+    setSkillBusy(branch);
+    setError(null);
+    setNotice(null);
+    try {
+      const result = await requestJson<SkillBranch>(
+        `/api/v1/economy/skills/${encodeURIComponent(branch)}/allocate`,
+        accessToken,
+        { method: "POST" },
+      );
+      setNotice(`${result.label} advanced to ${result.points}/${result.max_points}.`);
+      await refreshPlayer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Skill allocation failed.");
+      await refreshPlayer();
+    } finally {
+      setSkillBusy(null);
+    }
+  }
+
   async function logout() {
     setSubmitting(true);
     try {
@@ -740,6 +821,78 @@ export default function AuthApp() {
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Store action failed.");
+    }
+  }
+
+  async function purchaseDecoration(decorationKey: string) {
+    if (!accessToken) return;
+    setDecorationBusy(`purchase:${decorationKey}`);
+    setError(null);
+    setNotice(null);
+    try {
+      await requestJson(
+        `/api/v1/decorations/${encodeURIComponent(decorationKey)}/purchase`,
+        accessToken,
+        {
+          method: "POST",
+          headers: { "Idempotency-Key": crypto.randomUUID() },
+        },
+      );
+      setDecorations(await getDecorationState(accessToken));
+      await refreshPlayer();
+      setNotice("Decoration purchased.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Decoration purchase failed.");
+    } finally {
+      setDecorationBusy(null);
+    }
+  }
+
+  async function equipDecoration(decorationKey: string, slotIndex: number) {
+    if (!accessToken) return;
+    setDecorationBusy(`equip:${decorationKey}`);
+    setError(null);
+    setNotice(null);
+    try {
+      await requestJson(
+        `/api/v1/decorations/${encodeURIComponent(decorationKey)}/equip`,
+        accessToken,
+        {
+          method: "PUT",
+          body: JSON.stringify({ slot_index: slotIndex }),
+        },
+      );
+      setDecorations(await getDecorationState(accessToken));
+      setNotice(`Decoration equipped in cosmetic slot ${slotIndex + 1}.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Decoration equip failed.");
+    } finally {
+      setDecorationBusy(null);
+    }
+  }
+
+  async function submitAlphaFeedback(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!accessToken || feedbackMessage.trim().length < 3) return;
+    setFeedbackBusy(true);
+    setError(null);
+    setNotice(null);
+    try {
+      await requestJson("/api/v1/alpha/feedback", accessToken, {
+        method: "POST",
+        body: JSON.stringify({
+          kind: feedbackKind,
+          severity: feedbackSeverity,
+          category: "closed-alpha",
+          message: feedbackMessage.trim(),
+        }),
+      });
+      setFeedbackMessage("");
+      setNotice("Alpha feedback submitted.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Feedback submission failed.");
+    } finally {
+      setFeedbackBusy(false);
     }
   }
 
@@ -833,6 +986,97 @@ export default function AuthApp() {
           )}
         </section>
 
+        <section className="store-panel" aria-label="Room decorations">
+          <div>
+            <p className="section-label">Decorations</p>
+            <h2>Alpha room cosmetics</h2>
+            <p className="muted">
+              40 cosmetic items · no gameplay power · purchased with earned Cash
+            </p>
+          </div>
+          <div className="store-grid">
+            {(decorations?.items ?? []).slice(0, 8).map((item, index) => (
+              <article key={item.key} className="store-card">
+                <strong>{item.name}</strong>
+                <span>
+                  {item.category} · {item.cost_cash} Cash · level {item.min_level}
+                </span>
+                {item.owned ? (
+                  <button
+                    className="secondary compact"
+                    disabled={decorationBusy !== null}
+                    onClick={() => void equipDecoration(item.key, index % 12)}
+                  >
+                    {item.equipped_slot === null
+                      ? "Equip"
+                      : `Equipped slot ${item.equipped_slot + 1}`}
+                  </button>
+                ) : (
+                  <button
+                    className="secondary compact"
+                    disabled={
+                      decorationBusy !== null ||
+                      item.locked ||
+                      (decorations?.cash ?? 0) < item.cost_cash
+                    }
+                    onClick={() => void purchaseDecoration(item.key)}
+                  >
+                    {item.locked ? `Unlocks L${item.min_level}` : "Buy cosmetic"}
+                  </button>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="notification-panel" aria-label="Closed alpha feedback">
+          <div>
+            <p className="section-label">Closed Alpha</p>
+            <h2>Send tester feedback</h2>
+            <p className="muted">
+              Report blockers separately from suggestions so the alpha queue stays actionable.
+            </p>
+          </div>
+          <form className="alpha-feedback-form" onSubmit={submitAlphaFeedback}>
+            <select
+              value={feedbackKind}
+              onChange={(event) => setFeedbackKind(event.target.value as "bug" | "feedback")}
+              aria-label="Feedback type"
+            >
+              <option value="feedback">Feedback</option>
+              <option value="bug">Bug</option>
+            </select>
+            <select
+              value={feedbackSeverity}
+              onChange={(event) =>
+                setFeedbackSeverity(
+                  event.target.value as "blocker" | "major" | "minor" | "suggestion",
+                )
+              }
+              aria-label="Feedback severity"
+            >
+              <option value="suggestion">Suggestion</option>
+              <option value="minor">Minor</option>
+              <option value="major">Major</option>
+              <option value="blocker">Blocker</option>
+            </select>
+            <textarea
+              value={feedbackMessage}
+              onChange={(event) => setFeedbackMessage(event.target.value)}
+              placeholder="What happened, what did you expect, and what were you doing?"
+              maxLength={2000}
+              required
+            />
+            <button
+              className="primary"
+              type="submit"
+              disabled={feedbackBusy || feedbackMessage.trim().length < 3}
+            >
+              {feedbackBusy ? "Sending..." : "Send feedback"}
+            </button>
+          </form>
+        </section>
+
         <section className="store-panel" aria-label="Store and entitlements">
           <div>
             <p className="section-label">Store</p>
@@ -915,14 +1159,40 @@ export default function AuthApp() {
                   <button
                     key={variety.key}
                     type="button"
-                    className={selectedVariety === variety.key ? "variety active" : "variety"}
-                    onClick={() => setSelectedVariety(variety.key)}
+                    className={`${selectedVariety === variety.key ? "variety active" : "variety"} ${variety.locked ? "locked" : ""}`}
+                    onClick={() => !variety.locked && setSelectedVariety(variety.key)}
+                    disabled={variety.locked}
                   >
                     <strong>{variety.name}</strong>
                     <span>
-                      {Math.ceil(variety.grow_seconds / 60)} min - Yield {variety.base_yield}
+                      {variety.locked
+                        ? `Unlocks at level ${variety.min_level}`
+                        : `${Math.ceil(variety.grow_seconds / 60)} min - Yield ${variety.base_yield}`}
                     </span>
                   </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="section-label">Skills</p>
+              <div className="economy-list">
+                {player.skill_branches.map((skill) => (
+                  <article key={skill.branch} className="economy-card">
+                    <strong>{skill.label} · {skill.points}/{skill.max_points}</strong>
+                    <span>{skill.next_tier ? `Next: ${skill.next_tier}` : "Tree complete"}</span>
+                    <button
+                      className="secondary"
+                      onClick={() => void allocateSkill(skill.branch)}
+                      disabled={
+                        skillBusy !== null ||
+                        player.skill_points_unspent <= 0 ||
+                        skill.points >= skill.max_points
+                      }
+                    >
+                      {skill.points >= skill.max_points ? "Maxed" : "Allocate point"}
+                    </button>
+                  </article>
                 ))}
               </div>
             </div>

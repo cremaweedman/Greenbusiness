@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 9 complete — Phase 10 ready
-**Milestone:** P10-M1 — Content Completion & Closed Alpha — READY, NOT STARTED
+**Phase:** Phase 10 — Closed Alpha
+**Milestone:** P10-M1 — technical baseline validated; invited cohort execution pending
 
 ## Requirements
 
@@ -90,4 +90,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 through P9-M1 are complete and validated. P9 hardened production defaults, sandbox monetization, admin auth/RBAC, rate limiting, security headers, encrypted push tokens, replay/exploit logging, LiveOps concurrency, social transactions, container/runtime security, backup/restore and security scanning. The repository is intentionally stopped before P10 Closed Alpha. Continue from `07_BUILD_HANDOFF.md`.
+Phase 0 through P9-M1 are complete and validated. P10 technical alpha preparation is implemented on `feat/p10-m1-closed-alpha`: 10 varieties, compact skill trees, 40 decorations, alpha cohort/feedback/retention instrumentation and the first LiveOps mini-arc. The current branch has green CI and Security Scan. P10 remains open until real invited-cohort D1/D7, economy, club, reliability and feedback gates are measured. Continue from `07_BUILD_HANDOFF.md`.

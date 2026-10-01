@@ -10,11 +10,12 @@ from app.dependencies import get_current_user_id, get_db
 from app.economy_service import (
     accept_contract,
     accept_offer,
+    allocate_skill_point,
     complete_contract,
     purchase_upgrade,
 )
 from app.liveops_service import require_feature_enabled
-from app.schemas import EconomyActionResponse, PlayerContractResponse
+from app.schemas import EconomyActionResponse, PlayerContractResponse, SkillBranchResponse
 
 economy_router = APIRouter(prefix="/economy", tags=["economy"])
 
@@ -90,5 +91,20 @@ async def purchase(
         user_id=user_id,
         upgrade_key=upgrade_key,
         idempotency_key=idempotency_key,
+        request_id=getattr(request.state, "request_id", None),
+    )
+
+
+@economy_router.post("/skills/{branch}/allocate", response_model=SkillBranchResponse)
+async def allocate_skill(
+    branch: str,
+    request: Request,
+    user_id: CurrentUserId,
+    session: DbSession,
+) -> SkillBranchResponse:
+    return await allocate_skill_point(
+        session,
+        user_id=user_id,
+        branch=branch,
         request_id=getattr(request.state, "request_id", None),
     )
