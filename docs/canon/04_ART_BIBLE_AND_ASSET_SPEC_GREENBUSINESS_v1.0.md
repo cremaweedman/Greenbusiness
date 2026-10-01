@@ -730,3 +730,47 @@ Starter workshop
 → mature botanical business.
 
 Do not jump directly from starter state to futuristic lab aesthetics.
+
+
+## 24. Hybrid 2D/3D production pipeline
+
+GreenBusiness uses a hybrid authoring pipeline.
+
+### 3D-first
+The following asset families must use canonical Blender masters:
+- production slots and all state variants;
+- room shell;
+- storage modules;
+- contracts anchor;
+- workbench;
+- desk;
+- upgrade racks;
+- structural room props.
+
+Recommended bootstrap:
+AI concept image → Tripo/Meshy image-to-3D → Blender cleanup → canonical .blend master → deterministic PNG/WebP renders.
+
+### 2D-first
+The following remain 2D-first unless future animation requirements change:
+- contact portraits;
+- mission illustrations;
+- store/promotional art;
+- starter crop master illustrations.
+
+### Vector-first
+Use SVG/vector masters for:
+- brand symbol;
+- app icon where practical;
+- UI glyphs;
+- state icons;
+- mastery badges where appropriate.
+
+### Source-of-truth rule
+For every 3D-first family, the approved Blender master is the source of truth. Runtime PNG/WebP files are derivatives.
+
+Do not independently generate final state siblings when they belong to the same 3D family.
+
+See:
+- `docs/art/3D_PRODUCTION_PIPELINE_V1.md`
+- `docs/art/3D_ASSET_SOURCE_OF_TRUTH.md`
+- `art/3d/specs/slot_master_v1.json`
