@@ -9,6 +9,16 @@ Canonical project repository for GreenBusiness.
 - [07_BUILD_HANDOFF.md](./07_BUILD_HANDOFF.md)
 - [Phase 0 architecture](./docs/PHASE_0_ARCHITECTURE.md)
 
+## Art production
+
+- [Art Bible](./docs/canon/04_ART_BIBLE_AND_ASSET_SPEC_GREENBUSINESS_v1.0.md)
+- [VS-01 Asset Manifest](./docs/canon/05_VS01_ASSET_MANIFEST_TEMPLATE.json)
+- [3D art production pipeline](./docs/art/3D_PRODUCTION_PIPELINE_V1.md)
+- [3D asset source-of-truth](./docs/art/3D_ASSET_SOURCE_OF_TRUTH.md)
+- [Blender tooling](./tools/blender/README.md)
+
+Structural art is authored as 3D-first and rendered to deterministic 2D runtime assets. GreenBusiness remains a web/PWA runtime; real-time 3D is not required for VS-01.
+
 ## Current development state
 
 **Phase:** Phase 10 — Closed Alpha
