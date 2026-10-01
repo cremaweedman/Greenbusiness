@@ -1,4 +1,4 @@
-from app.game_data.decoration_catalog import DECORATIONS, DECORATION_BY_KEY
+from app.game_data.decoration_catalog import DECORATION_BY_KEY, DECORATIONS
 
 
 def test_alpha_decoration_catalog_has_required_content_volume():
