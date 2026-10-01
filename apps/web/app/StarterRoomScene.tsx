@@ -23,8 +23,11 @@ function SceneModule({
   label: string;
 }) {
   return (
-    <div className={`scene-module ${className}`} aria-label={label}>
-      <img src={asset} alt="" aria-hidden="true" />
+    <div
+      className={`scene-module ${className}`}
+      aria-label={label}
+      style={{ backgroundImage: `url("${asset}")` }}
+    >
       <span className="scene-placeholder" aria-hidden="true" />
     </div>
   );
@@ -33,9 +36,11 @@ function SceneModule({
 export default function StarterRoomScene({ slots }: StarterRoomSceneProps) {
   return (
     <div className="starter-room-scene" aria-label="Starter workshop visual">
-      <div className="starter-room-shell" aria-hidden="true">
-        <img src={gameAssets.environment.starterRoomShell} alt="" />
-      </div>
+      <div
+        className="starter-room-shell"
+        aria-hidden="true"
+        style={{ backgroundImage: `url("${gameAssets.environment.starterRoomShell}")` }}
+      />
 
       <SceneModule
         className="scene-storage"
@@ -64,8 +69,8 @@ export default function StarterRoomScene({ slots }: StarterRoomSceneProps) {
             key={slot.id}
             className={`scene-slot scene-slot-${slot.slotIndex} ${slot.state}`}
             aria-label={slot.label}
+            style={{ backgroundImage: `url("${gameAssets.slots[slot.state]}")` }}
           >
-            <img src={gameAssets.slots[slot.state]} alt="" aria-hidden="true" />
             <span className="scene-slot-placeholder" aria-hidden="true" />
           </div>
         ))}
