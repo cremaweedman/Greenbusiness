@@ -64,8 +64,12 @@ class Settings(BaseSettings):
             problems: list[str] = []
             if len(self.jwt_secret) < 32 or self.jwt_secret == "development-only-change-me":
                 problems.append("JWT_SECRET must be a strong production secret")
+            if "change-me" in self.database_url.lower():
+                problems.append("DATABASE_URL must not contain development credentials")
             if len(self.admin_api_key) < 32:
                 problems.append("ADMIN_API_KEY must be at least 32 characters")
+            if self.admin_actor_id == "bootstrap-admin":
+                problems.append("ADMIN_ACTOR_ID must identify the real bootstrap operator")
             if len(self.admin_jwt_secret) < 32:
                 problems.append("ADMIN_JWT_SECRET must be at least 32 characters")
             if self.admin_jwt_secret == self.jwt_secret:
