@@ -1,0 +1,537 @@
+{
+  "manifest_version": "1.0",
+  "set_id": "VS-01",
+  "project": "GreenBusiness",
+  "status": "PLANNED",
+  "canon": "04_ART_BIBLE_AND_ASSET_SPEC_GREENBUSINESS_v1.0.md",
+  "rules": {
+    "runtime_root": "apps/web/public/assets",
+    "source_root": "art/source",
+    "prompt_root": "art/prompts",
+    "preferred_raster_format": "webp",
+    "vector_format": "svg",
+    "baked_text_allowed": false,
+    "original_ip_required": true,
+    "ai_output_requires_manual_review": true
+  },
+  "priorities": {
+    "P0": "Required for closed-alpha primary loop",
+    "P1": "Required for visual completeness but not launch-blocking for first internal alpha",
+    "P2": "Expansion / polish"
+  },
+  "assets": [
+    {
+      "id": "GB-VS01-BRAND-001",
+      "priority": "P0",
+      "domain": "brand",
+      "name": "primary-emblem",
+      "type": "svg",
+      "runtime_path": "brand/gb_brand_emblem_primary_v01.svg",
+      "source_required": true,
+      "status": "TODO",
+      "requirements": [
+        "original leaf/botanical business mark",
+        "works at 24px",
+        "single-color fallback"
+      ]
+    },
+    {
+      "id": "GB-VS01-BRAND-002",
+      "priority": "P0",
+      "domain": "brand",
+      "name": "app-icon",
+      "type": "svg",
+      "runtime_path": "brand/gb_brand_app-icon_primary_v01.svg",
+      "source_required": true,
+      "status": "TODO",
+      "requirements": [
+        "maskable-safe",
+        "recognizable at 48px",
+        "no baked wordmark"
+      ]
+    },
+    {
+      "id": "GB-VS01-ENV-001",
+      "priority": "P0",
+      "domain": "environment",
+      "name": "starter-room-background",
+      "type": "webp",
+      "master_size": "3840x2160",
+      "runtime_size": "1920x1080",
+      "runtime_path": "environment/gb_environment_starter-room_bg_default_v01.webp",
+      "source_required": true,
+      "status": "TODO",
+      "requirements": [
+        "16:9",
+        "UI-safe negative space",
+        "modest starter business",
+        "production/storage/desk zones readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-SLOT-001",
+      "priority": "P0",
+      "domain": "slots",
+      "name": "starter-slot-empty",
+      "type": "webp",
+      "master_size": "1536x1536",
+      "runtime_size": "512x512",
+      "runtime_path": "slots/gb_slot_starter_empty_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "canonical anchor",
+        "same geometry across states"
+      ]
+    },
+    {
+      "id": "GB-VS01-SLOT-002",
+      "priority": "P0",
+      "domain": "slots",
+      "name": "starter-slot-planted",
+      "type": "webp",
+      "master_size": "1536x1536",
+      "runtime_size": "512x512",
+      "runtime_path": "slots/gb_slot_starter_planted_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "same canvas as SLOT-001",
+        "early state readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-SLOT-003",
+      "priority": "P0",
+      "domain": "slots",
+      "name": "starter-slot-growing",
+      "type": "webp",
+      "master_size": "1536x1536",
+      "runtime_size": "512x512",
+      "runtime_path": "slots/gb_slot_starter_growing_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "same canvas as SLOT-001",
+        "mid-growth readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-SLOT-004",
+      "priority": "P0",
+      "domain": "slots",
+      "name": "starter-slot-ready",
+      "type": "webp",
+      "master_size": "1536x1536",
+      "runtime_size": "512x512",
+      "runtime_path": "slots/gb_slot_starter_ready_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "same canvas as SLOT-001",
+        "ready without text"
+      ]
+    },
+    {
+      "id": "GB-VS01-SLOT-005",
+      "priority": "P1",
+      "domain": "slots",
+      "name": "starter-slot-locked",
+      "type": "webp",
+      "master_size": "1536x1536",
+      "runtime_size": "512x512",
+      "runtime_path": "slots/gb_slot_starter_locked_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "color-independent lock cue"
+      ]
+    },
+    {
+      "id": "GB-VS01-SLOT-006",
+      "priority": "P1",
+      "domain": "slots",
+      "name": "starter-slot-attention",
+      "type": "webp",
+      "master_size": "1536x1536",
+      "runtime_size": "512x512",
+      "runtime_path": "slots/gb_slot_starter_attention_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "warning icon/shape cue",
+        "not color-only"
+      ]
+    },
+    {
+      "id": "GB-VS01-SLOT-007",
+      "priority": "P1",
+      "domain": "slots",
+      "name": "starter-slot-boosted",
+      "type": "webp",
+      "master_size": "1536x1536",
+      "runtime_size": "512x512",
+      "runtime_path": "slots/gb_slot_starter_boosted_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "temporary boost readable",
+        "same base geometry"
+      ]
+    },
+    {
+      "id": "GB-VS01-CROP-001",
+      "priority": "P0",
+      "domain": "crops",
+      "name": "starter-crop-a-icon",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "256x256",
+      "runtime_path": "crops/gb_crop_starter-a_icon_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "broadleaf silhouette",
+        "final displayed name sourced from game data"
+      ]
+    },
+    {
+      "id": "GB-VS01-CROP-002",
+      "priority": "P0",
+      "domain": "crops",
+      "name": "starter-crop-b-icon",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "256x256",
+      "runtime_path": "crops/gb_crop_starter-b_icon_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "spearleaf silhouette",
+        "final displayed name sourced from game data"
+      ]
+    },
+    {
+      "id": "GB-VS01-CROP-003",
+      "priority": "P0",
+      "domain": "crops",
+      "name": "starter-crop-c-icon",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "256x256",
+      "runtime_path": "crops/gb_crop_starter-c_icon_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "veinleaf silhouette",
+        "final displayed name sourced from game data"
+      ]
+    },
+    {
+      "id": "GB-VS01-CHAR-001",
+      "priority": "P0",
+      "domain": "characters",
+      "name": "alex-rowan-portrait",
+      "type": "webp",
+      "master_size": "1600x2000",
+      "runtime_size": "640x800",
+      "runtime_path": "characters/gb_character_alex-rowan_portrait_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "4:5",
+        "original adult character",
+        "stylized not photoreal",
+        "operations role readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-CHAR-002",
+      "priority": "P0",
+      "domain": "characters",
+      "name": "mira-vale-portrait",
+      "type": "webp",
+      "master_size": "1600x2000",
+      "runtime_size": "640x800",
+      "runtime_path": "characters/gb_character_mira-vale_portrait_default_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "4:5",
+        "original adult character",
+        "stylized not photoreal",
+        "market/community role readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-001",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "currency-cash",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_currency-cash_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "16-64px readable",
+        "no text"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-002",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "currency-premium",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_currency-premium_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "visually distinct from cash",
+        "no text"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-003",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "contract",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_contract_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "16-64px readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-004",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "upgrade",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_upgrade_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "16-64px readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-005",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "mission",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_mission_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "16-64px readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-006",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "mastery",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_mastery_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "16-64px readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-007",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "timer",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_timer_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "16-64px readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-008",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "inventory",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_inventory_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "16-64px readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-009",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "ready-state",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_ready_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "color-independent"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-010",
+      "priority": "P0",
+      "domain": "ui",
+      "name": "warning-state",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_warning_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "color-independent"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-011",
+      "priority": "P1",
+      "domain": "ui",
+      "name": "club",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_club_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "social role readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-ICON-012",
+      "priority": "P1",
+      "domain": "ui",
+      "name": "notification",
+      "type": "svg",
+      "runtime_path": "ui/gb_ui_notification_default_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "small-size readable"
+      ]
+    },
+    {
+      "id": "GB-VS01-UPGRADE-001",
+      "priority": "P1",
+      "domain": "upgrades",
+      "name": "efficient-racks-tier-1",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "384x384",
+      "runtime_path": "upgrades/gb_upgrade_efficient-racks_t1_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "visually modest"
+      ]
+    },
+    {
+      "id": "GB-VS01-UPGRADE-002",
+      "priority": "P1",
+      "domain": "upgrades",
+      "name": "efficient-racks-tier-2",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "384x384",
+      "runtime_path": "upgrades/gb_upgrade_efficient-racks_t2_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "clear improvement over tier 1"
+      ]
+    },
+    {
+      "id": "GB-VS01-UPGRADE-003",
+      "priority": "P1",
+      "domain": "upgrades",
+      "name": "efficient-racks-tier-3",
+      "type": "webp",
+      "master_size": "1024x1024",
+      "runtime_size": "384x384",
+      "runtime_path": "upgrades/gb_upgrade_efficient-racks_t3_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "transparent",
+        "clear improvement over tier 2",
+        "premium but not futuristic excess"
+      ]
+    },
+    {
+      "id": "GB-VS01-STORE-001",
+      "priority": "P1",
+      "domain": "store",
+      "name": "starter-cosmetic-bundle",
+      "type": "webp",
+      "master_size": "1600x2000",
+      "runtime_size": "640x800",
+      "runtime_path": "store/gb_store_starter-cosmetic-bundle_card_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "4:5",
+        "no price baked into image",
+        "cosmetic framing only"
+      ]
+    },
+    {
+      "id": "GB-VS01-STORE-002",
+      "priority": "P1",
+      "domain": "store",
+      "name": "founder-supporter-pack",
+      "type": "webp",
+      "master_size": "1600x2000",
+      "runtime_size": "640x800",
+      "runtime_path": "store/gb_store_founder-supporter-pack_card_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "4:5",
+        "no price baked into image",
+        "no pay-to-win implication"
+      ]
+    },
+    {
+      "id": "GB-VS01-MISSION-001",
+      "priority": "P1",
+      "domain": "missions",
+      "name": "starter-mission-key-art",
+      "type": "webp",
+      "master_size": "1600x900",
+      "runtime_size": "960x540",
+      "runtime_path": "missions/gb_mission_starter_key-art_v01.webp",
+      "status": "TODO",
+      "requirements": [
+        "16:9",
+        "no baked mission text",
+        "supports onboarding"
+      ]
+    },
+    {
+      "id": "GB-VS01-MASTERY-001",
+      "priority": "P1",
+      "domain": "mastery",
+      "name": "starter-mastery-badge-set",
+      "type": "svg",
+      "runtime_path": "mastery/gb_mastery_starter_badges_v01.svg",
+      "status": "TODO",
+      "requirements": [
+        "at least 3 tiers",
+        "shape progression",
+        "works without color-only distinction"
+      ]
+    }
+  ],
+  "approval_workflow": [
+    "TODO",
+    "CONCEPT",
+    "REVIEW",
+    "APPROVED",
+    "INTEGRATED"
+  ],
+  "definition_of_done": [
+    "All P0 assets are APPROVED and INTEGRATED",
+    "Primary five-minute loop contains no placeholder art",
+    "Slot states are readable without text",
+    "Starter crops are distinguishable at 64px",
+    "Alex Rowan and Mira Vale portraits are approved",
+    "Starter Room background is integrated",
+    "Runtime assets pass responsive/mobile review",
+    "No unintended logos, signatures, watermarks or obvious generation artifacts",
+    "Frontend lint/typecheck/tests/build remain green"
+  ]
+}
