@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 4 is completed and validated through P4-M2. Phase 5 is ready but not started.
+**Current state:** Phase 5 is completed and validated through P5-M1. Phase 6 is ready but not started.
 
 ---
 
@@ -340,10 +340,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 5 — LiveOps, Remote Config, Analytics & Admin`
+`Phase 6 — Social Layer: Clubs`
 
 ## Current milestone
-`P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — IMPLEMENTED, PENDING DOCKER VALIDATION`
+`P6-M1 — Social Layer: Clubs — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -418,23 +418,14 @@ Future agents/sessions must update this section after meaningful implementation.
 - mission completion now emits canonical analytics events;
 - request middleware records best-effort performance analytics and failed-request error analytics without storing credentials;
 - admin core-loop dashboard added for tutorial, production, contract, upgrade, mission and failed-request funnel counts;
-- P5-M1 integration test extended for publish, feature disable, rollback, audit trail, analytics emission, admin Cash mutation, ledger inspection and economy dashboard.
+- P5-M1 integration test extended for publish, feature disable, rollback, audit trail, analytics emission, admin Cash mutation, ledger inspection and economy dashboard;
+- P5-M1 Docker/PostgreSQL validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test and HTTP smoke checks.
 
 ## In progress
-- Docker/PostgreSQL validation of P5-M1 migration and admin/config/analytics integration.
+- None.
 
 ## Next action
-Start Docker Desktop, then run:
-- `docker compose up --build`
-- `docker compose exec api alembic upgrade head`
-- `docker compose exec api pytest apps/api/tests/integration/test_liveops_admin_analytics.py -q`
-- `docker compose exec api pytest -q`
-- `docker compose exec api ruff check .`
-- `docker compose run --rm web npm run lint`
-- `docker compose run --rm web npm run typecheck`
-- `docker compose run --rm web npm test`
-
-If Docker validation passes, mark P5-M1 complete and merge the PR. If any Docker/PostgreSQL issue appears, fix it in the P5-M1 branch before merge.
+Begin Phase 6 with the Social Layer: Clubs foundation exactly as scoped in `06_IMPLEMENTATION_ROADMAP.md`.
 
 Local validation already passed without Docker:
 - `python -m ruff check apps\api\app apps\api\tests\test_liveops_foundation.py apps\api\tests\integration\test_liveops_admin_analytics.py`
@@ -445,7 +436,15 @@ Local validation already passed without Docker:
 - `npm test`
 - `npm run build`
 
-Docker validation could not run in this local Codex environment because Docker Desktop's Linux engine was not running.
+Docker/PostgreSQL validation passed:
+- `docker compose up --build -d`
+- `docker compose exec -T api alembic upgrade head`
+- `docker compose exec -T api pytest -q` (`24 passed`)
+- `docker compose exec -T api ruff check .`
+- `docker compose run --rm web npm run lint`
+- `docker compose run --rm web npm run typecheck`
+- `docker compose run --rm web npm test`
+- HTTP smoke passed for `/api/health/live`, `/api/health/ready` and `/api/v1/system/ping`.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
@@ -453,7 +452,7 @@ Docker validation could not run in this local Codex environment because Docker D
 - final art assets for VS-01 are not yet production-complete unless separately committed.
 
 ## Do not do next
-- do not start clubs;
+- do not start monetization;
 - do not add payments;
 - do not add Web3;
 - do not create dozens of varieties;

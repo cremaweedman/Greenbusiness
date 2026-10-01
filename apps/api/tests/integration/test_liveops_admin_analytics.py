@@ -115,6 +115,13 @@ async def test_liveops_publish_disable_and_rollback_are_audited(client: AsyncCli
         assert rollback.status_code == 200
         assert rollback.json()["restored_from_version"] == disabled_version
 
+        restored_enabled = await client.post(
+            "/v1/admin/config/publish",
+            headers=admin,
+            json=_config(production_enabled=True),
+        )
+        assert restored_enabled.status_code == 200
+
         grant = await client.post(
             "/v1/admin/cash/grant",
             headers=admin,
