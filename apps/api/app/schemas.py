@@ -135,6 +135,135 @@ class CoreLoopDashboardResponse(BaseModel):
     failed_requests: int
 
 
+class SocialProfileResponse(BaseModel):
+    user_id: uuid.UUID
+    friend_code: str
+    deep_link: str
+
+
+class FriendRedeemRequest(BaseModel):
+    friend_code: str = Field(min_length=4, max_length=16)
+
+
+class FriendResponse(BaseModel):
+    user_id: uuid.UUID
+    display_name: str
+    friend_code: str
+    since: datetime
+
+
+class ClubCreateRequest(BaseModel):
+    name: str = Field(min_length=3, max_length=48)
+
+
+class ClubJoinRequest(BaseModel):
+    invite_code: str = Field(min_length=4, max_length=16)
+
+
+class ClubInviteCreateRequest(BaseModel):
+    friend_code: str = Field(min_length=4, max_length=16)
+
+
+class ClubContributionRequest(BaseModel):
+    event_key: str = Field(min_length=6, max_length=160)
+    amount: int = Field(gt=0, le=100)
+    contribution_type: str = Field(default="manual", min_length=3, max_length=32)
+
+
+class ClubAssistRequest(BaseModel):
+    receiver_friend_code: str = Field(min_length=4, max_length=16)
+    assist_type: str = Field(default="care", min_length=3, max_length=32)
+
+
+class ClubReactionRequest(BaseModel):
+    target_type: str = Field(min_length=3, max_length=32)
+    target_id: str = Field(min_length=1, max_length=128)
+    reaction_key: str = Field(min_length=2, max_length=24)
+
+
+class ClubMemberResponse(BaseModel):
+    user_id: uuid.UUID
+    display_name: str
+    role: str
+    joined_at: datetime
+
+
+class ClubObjectiveResponse(BaseModel):
+    id: uuid.UUID
+    period_key: str
+    objective_key: str
+    target_amount: int
+    progress_amount: int
+    reward_cash: int
+    status: str
+    completed_at: datetime | None
+
+
+class ClubInviteResponse(BaseModel):
+    id: uuid.UUID
+    club_id: uuid.UUID
+    club_name: str
+    inviter_user_id: uuid.UUID
+    invitee_user_id: uuid.UUID
+    status: str
+    created_at: datetime
+    responded_at: datetime | None
+
+
+class ClubContributionResponse(BaseModel):
+    id: uuid.UUID
+    event_key: str
+    contribution_type: str
+    amount: int
+    objective: ClubObjectiveResponse
+    idempotent: bool = False
+
+
+class ClubAssistResponse(BaseModel):
+    id: uuid.UUID
+    helper_user_id: uuid.UUID
+    receiver_user_id: uuid.UUID
+    period_key: str
+    assist_type: str
+    remaining_weekly_assists: int
+
+
+class ClubReactionResponse(BaseModel):
+    id: uuid.UUID
+    target_type: str
+    target_id: str
+    reaction_key: str
+    idempotent: bool = False
+
+
+class ClubRewardClaimResponse(BaseModel):
+    club_id: uuid.UUID
+    objective_id: uuid.UUID
+    cash: int
+    cash_delta: int
+    transaction_id: uuid.UUID
+    idempotent: bool = False
+
+
+class ClubResponse(BaseModel):
+    id: uuid.UUID
+    name: str
+    slug: str
+    invite_code: str
+    max_members: int
+    member_count: int
+    user_role: str | None
+    objective: ClubObjectiveResponse | None
+    members: list[ClubMemberResponse]
+
+
+class SocialStateResponse(BaseModel):
+    profile: SocialProfileResponse
+    friends: list[FriendResponse]
+    club: ClubResponse | None
+    pending_invites: list[ClubInviteResponse]
+
+
 class AdminPlayerLookupResponse(BaseModel):
     user_id: uuid.UUID
     email: str

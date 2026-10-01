@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 5 is completed and validated through P5-M1. Phase 6 is ready but not started.
+**Current state:** Phase 6 is completed and validated through P6-M1. Phase 7 is ready but not started.
 
 ---
 
@@ -340,10 +340,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 6 — Social Layer: Clubs`
+`Phase 7 — Monetization & Entitlements`
 
 ## Current milestone
-`P6-M1 — Social Layer: Clubs — READY, NOT STARTED`
+`P7-M1 — Monetization & Entitlements — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -419,13 +419,26 @@ Future agents/sessions must update this section after meaningful implementation.
 - request middleware records best-effort performance analytics and failed-request error analytics without storing credentials;
 - admin core-loop dashboard added for tutorial, production, contract, upgrade, mission and failed-request funnel counts;
 - P5-M1 integration test extended for publish, feature disable, rollback, audit trail, analytics emission, admin Cash mutation, ledger inspection and economy dashboard;
-- P5-M1 Docker/PostgreSQL validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test and HTTP smoke checks.
+- P5-M1 Docker/PostgreSQL validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test and HTTP smoke checks;
+- P6-M1 Social Layer: Clubs implemented;
+- migration `0010_social_clubs` adds social profiles, friendships, clubs, memberships, club invites, weekly objectives, contribution ledger, assists, structured reactions and club reward claims;
+- authenticated social endpoints expose `/v1/social/me`, `/v1/social/profile`, friend list and friend-code redemption with deep-link payloads;
+- authenticated club endpoints expose create, join by invite code, leave, invite, accept/decline invite, contribute, assist, react and claim reward flows;
+- club membership is capped at 30 members and every player is limited to one active club;
+- weekly club objective progress is driven by an idempotent contribution ledger keyed by event keys;
+- limited assists enforce one assist per helper/receiver/week and a hard weekly helper cap;
+- structured club reactions are constrained to an allow-list and are idempotent per target;
+- club rewards are claim-once per player/objective and write to the append-only economy ledger;
+- LiveOps remote config now has an independent `clubs` feature flag and kill switch;
+- frontend exposes a Clubhouse panel with friend code, friend count, current club, invite code and weekly objective state;
+- P6-M1 integration test covers friend codes, invite accept, idempotent contribution, assist abuse limit, completed objective, idempotent reaction, idempotent reward claim and LiveOps clubs feature-disable behavior;
+- P6-M1 Docker/PostgreSQL validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test, production web build and HTTP smoke checks.
 
 ## In progress
 - None.
 
 ## Next action
-Begin Phase 6 with the Social Layer: Clubs foundation exactly as scoped in `06_IMPLEMENTATION_ROADMAP.md`.
+Begin Phase 7 with Monetization & Entitlements exactly as scoped in `06_IMPLEMENTATION_ROADMAP.md`. Keep all purchase validation server-side and do not introduce Web3, trading, transferable assets or pay-to-win mechanics.
 
 Local validation already passed without Docker:
 - `python -m ruff check apps\api\app apps\api\tests\test_liveops_foundation.py apps\api\tests\integration\test_liveops_admin_analytics.py`
@@ -439,11 +452,12 @@ Local validation already passed without Docker:
 Docker/PostgreSQL validation passed:
 - `docker compose up --build -d`
 - `docker compose exec -T api alembic upgrade head`
-- `docker compose exec -T api pytest -q` (`24 passed`)
+- `docker compose exec -T api pytest -q` (`25 passed`)
 - `docker compose exec -T api ruff check .`
 - `docker compose run --rm web npm run lint`
 - `docker compose run --rm web npm run typecheck`
 - `docker compose run --rm web npm test`
+- `docker compose up --build -d` production web build
 - HTTP smoke passed for `/api/health/live`, `/api/health/ready` and `/api/v1/system/ping`.
 
 ## Known blockers
@@ -452,9 +466,9 @@ Docker/PostgreSQL validation passed:
 - final art assets for VS-01 are not yet production-complete unless separately committed.
 
 ## Do not do next
-- do not start monetization;
-- do not add payments;
 - do not add Web3;
+- do not add free trading or P2P marketplaces;
+- do not add unrestricted gifting;
 - do not create dozens of varieties;
 - do not build full LiveOps UI;
 - do not optimize scale before measured need.

@@ -17,6 +17,10 @@ test("production shell exists", () => {
   assert.match(auth, /\/api\/v1\/economy\/offers/);
   assert.match(auth, /\/api\/v1\/economy\/contracts/);
   assert.match(auth, /\/api\/v1\/economy\/upgrades/);
+  assert.match(auth, /\/api\/v1\/social\/me/);
+  assert.match(auth, /\/api\/v1\/clubs/);
+  assert.match(auth, /Clubhouse/);
+  assert.match(auth, /Friend code/);
   assert.match(auth, /Cash/);
   assert.match(auth, /contract_refresh_at/);
   assert.match(auth, /active_contracts/);

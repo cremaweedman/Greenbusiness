@@ -145,6 +145,49 @@ type VarietyMastery = {
   unlocked_cosmetic_keys: string[];
 };
 
+type SocialProfile = {
+  user_id: string;
+  friend_code: string;
+  deep_link: string;
+};
+
+type ClubObjective = {
+  id: string;
+  period_key: string;
+  objective_key: string;
+  target_amount: number;
+  progress_amount: number;
+  reward_cash: number;
+  status: string;
+  completed_at: string | null;
+};
+
+type ClubMember = {
+  user_id: string;
+  display_name: string;
+  role: string;
+  joined_at: string;
+};
+
+type ClubState = {
+  id: string;
+  name: string;
+  slug: string;
+  invite_code: string;
+  max_members: number;
+  member_count: number;
+  user_role: string | null;
+  objective: ClubObjective | null;
+  members: ClubMember[];
+};
+
+type SocialState = {
+  profile: SocialProfile;
+  friends: { user_id: string; display_name: string; friend_code: string; since: string }[];
+  club: ClubState | null;
+  pending_invites: { id: string; club_id: string; club_name: string; status: string }[];
+};
+
 type Player = {
   server_time: string;
   user_id: string;
@@ -225,6 +268,10 @@ async function getPlayer(accessToken: string): Promise<Player> {
   return requestJson<Player>("/api/v1/player", accessToken);
 }
 
+async function getSocialState(accessToken: string): Promise<SocialState> {
+  return requestJson<SocialState>("/api/v1/social/me", accessToken);
+}
+
 function formatRemaining(readyAt: string, now: number): string {
   const remainingSeconds = Math.max(0, Math.ceil((new Date(readyAt).getTime() - now) / 1000));
   if (remainingSeconds === 0) return "Ready";
@@ -248,6 +295,7 @@ function slotState(slot: Slot, now: number): "available" | "planted" | "ready" {
 export default function AuthApp() {
   const [mode, setMode] = useState<Mode>("register");
   const [player, setPlayer] = useState<Player | null>(null);
+  const [social, setSocial] = useState<SocialState | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(true);
@@ -292,9 +340,16 @@ export default function AuthApp() {
         if (!response.ok) return;
         const token = (await response.json()) as TokenResponse;
         const restored = await getPlayer(token.access_token);
+        let restoredSocial: SocialState | null = null;
+        try {
+          restoredSocial = await getSocialState(token.access_token);
+        } catch {
+          restoredSocial = null;
+        }
         if (!mounted) return;
         setAccessToken(token.access_token);
         applyPlayerState(restored);
+        setSocial(restoredSocial);
       } catch {
         // A missing/expired session is a normal anonymous state.
       } finally {
@@ -337,6 +392,11 @@ export default function AuthApp() {
   async function refreshPlayer(token = accessToken) {
     if (!token) return;
     applyPlayerState(await getPlayer(token));
+    try {
+      setSocial(await getSocialState(token));
+    } catch {
+      setSocial(null);
+    }
   }
 
   async function authenticate(endpoint: "login" | "register", payload: object) {
@@ -357,8 +417,15 @@ export default function AuthApp() {
 
       const token = (await response.json()) as TokenResponse;
       const currentPlayer = await getPlayer(token.access_token);
+      let currentSocial: SocialState | null = null;
+      try {
+        currentSocial = await getSocialState(token.access_token);
+      } catch {
+        currentSocial = null;
+      }
       setAccessToken(token.access_token);
       applyPlayerState(currentPlayer);
+      setSocial(currentSocial);
       setSelectedVariety(currentPlayer.starter_varieties[0]?.key ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
@@ -478,8 +545,25 @@ export default function AuthApp() {
     } finally {
       setAccessToken(null);
       setPlayer(null);
+      setSocial(null);
       setSelectedVariety(null);
       setSubmitting(false);
+    }
+  }
+
+  async function createStarterClub() {
+    if (!accessToken || !player) return;
+    setError(null);
+    setNotice(null);
+    try {
+      await requestJson<ClubState>("/api/v1/clubs", accessToken, {
+        method: "POST",
+        body: JSON.stringify({ name: `${player.display_name}'s Crew` }),
+      });
+      setSocial(await getSocialState(accessToken));
+      setNotice("Club created. Share the invite code with trusted players.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Club action failed.");
     }
   }
 
@@ -517,6 +601,42 @@ export default function AuthApp() {
             </button>
           </div>
         </header>
+
+        <section className="clubhouse-panel" aria-label="Clubhouse social layer">
+          <div>
+            <p className="section-label">Clubhouse</p>
+            <h2>Social layer</h2>
+            <p className="muted">
+              Friend code {social?.profile.friend_code ?? "loading"} ·{" "}
+              {social?.friends.length ?? 0} friends
+            </p>
+          </div>
+
+          {social?.club ? (
+            <div className="clubhouse-card">
+              <strong>{social.club.name}</strong>
+              <span>
+                {social.club.member_count}/{social.club.max_members} members · invite{" "}
+                {social.club.invite_code}
+              </span>
+              {social.club.objective && (
+                <span>
+                  Weekly objective {social.club.objective.progress_amount}/
+                  {social.club.objective.target_amount} · {social.club.objective.status} · +
+                  {social.club.objective.reward_cash} Cash
+                </span>
+              )}
+            </div>
+          ) : (
+            <div className="clubhouse-card">
+              <strong>No club yet</strong>
+              <span>Create a small crew when you are ready to test assists and rewards.</span>
+              <button className="secondary compact" onClick={() => void createStarterClub()}>
+                Create club
+              </button>
+            </div>
+          )}
+        </section>
 
         <div className="game-grid">
           <aside className="tool-panel">
