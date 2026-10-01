@@ -118,6 +118,7 @@ async def triage_alpha_feedback(
         },
     )
     await session.commit()
+    await session.refresh(row)
     return _response(row)
 
 
