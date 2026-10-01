@@ -13,7 +13,6 @@ from app.db.models import EconomyLedger, PlayerEntitlement, PremiumWallet, Purch
 from app.errors import AppError
 from app.game_data.store_catalog import PRODUCT_BY_KEY, PRODUCTS, STORE_CONFIG_VERSION, StoreProduct
 from app.liveops_service import record_analytics_event
-from app.security_events import security_event
 from app.schemas import (
     EntitlementResponse,
     MonetizationStateResponse,
@@ -24,6 +23,7 @@ from app.schemas import (
     StoreCatalogResponse,
     StoreProductResponse,
 )
+from app.security_events import security_event
 
 REWARDED_AD_CASH = 25
 
