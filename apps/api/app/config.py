@@ -53,7 +53,7 @@ class Settings(BaseSettings):
         return self.app_env.lower() in PRODUCTION_ENVS
 
     @model_validator(mode="after")
-    def validate_security_defaults(self) -> "Settings":
+    def validate_security_defaults(self) -> Settings:
         if not 0 <= self.analytics_request_sample_rate <= 1:
             raise ValueError("ANALYTICS_REQUEST_SAMPLE_RATE must be between 0 and 1")
         if self.admin_role not in {"viewer", "operator", "superadmin"}:
