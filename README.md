@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 9 ready
-**Milestone:** P9-M1 — Security, Fraud, Reliability & Production Hardening — READY, NOT STARTED
+**Phase:** Phase 9 complete — Phase 10 ready
+**Milestone:** P10-M1 — Content Completion & Closed Alpha — READY, NOT STARTED
 
 ## Requirements
 
@@ -90,4 +90,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 through P8-M1 are complete and validated. P8-M1 delivered notification preferences, push-token registry, quiet hours, independent notification categories, deep links, PWA manifest/offline read cache, platform readiness, premium-spend confirmation and accessibility smoke coverage. Continue from `07_BUILD_HANDOFF.md`.
+Phase 0 through P9-M1 are complete and validated. P9 hardened production defaults, sandbox monetization, admin auth/RBAC, rate limiting, security headers, encrypted push tokens, replay/exploit logging, LiveOps concurrency, social transactions, container/runtime security, backup/restore and security scanning. The repository is intentionally stopped before P10 Closed Alpha. Continue from `07_BUILD_HANDOFF.md`.
