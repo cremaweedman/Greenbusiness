@@ -996,3 +996,32 @@ class RoomDecoration(Base):
         nullable=False,
         server_default=func.now(),
     )
+
+
+class AlphaCohortMember(Base):
+    __tablename__ = "alpha_cohort_members"
+    __table_args__ = (
+        UniqueConstraint("user_id", name="uq_alpha_cohort_member_user"),
+        CheckConstraint(
+            "status IN ('active','paused','completed','removed')",
+            name="ck_alpha_cohort_member_status",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+        index=True,
+    )
+    wave: Mapped[str] = mapped_column(String(32), nullable=False, default="wave-1")
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="active", index=True)
+    enrolled_by: Mapped[str] = mapped_column(String(128), nullable=False)
+    enrolled_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        index=True,
+    )

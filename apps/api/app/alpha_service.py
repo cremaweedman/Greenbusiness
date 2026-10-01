@@ -8,12 +8,14 @@ from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.audit import append_audit_event
-from app.db.models import AlphaFeedback, AnalyticsEvent, PlayerProfile, User
+from app.db.models import AlphaCohortMember, AlphaFeedback, AnalyticsEvent, PlayerProfile, User
 from app.errors import AppError
 from app.liveops_service import record_analytics_event
 from app.schemas import (
     AlphaFeedbackCreateRequest,
     AlphaFeedbackResponse,
+    AlphaCohortEnrollRequest,
+    AlphaCohortMemberResponse,
     AlphaFeedbackTriageRequest,
     AlphaRetentionDashboardResponse,
 )
@@ -36,6 +38,76 @@ def _response(row: AlphaFeedback) -> AlphaFeedbackResponse:
         created_at=row.created_at,
         updated_at=row.updated_at,
     )
+
+
+
+def _cohort_response(row: AlphaCohortMember) -> AlphaCohortMemberResponse:
+    return AlphaCohortMemberResponse(
+        id=row.id,
+        user_id=row.user_id,
+        wave=row.wave,
+        status=row.status,
+        enrolled_by=row.enrolled_by,
+        enrolled_at=row.enrolled_at,
+    )
+
+
+async def enroll_alpha_member(
+    session: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    body: AlphaCohortEnrollRequest,
+    admin_actor_id: str,
+    request_id: str | None,
+) -> AlphaCohortMemberResponse:
+    if await session.get(User, user_id) is None:
+        raise AppError("ALPHA_USER_NOT_FOUND", "Player was not found.", status_code=404)
+
+    row = await session.scalar(
+        select(AlphaCohortMember).where(AlphaCohortMember.user_id == user_id).with_for_update()
+    )
+    if row is None:
+        row = AlphaCohortMember(
+            user_id=user_id,
+            wave=body.wave.strip().lower(),
+            status="active",
+            enrolled_by=admin_actor_id,
+        )
+        session.add(row)
+        await session.flush()
+    else:
+        row.wave = body.wave.strip().lower()
+        row.status = "active"
+        row.enrolled_by = admin_actor_id
+
+    await append_audit_event(
+        session,
+        event_type="admin.alpha_cohort_enrolled",
+        actor_type="admin",
+        actor_id=admin_actor_id,
+        target_type="user",
+        target_id=str(user_id),
+        request_id=request_id,
+        payload={"wave": row.wave},
+    )
+    await session.commit()
+    await session.refresh(row)
+    return _cohort_response(row)
+
+
+async def list_alpha_members(
+    session: AsyncSession,
+    *,
+    limit: int,
+) -> list[AlphaCohortMemberResponse]:
+    rows = (
+        await session.scalars(
+            select(AlphaCohortMember)
+            .order_by(desc(AlphaCohortMember.enrolled_at))
+            .limit(max(1, min(limit, 200)))
+        )
+    ).all()
+    return [_cohort_response(row) for row in rows]
 
 
 async def submit_alpha_feedback(
@@ -124,14 +196,28 @@ async def triage_alpha_feedback(
 
 async def alpha_retention_dashboard(session: AsyncSession) -> AlphaRetentionDashboardResponse:
     now = datetime.now(UTC)
-    users = (await session.execute(select(User.id, User.created_at))).all()
+    cohort = (
+        await session.execute(
+            select(
+                AlphaCohortMember.user_id,
+                AlphaCohortMember.enrolled_at,
+            ).where(AlphaCohortMember.status == "active")
+        )
+    ).all()
+    cohort_user_ids = [user_id for user_id, _enrolled_at in cohort]
     profiles = dict(
-        (await session.execute(select(PlayerProfile.user_id, PlayerProfile.tutorial_completed))).all()
-    )
+        (
+            await session.execute(
+                select(PlayerProfile.user_id, PlayerProfile.tutorial_completed).where(
+                    PlayerProfile.user_id.in_(cohort_user_ids)
+                )
+            )
+        ).all()
+    ) if cohort_user_ids else {}
     events = (
         await session.execute(
             select(AnalyticsEvent.user_id, AnalyticsEvent.event_name, AnalyticsEvent.created_at)
-            .where(AnalyticsEvent.user_id.is_not(None))
+            .where(AnalyticsEvent.user_id.in_(cohort_user_ids))
             .order_by(AnalyticsEvent.created_at)
         )
     ).all()
@@ -140,30 +226,39 @@ async def alpha_retention_dashboard(session: AsyncSession) -> AlphaRetentionDash
         if user_id is not None and created_at is not None:
             by_user[user_id].append((event_name, created_at))
 
-    cohort_size = len(users)
-    tutorial_completed = sum(1 for user_id, _ in users if profiles.get(user_id, False))
+    cohort_size = len(cohort)
+    tutorial_completed = sum(
+        1 for user_id, _enrolled_at in cohort if profiles.get(user_id, False)
+    )
     first_harvest_users = sum(
         1
-        for user_id, _ in users
-        if any(name == "production.crop_harvested" for name, _at in by_user.get(user_id, []))
+        for user_id, enrolled_at in cohort
+        if any(
+            name == "production.crop_harvested" and at >= enrolled_at
+            for name, at in by_user.get(user_id, [])
+        )
     )
 
     d1_eligible = d1_returned = d7_eligible = d7_returned = 0
-    for user_id, created_at in users:
-        if created_at is None:
-            continue
+    for user_id, enrolled_at in cohort:
         activity = [
             at
             for name, at in by_user.get(user_id, [])
-            if name.startswith(PLAYER_ACTIVITY_PREFIXES)
+            if name.startswith(PLAYER_ACTIVITY_PREFIXES) and at >= enrolled_at
         ]
-        if now >= created_at + timedelta(days=2):
+        if now >= enrolled_at + timedelta(days=2):
             d1_eligible += 1
-            if any(created_at + timedelta(days=1) <= at < created_at + timedelta(days=2) for at in activity):
+            if any(
+                enrolled_at + timedelta(days=1) <= at < enrolled_at + timedelta(days=2)
+                for at in activity
+            ):
                 d1_returned += 1
-        if now >= created_at + timedelta(days=8):
+        if now >= enrolled_at + timedelta(days=8):
             d7_eligible += 1
-            if any(created_at + timedelta(days=7) <= at < created_at + timedelta(days=8) for at in activity):
+            if any(
+                enrolled_at + timedelta(days=7) <= at < enrolled_at + timedelta(days=8)
+                for at in activity
+            ):
                 d7_returned += 1
 
     open_blockers = int(

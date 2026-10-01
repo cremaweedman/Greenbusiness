@@ -88,6 +88,23 @@ async def test_alpha_feedback_triage_and_dashboard(client: AsyncClient):
         assert triaged.json()["severity"] == "minor"
         assert triaged.json()["triaged_by"] == "alpha-admin"
 
+        async with SessionLocal() as session:
+            user = await session.scalar(select(User).where(User.email == email))
+            assert user is not None
+            user_id = str(user.id)
+
+        enrolled = await client.post(
+            f"/v1/admin/alpha/cohort/{user_id}",
+            headers=admin,
+            json={"wave": "wave-1"},
+        )
+        assert enrolled.status_code == 201
+        assert enrolled.json()["wave"] == "wave-1"
+
+        cohort = await client.get("/v1/admin/alpha/cohort", headers=admin)
+        assert cohort.status_code == 200
+        assert any(item["user_id"] == user_id for item in cohort.json())
+
         dashboard = await client.get("/v1/admin/alpha/dashboard", headers=admin)
         assert dashboard.status_code == 200
         body = dashboard.json()

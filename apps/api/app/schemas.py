@@ -690,3 +690,16 @@ class DecorationEquipRequest(BaseModel):
 class DecorationEquipResponse(BaseModel):
     decoration_key: str
     slot_index: int
+
+
+class AlphaCohortEnrollRequest(BaseModel):
+    wave: str = Field(default="wave-1", min_length=2, max_length=32)
+
+
+class AlphaCohortMemberResponse(BaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    wave: str
+    status: str
+    enrolled_by: str
+    enrolled_at: datetime
