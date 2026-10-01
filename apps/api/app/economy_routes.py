@@ -10,9 +10,9 @@ from app.dependencies import get_current_user_id, get_db
 from app.economy_service import (
     accept_contract,
     accept_offer,
+    allocate_skill_point,
     complete_contract,
     purchase_upgrade,
-    allocate_skill_point,
 )
 from app.liveops_service import require_feature_enabled
 from app.schemas import EconomyActionResponse, PlayerContractResponse, SkillBranchResponse
