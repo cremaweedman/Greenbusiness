@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 7 is completed and validated through P7-M1. Phase 8 is ready but not started.
+**Current state:** Phase 8 is completed and validated through P8-M1. Phase 9 is ready but not started.
 
 ---
 
@@ -194,48 +194,44 @@ Later phases may be mocked behind interfaces, but not fully implemented early.
 # 8. Immediate task for the next build session
 
 ## Task ID
-**P5-M1 — LiveOps / Remote Config / Analytics / Admin Foundation — READY, NOT STARTED**
+**P9-M1 — Security, Fraud, Reliability & Production Hardening — READY, NOT STARTED**
 
 ## Goal
-Make GreenBusiness operable and measurable after launch without introducing monetization, clubs or seasonal pass systems yet.
+Bring GreenBusiness up to closed-alpha production standards without expanding gameplay scope.
 
 ## Planned deliverables
-- versioned remote-config storage for balance/content flags;
-- safe config publish/rollback primitives;
-- feature flags and kill switches;
-- analytics event schema for acquisition, tutorial, production, contracts, economy, progression and missions;
-- server-side event emission for the core funnel;
-- initial admin authentication/authorization boundary;
-- read-only admin views for players, wallets, ledger, missions and config;
-- audited admin mutation scaffolding without broad write powers;
-- first operational dashboards/data endpoints for economy and tutorial/core-loop health;
-- PostgreSQL integration tests for config versioning and auditability;
-- full Docker E2E for config read/rollback and analytics emission.
+- rate limiting for sensitive endpoints;
+- replay/exploit logging for consequential economy and purchase paths;
+- structured logs and request correlation;
+- CSP/security headers;
+- backup/restore runbook and local restore drill;
+- Sentry/error-monitoring adapter points or documented integration seam;
+- dependency/container scanning workflow;
+- data retention, privacy policy and Terms/Community-rule implementation inputs;
+- trademark/IP clearance checkpoint;
+- PostgreSQL integration tests for security/replay/hardening invariants;
+- full Docker E2E for health/readiness/security headers and migration release flow.
 
-## Explicitly excluded from P5-M1
-- clubs;
-- monetization/IAP;
-- season pass;
-- push notifications;
-- open chat;
-- P2P marketplace;
-- employee systems;
-- complex A/B experimentation UI.
+## Explicitly excluded from P9-M1
+- new gameplay systems;
+- marketplace/open chat;
+- production iOS release before policy review;
+- Kubernetes/microservices;
+- real payment-provider launch credentials.
 
 ---
 
-# 9. P5-M1 acceptance criteria
+# 9. P9-M1 acceptance criteria
 
-Do not mark P5-M1 complete until:
-- active config is versioned and immutable once published;
-- a previous config version can be restored safely;
-- feature flags can disable a system without client redeploy;
-- core gameplay actions emit canonical analytics events;
-- analytics payloads do not contain secrets or raw credentials;
-- admin access is separated from player auth;
-- admin reads player/economy/config state without direct DB access from the browser;
-- every admin mutation path is audited;
-- config rollback and analytics persistence have PostgreSQL integration coverage;
+Do not mark P9-M1 complete until:
+- duplicate harvest/purchase replay tests still pass;
+- sensitive endpoints have rate-limit or abuse-control coverage;
+- security headers/CSP are present in the deployed web/API path;
+- economic exploit attempts are logged without storing secrets;
+- backup and restore drill steps are documented and tested locally;
+- dependency/container scanning is wired into the workflow or documented with a reproducible command;
+- data retention, privacy-policy inputs and Terms/Community-rule inputs are documented;
+- P0/P1 security issues discovered during the pass are fixed or explicitly tracked;
 - backend/frontend/full-stack CI is green.
 
 **Current status:** ready, not started.
@@ -340,10 +336,10 @@ At the end of every slice:
 Future agents/sessions must update this section after meaningful implementation.
 
 ## Current phase
-`Phase 8 — Push, Cross-Platform UX & Accessibility`
+`Phase 9 — Security, Fraud, Reliability & Production Hardening`
 
 ## Current milestone
-`P8-M1 — Push, Cross-Platform UX & Accessibility — READY, NOT STARTED`
+`P9-M1 — Security, Fraud, Reliability & Production Hardening — READY, NOT STARTED`
 
 ## Completed
 - research and product reconstruction;
@@ -447,18 +443,33 @@ Future agents/sessions must update this section after meaningful implementation.
 - player bootstrap response now exposes `premium_credits` and active entitlement keys;
 - frontend exposes an ethical monetization sandbox panel with Credits balance, catalog products and sandbox purchase buttons;
 - P7-M1 integration test covers catalog, invalid receipt rejection, receipt replay prevention, cross-user receipt theft block, entitlement grant, refund/revocation, premium-credit reversal and rewarded-ad idempotency;
-- P7-M1 validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test and production web build.
+- P7-M1 validation passed with Alembic head, full backend pytest, backend Ruff, frontend lint/typecheck/test and production web build;
+- P8-M1 Push, Cross-Platform UX & Accessibility implemented;
+- migration `0012_notifications_accessibility` adds notification preferences and push token registry tables;
+- authenticated notification endpoints expose `/v1/notifications/me`, `/v1/notifications/preferences`, `/v1/notifications/push-tokens` and `/v1/notifications/push-tokens/{token_id}/disable`;
+- `/v1/platform/readiness` documents PWA installability, Android packaging path, iOS adapter path and iOS policy-review requirement;
+- push token values are stored as hashes with non-secret labels for display;
+- notification categories for production, events/seasons and club/social can be independently disabled;
+- quiet hours default to 22:00-08:00 Europe/Madrid and reject invalid times;
+- deep links are exposed for home, production, club and store;
+- PWA manifest, maskable SVG icon, offline page and service worker read cache are implemented;
+- service worker avoids intercepting `/api/` and keeps core gameplay usable without push;
+- frontend exposes a notification/accessibility panel with independent toggles, quiet-hours copy and non-coercive copy;
+- premium sandbox purchases require explicit confirmation before validating the receipt;
+- timer displays now include absolute ready timestamps in addition to relative countdowns;
+- keyboard focus-visible outlines, reduced-motion CSS, scalable text baseline, aria labels and color-independent On/Off indicators are implemented;
+- P8-M1 integration test covers notification defaults, preference updates, invalid quiet-hour rejection, push-token replay/idempotency, token disable, unsupported platform rejection and platform readiness;
+- P8-M1 validation passed with Alembic head, full backend pytest (`28 passed`), backend Ruff, frontend lint/typecheck/test and production web build.
 
 ## In progress
 - None.
 
 ## Next action
-Begin Phase 8 with Push, Cross-Platform UX & Accessibility exactly as scoped in `06_IMPLEMENTATION_ROADMAP.md`. Keep core gameplay usable without push, make notifications independently disableable and avoid punitive return mechanics.
+Begin Phase 9 with Security, Fraud, Reliability & Production Hardening exactly as scoped in `06_IMPLEMENTATION_ROADMAP.md`. Keep this focused on alpha hardening: rate limits, replay/exploit logging, security headers, backup/restore drill, monitoring seams, dependency/container scanning and policy inputs.
 
 Local validation already passed without Docker:
-- `python -m ruff check apps\api\app apps\api\tests\test_liveops_foundation.py apps\api\tests\integration\test_liveops_admin_analytics.py`
-- `python -m compileall apps\api\app apps\api\tests\test_liveops_foundation.py apps\api\tests\integration\test_liveops_admin_analytics.py`
-- `python -m pytest apps\api\tests\test_liveops_foundation.py`
+- `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
+- `python -m ruff check apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
 - `npm run lint`
 - `npm run typecheck`
 - `npm test`
@@ -467,13 +478,13 @@ Local validation already passed without Docker:
 Docker/PostgreSQL validation passed:
 - `docker compose up --build -d`
 - `docker compose exec -T api alembic upgrade head`
-- `docker compose exec -T api pytest -q` (`27 passed`)
+- `docker compose exec -T api pytest -q` (`28 passed`)
 - `docker compose exec -T api ruff check .`
 - `docker compose run --rm web npm run lint`
 - `docker compose run --rm web npm run typecheck`
 - `docker compose run --rm web npm test`
 - `docker compose up --build -d` production web build
-- HTTP smoke passed for `/api/health/live`, `/api/health/ready` and `/api/v1/system/ping`.
+- HTTP smoke passed for `/api/health/live`, `/api/health/ready`, `/api/v1/system/ping`, `/api/v1/platform/readiness`, `/manifest.webmanifest`, `/offline.html` and `/sw.js`.
 
 ## Known blockers
 - final commercial product name/trademark clearance not completed;

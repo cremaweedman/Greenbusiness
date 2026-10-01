@@ -11,8 +11,8 @@ Canonical project repository for GreenBusiness.
 
 ## Current development state
 
-**Phase:** Phase 8 ready
-**Milestone:** P8-M1 — Push, Cross-Platform UX & Accessibility — READY, NOT STARTED
+**Phase:** Phase 9 ready
+**Milestone:** P9-M1 — Security, Fraud, Reliability & Production Hardening — READY, NOT STARTED
 
 ## Requirements
 
@@ -39,6 +39,8 @@ Open:
 - Admin economy dashboard: http://localhost:8080/api/v1/admin/dashboards/economy
 - Social state: http://localhost:8080/api/v1/social/me
 - Store catalog: http://localhost:8080/api/v1/store/catalog
+- Notification state: http://localhost:8080/api/v1/notifications/me
+- Platform readiness: http://localhost:8080/api/v1/platform/readiness
 - FastAPI docs: http://localhost:8080/api/docs
 
 ## Local web-only development
@@ -88,4 +90,4 @@ docker compose down
 
 Use `docker compose down -v` only when intentionally deleting local database and storage volumes.
 
-Phase 0 through P7-M1 are complete and validated. P7-M1 delivered product catalog, sandbox server-side receipt validation, purchase ledger, premium credits, persistent entitlements, refund/revocation handling, deterministic cosmetics/supporter packs, rewarded-ad claim framework and replay prevention. Continue from `07_BUILD_HANDOFF.md`.
+Phase 0 through P8-M1 are complete and validated. P8-M1 delivered notification preferences, push-token registry, quiet hours, independent notification categories, deep links, PWA manifest/offline read cache, platform readiness, premium-spend confirmation and accessibility smoke coverage. Continue from `07_BUILD_HANDOFF.md`.
