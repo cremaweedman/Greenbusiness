@@ -78,6 +78,28 @@ Canonical runtime document: `docs/art/2D_RUNTIME_ARCHITECTURE_V1.md`.
 
 ---
 
+# 2.2 Canonical platform decision — mobile portrait first
+
+**Status: ACCEPTED.**
+
+GreenBusiness is designed primarily for mobile portrait use. Desktop and tablet are secondary adaptations.
+
+Baseline:
+- canonical viewport: ~390×844 CSS px;
+- required phone width range: 360–430 px;
+- portrait information architecture is authoritative;
+- bottom navigation is the primary global navigation;
+- contextual gameplay detail opens in bottom sheets;
+- no persistent left sidebar on mobile;
+- no core action may exist only on desktop;
+- minimum tap target: 44×44 CSS px;
+- safe-area insets and virtual keyboard behavior must be tested;
+- the Starter Room art composition is authored for narrow portrait framing first.
+
+Canonical UX document: `docs/MOBILE_FIRST_UX_V1.md`.
+
+---
+
 # 3. Frozen architectural direction
 
 Initial production stack:
@@ -565,7 +587,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - do not continue by replacing its primitives with runtime GLB assets.
 
 ## Next action
-**BUILD P10-ART-1 — PRODUCTION 2.5D STARTER ROOM.** Produce the canonical Starter Room through the 3D-master-to-isometric-render pipeline, integrate the resulting layered assets into Next.js, preserve the existing server-authoritative gameplay loop, and validate desktop/mobile readability before inviting the Closed Alpha cohort.
+**BUILD P10-ART-1 — PRODUCTION 2.5D STARTER ROOM.** Produce the canonical Starter Room through the 3D-master-to-isometric-render pipeline, compose it first for 390×844 portrait mobile, integrate bottom navigation and contextual bottom sheets into Next.js, preserve the existing server-authoritative gameplay loop, and validate 360–430 px phone widths before inviting the Closed Alpha cohort.
 
 Local validation already passed without Docker:
 - `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
