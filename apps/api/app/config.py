@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     sandbox_rewarded_ads_enabled: bool = False
 
     redis_url: str = "redis://redis:6379/0"
-    rate_limit_enabled: bool = True
+    rate_limit_enabled: bool = False
     rate_limit_backend: str = "memory"
 
     push_token_encryption_key: str = ""
@@ -79,6 +79,8 @@ class Settings(BaseSettings):
                 problems.append("SANDBOX_MONETIZATION_ENABLED must be false")
             if self.sandbox_rewarded_ads_enabled:
                 problems.append("SANDBOX_REWARDED_ADS_ENABLED must be false")
+            if not self.rate_limit_enabled:
+                problems.append("RATE_LIMIT_ENABLED must be true")
             if self.rate_limit_backend != "redis":
                 problems.append("RATE_LIMIT_BACKEND must be redis")
             if not self.push_token_encryption_key:
