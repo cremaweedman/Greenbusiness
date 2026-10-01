@@ -12,7 +12,15 @@
     "vector_format": "svg",
     "baked_text_allowed": false,
     "original_ip_required": true,
-    "ai_output_requires_manual_review": true
+    "ai_output_requires_manual_review": true,
+    "structural_asset_pipeline": "concept -> Tripo/Meshy -> Blender master -> PNG master -> WebP runtime",
+    "structural_source_of_truth": "Blender .blend master",
+    "runtime_3d_required": false,
+    "final_runtime_formats": [
+      "webp",
+      "png",
+      "svg"
+    ]
   },
   "priorities": {
     "P0": "Required for closed-alpha primary loop",
@@ -614,5 +622,17 @@
     "Runtime assets pass responsive/mobile review",
     "No unintended logos, signatures, watermarks or obvious generation artifacts",
     "Frontend lint/typecheck/tests/build remain green"
-  ]
+  ],
+  "production_methods": {
+    "slots": "3d-first",
+    "environment": "3d-first",
+    "upgrades": "3d-first",
+    "characters": "2d-first",
+    "crops": "2d-first",
+    "ui": "vector-first",
+    "brand": "vector-first",
+    "missions": "2d-first",
+    "store": "2d-first",
+    "mastery": "vector-first"
+  }
 }
