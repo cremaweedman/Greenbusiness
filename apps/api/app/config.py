@@ -3,7 +3,7 @@ from __future__ import annotations
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-PRODUCTION_ENVS = {"production", "prod", "staging"}
+PRODUCTION_ENVS = {"production", "prod", "staging", "alpha"}
 
 
 class Settings(BaseSettings):

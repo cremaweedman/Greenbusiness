@@ -42,7 +42,7 @@ The P10 technical alpha baseline is implemented and validated. It includes 10 fi
 - deploy an isolated production-like alpha environment;
 - enroll invited testers in small waves;
 - publish the Night Market Week LiveOps preset for the selected alpha window;
-- run reproducible alpha reset/seed procedure for that isolated environment;
+- run the guarded reproducible alpha reset/seed procedure (`scripts/alpha_reset.sh`, `scripts/alpha_seed.sh`) for that isolated environment;
 - observe D1 and early D7 rather than estimating them;
 - inspect economy source/sink behavior and club adoption from real cohort data;
 - triage blocker/major feedback and fix regressions;
@@ -52,3 +52,14 @@ The P10 technical alpha baseline is implemented and validated. It includes 10 fi
 ## Non-goals
 
 Public launch, paid UA, open chat, P2P marketplace, Web3/NFT/cash-out and production iOS release before policy review remain out of scope.
+
+
+## Operational scripts
+
+- `scripts/alpha_reset.sh`: destructive reset guarded by exact `APP_ENV=alpha`, instance ID and confirmation phrase.
+- `scripts/alpha_seed.sh`: publishes the canonical Night Market LiveOps preset through admin auth.
+- `scripts/alpha_enroll.sh`: enrolls one real invited tester into an explicit wave.
+- `scripts/alpha_smoke.sh`: checks health/readiness and the alpha admin dashboard.
+- `docs/P10_ALPHA_WAVE_CHECKLIST.md`: canonical first-wave procedure.
+
+Never run the reset script against staging or production.
