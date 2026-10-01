@@ -101,7 +101,10 @@ type UpgradeOffer = {
 
 type SkillBranch = {
   branch: string;
+  label: string;
   points: number;
+  max_points: number;
+  next_tier: string | null;
 };
 
 type Contact = {
@@ -364,6 +367,7 @@ export default function AuthApp() {
   const [submitting, setSubmitting] = useState(false);
   const [actionSlotId, setActionSlotId] = useState<string | null>(null);
   const [economyBusy, setEconomyBusy] = useState<string | null>(null);
+  const [skillBusy, setSkillBusy] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<ApiStatus>("checking");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -677,6 +681,27 @@ export default function AuthApp() {
     }
   }
 
+  async function allocateSkill(branch: string) {
+    if (!accessToken) return;
+    setSkillBusy(branch);
+    setError(null);
+    setNotice(null);
+    try {
+      const result = await requestJson<SkillBranch>(
+        `/api/v1/economy/skills/${encodeURIComponent(branch)}/allocate`,
+        accessToken,
+        { method: "POST" },
+      );
+      setNotice(`${result.label} advanced to ${result.points}/${result.max_points}.`);
+      await refreshPlayer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Skill allocation failed.");
+      await refreshPlayer();
+    } finally {
+      setSkillBusy(null);
+    }
+  }
+
   async function logout() {
     setSubmitting(true);
     try {
@@ -927,6 +952,29 @@ export default function AuthApp() {
                         : `${Math.ceil(variety.grow_seconds / 60)} min - Yield ${variety.base_yield}`}
                     </span>
                   </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="section-label">Skills</p>
+              <div className="economy-list">
+                {player.skill_branches.map((skill) => (
+                  <article key={skill.branch} className="economy-card">
+                    <strong>{skill.label} · {skill.points}/{skill.max_points}</strong>
+                    <span>{skill.next_tier ? `Next: ${skill.next_tier}` : "Tree complete"}</span>
+                    <button
+                      className="secondary"
+                      onClick={() => void allocateSkill(skill.branch)}
+                      disabled={
+                        skillBusy !== null ||
+                        player.skill_points_unspent <= 0 ||
+                        skill.points >= skill.max_points
+                      }
+                    >
+                      {skill.points >= skill.max_points ? "Maxed" : "Allocate point"}
+                    </button>
+                  </article>
                 ))}
               </div>
             </div>

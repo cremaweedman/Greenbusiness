@@ -516,7 +516,10 @@ class UpgradeOfferResponse(BaseModel):
 
 class SkillBranchResponse(BaseModel):
     branch: str
+    label: str
     points: int
+    max_points: int
+    next_tier: str | None
 
 
 class EconomyActionResponse(BaseModel):

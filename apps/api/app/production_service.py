@@ -15,6 +15,7 @@ from app.db.models import (
     InventoryItem,
     InventoryLot,
     PlayerProfile,
+    PlayerSkillBranch,
     PlayerUpgrade,
     ProductionSlot,
     Progression,
@@ -23,7 +24,12 @@ from app.db.models import (
 from app.errors import AppError
 from app.game_data.economy_catalog import UPGRADE_BY_KEY
 from app.game_data.production_catalog import STARTER_VARIETIES, STARTER_VARIETY_BY_KEY
-from app.game_data.progression_catalog import awarded_skill_points, level_for_xp
+from app.game_data.progression_catalog import (
+    awarded_skill_points,
+    botany_yield_bonus,
+    level_for_xp,
+    operations_grow_multiplier,
+)
 from app.liveops_service import record_analytics_event
 from app.mission_service import record_domain_event
 from app.schemas import (
@@ -247,12 +253,25 @@ async def plant_crop(
     if active_crop is not None:
         raise AppError("PRODUCTION_SLOT_OCCUPIED", "Production slot is already planted.", status_code=409)
 
+    operations_points = int(
+        await session.scalar(
+            select(PlayerSkillBranch.points).where(
+                PlayerSkillBranch.user_id == user_id,
+                PlayerSkillBranch.branch == "operations",
+            )
+        )
+        or 0
+    )
+    grow_seconds = max(
+        30,
+        round(variety.grow_seconds * operations_grow_multiplier(operations_points)),
+    )
     now = _now()
     crop = CropProduction(
         slot_id=slot.id,
         variety_key=variety.key,
         planted_at=now,
-        ready_at=now + timedelta(seconds=variety.grow_seconds),
+        ready_at=now + timedelta(seconds=grow_seconds),
     )
     slot.status = "planted"
     session.add(crop)
@@ -375,6 +394,16 @@ async def harvest_crop(
 
     variety = STARTER_VARIETY_BY_KEY[crop.variety_key]
     care_bonus = 1 if crop.cared_at is not None else 0
+    botany_points = int(
+        await session.scalar(
+            select(PlayerSkillBranch.points).where(
+                PlayerSkillBranch.user_id == user_id,
+                PlayerSkillBranch.branch == "botany",
+            )
+        )
+        or 0
+    )
+    skill_bonus = botany_yield_bonus(botany_points)
     owned_upgrade_keys = set(
         (
             await session.scalars(
@@ -388,7 +417,7 @@ async def harvest_crop(
         if key in UPGRADE_BY_KEY
     )
     quality = "cared" if crop.cared_at is not None else "standard"
-    yield_quantity = variety.base_yield + care_bonus + upgrade_bonus
+    yield_quantity = variety.base_yield + care_bonus + upgrade_bonus + skill_bonus
     xp_reward = yield_quantity * XP_PER_HARVEST_UNIT
     item_key = variety.item_key
 
@@ -464,6 +493,7 @@ async def harvest_crop(
             "quality": quality,
             "xp_reward": xp_reward,
             "upgrade_bonus": upgrade_bonus,
+            "skill_bonus": skill_bonus,
             "level": progression.level,
         },
     )

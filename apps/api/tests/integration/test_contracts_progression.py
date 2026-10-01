@@ -241,3 +241,44 @@ async def test_harvest_quality_and_level_progression_persist(client: AsyncClient
             assert all(branch.points == 0 for branch in branches)
     finally:
         await _cleanup(email)
+
+
+@pytest.mark.asyncio
+async def test_skill_tree_allocation_is_server_authoritative(client: AsyncClient):
+    email = f"p10-skills-{uuid.uuid4()}@example.com"
+    try:
+        access = await _register(client, email)
+        auth = {"Authorization": f"Bearer {access}"}
+
+        async with SessionLocal() as session:
+            user = await session.scalar(select(User).where(User.email == email))
+            assert user is not None
+            progression = await session.scalar(
+                select(Progression).where(Progression.user_id == user.id)
+            )
+            assert progression is not None
+            progression.skill_points_unspent = 1
+            await session.commit()
+
+        allocated = await client.post(
+            "/v1/economy/skills/botany/allocate",
+            headers=auth,
+        )
+        assert allocated.status_code == 200
+        assert allocated.json()["branch"] == "botany"
+        assert allocated.json()["points"] == 1
+        assert allocated.json()["max_points"] == 3
+
+        no_points = await client.post(
+            "/v1/economy/skills/commerce/allocate",
+            headers=auth,
+        )
+        assert no_points.status_code == 409
+        assert no_points.json()["error"]["code"] == "SKILL_POINTS_EMPTY"
+
+        state = (await client.get("/v1/player", headers=auth)).json()
+        botany = next(item for item in state["skill_branches"] if item["branch"] == "botany")
+        assert botany["points"] == 1
+        assert state["skill_points_unspent"] == 0
+    finally:
+        await _cleanup(email)

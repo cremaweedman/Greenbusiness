@@ -25,7 +25,14 @@ from app.db.models import (
 )
 from app.economy_service import bootstrap_wallet, economy_state
 from app.errors import AppError
-from app.game_data.progression_catalog import SKILL_BRANCHES, next_level_xp, unlocked_keys
+from app.game_data.progression_catalog import (
+    SKILL_BRANCHES,
+    SKILL_MAX_POINTS,
+    next_level_xp,
+    skill_branch_label,
+    skill_next_tier_label,
+    unlocked_keys,
+)
 from app.liveops_service import record_analytics_event
 from app.mission_service import bootstrap_missions, meta_state
 from app.production_service import (
@@ -412,7 +419,13 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         reputation=progression.reputation,
         skill_points_unspent=progression.skill_points_unspent,
         skill_branches=[
-            SkillBranchResponse(branch=item.branch, points=item.points)
+            SkillBranchResponse(
+                branch=item.branch,
+                label=skill_branch_label(item.branch),
+                points=item.points,
+                max_points=SKILL_MAX_POINTS,
+                next_tier=skill_next_tier_label(item.branch, item.points),
+            )
             for item in skill_models
         ],
         unlocked_keys=unlocked_keys(progression.level),

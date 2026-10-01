@@ -63,3 +63,41 @@ def next_level_xp(level: int) -> int | None:
     if level >= MAX_LEVEL:
         return None
     return cumulative_xp_for_level(level + 1)
+
+
+SKILL_TREES = {
+    "botany": ("Focused Care", "Yield Planning", "Cultivar Mastery"),
+    "commerce": ("Client Sense", "Margin Discipline", "Trusted Network"),
+    "operations": ("Fast Setup", "Flow Control", "Lean Routine"),
+}
+SKILL_MAX_POINTS = 3
+
+
+def skill_branch_label(branch: str) -> str:
+    labels = {
+        "botany": "Botany",
+        "commerce": "Commerce",
+        "operations": "Operations",
+    }
+    if branch not in labels:
+        raise ValueError(f"Unknown skill branch: {branch}")
+    return labels[branch]
+
+
+def skill_next_tier_label(branch: str, points: int) -> str | None:
+    tiers = SKILL_TREES.get(branch)
+    if tiers is None:
+        return None
+    return tiers[points] if 0 <= points < len(tiers) else None
+
+
+def botany_yield_bonus(points: int) -> int:
+    return max(0, min(points, SKILL_MAX_POINTS))
+
+
+def commerce_cash_multiplier(points: int) -> float:
+    return 1.0 + (0.05 * max(0, min(points, SKILL_MAX_POINTS)))
+
+
+def operations_grow_multiplier(points: int) -> float:
+    return 1.0 - (0.05 * max(0, min(points, SKILL_MAX_POINTS)))
