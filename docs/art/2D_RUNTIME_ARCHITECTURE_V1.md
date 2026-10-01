@@ -3,6 +3,7 @@
 Status: CANONICAL DIRECTION  
 Phase: P10-ART  
 Runtime strategy: Next.js + React + layered 2D/2.5D isometric assets
+Primary platform: mobile portrait
 
 ## 1. Product decision
 
@@ -18,6 +19,22 @@ This decision is intentional:
 - lower production/QA burden for a small team;
 - easier layering of UI, state badges, timers and interactions;
 - no WebGL dependency for the core game loop.
+
+## 2.1 Mobile-first layout contract
+
+Canonical viewport:
+- ~390×844 CSS px;
+- validate 360–430 px widths;
+- portrait is primary;
+- tablet and desktop are adaptations.
+
+Primary mobile frame:
+- top resource/status strip;
+- 55–65% room viewport;
+- contextual bottom sheet when needed;
+- five-item bottom navigation: Business, Production, Missions, Club, Store.
+
+Do not use a persistent left sidebar on mobile. Do not require free camera movement. Do not place core actions outside comfortable thumb reach when an equivalent lower-screen placement is possible.
 
 ## 2. Runtime split
 
@@ -155,8 +172,10 @@ Animation must respect reduced-motion preferences.
 
 ## 9. Performance targets
 
-Closed Alpha targets:
+Closed Alpha mobile targets:
 - meaningful room visible quickly after authenticated state arrives;
+- target interactive gameplay within 2–3 seconds on typical broadband/Wi-Fi after authentication;
+- starter-room initial visual payload target <= 2 MB where practical;
 - core interaction usable on mid-range mobile devices;
 - no GPU-heavy continuous scene rendering;
 - lazy-load non-critical decoration assets;
@@ -184,14 +203,25 @@ Use overlays/effects for temporary states when that avoids duplicating entire as
 
 ## 11. Responsive behavior
 
-Desktop/tablet:
-- full isometric room with side/top management UI.
-
-Mobile:
-- preserve the same scene composition;
-- scale/crop intentionally rather than freely rotating the world;
+Mobile portrait is canonical:
+- compose the room for narrow portrait first;
+- keep critical gameplay objects in the central safe composition;
+- scale/crop intentionally rather than rotating the world;
+- use bottom navigation and contextual bottom sheets;
+- no persistent left sidebar;
 - provide direct HTML controls for all core actions;
-- no hover-only interaction.
+- no hover-only interaction;
+- minimum tap target 44×44 CSS px;
+- account for safe-area insets and virtual keyboard changes.
+
+Tablet:
+- preserve the same information architecture;
+- may expose a larger room and optional side contextual panel.
+
+Desktop:
+- adapts from the mobile IA;
+- may display context beside the room;
+- must not add desktop-only core actions.
 
 ## 12. Accessibility
 
@@ -225,7 +255,10 @@ Deliver:
 - storage, contracts station, workbench and desk;
 - interaction hotspots;
 - HTML state/timer overlays;
-- responsive mobile/desktop composition;
+- portrait-mobile-first composition at 390×844 with 360 px minimum-width pass;
+- bottom navigation;
+- crop/slot contextual bottom sheet;
+- responsive tablet/desktop adaptations;
 - optimized WebP/AVIF exports;
 - visual QA against the Art Bible.
 
