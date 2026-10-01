@@ -15,6 +15,8 @@ Canonical project repository for GreenBusiness.
 - [VS-01 Asset Manifest](./docs/canon/05_VS01_ASSET_MANIFEST_TEMPLATE.json)
 - [3D art production pipeline](./docs/art/3D_PRODUCTION_PIPELINE_V1.md)
 - [3D asset source-of-truth](./docs/art/3D_ASSET_SOURCE_OF_TRUTH.md)
+- [Master Asset Catalog](./docs/art/MASTER_ASSET_CATALOG_V1.md)
+- [Machine-readable Asset Prompts](./art/prompts/MASTER_ASSET_PROMPTS_V1.json)
 - [Blender tooling](./tools/blender/README.md)
 
 Structural art is authored as 3D-first and rendered to deterministic 2D runtime assets. GreenBusiness remains a web/PWA runtime; real-time 3D is not required for VS-01.
