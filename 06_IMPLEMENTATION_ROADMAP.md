@@ -645,3 +645,74 @@ Success means:
 - a baseline Playwright smoke test passes.
 
 After P0-M1, continue inside Phase 0 until its Definition of Done is fully satisfied.
+
+
+---
+
+## P10-3D — Diorama Runtime Migration
+
+### Objective
+Validate GreenBusiness as a real-time 3D diorama management game before the invited Closed Alpha.
+
+### Architecture
+- retain FastAPI/Postgres/Redis server authority;
+- retain Next.js/React for text-heavy UI;
+- add Three.js + React Three Fiber for the room/gameplay scene;
+- consume optimized GLB/GLTF authored through Blender;
+- do not move contracts, inventory, store or settings into 3D.
+
+### P10-3D-0 — Runtime Spike
+Deliver:
+- procedural 3D Starter Room;
+- 3 visible production slots;
+- server-state mapping into the scene;
+- constrained orbit/zoom;
+- desktop/mobile responsive viewport;
+- fallback-safe HTML gameplay.
+
+Gate:
+- frontend lint/typecheck/test/build green;
+- compose-smoke green;
+- security scan green;
+- normal gameplay loop remains intact;
+- acceptable mobile interaction and >=30 FPS target on a representative mid-range device.
+
+### P10-3D-1 — GLB Starter Room
+Replace procedural primitives with:
+- room shell;
+- canonical starter slot;
+- storage;
+- contract anchor;
+- workbench;
+- desk.
+
+### P10-3D-2 — Crops
+Add:
+- Aurora Drift;
+- Ember Leaf;
+- Moon Sprout;
+- growth-stage meshes or state variants.
+
+### P10-3D-3 — Direct Interaction
+Add:
+- slot selection by tap/click;
+- visual plant/grow/ready/harvest transitions;
+- HTML action surfaces remain accessible and authoritative.
+
+### P10-3D-4 — Upgrades & Decoration
+Add:
+- rack tiers;
+- room evolution;
+- owned decoration placement;
+- visual progression.
+
+### P10-3D-5 — Optimization
+Add:
+- compressed GLB;
+- KTX2/Basis where practical;
+- quality tiers;
+- asset preload priorities;
+- 3D load/FPS telemetry.
+
+### Decision gate
+Do not run the real invited Closed Alpha on the old 2D room if P10-3D-0 succeeds. If P10-3D-0 fails mobile/performance/reliability gates, revert the runtime scene and keep 3D as an authoring pipeline only.
