@@ -486,14 +486,15 @@ export default function AuthApp() {
   }, []);
 
   useEffect(() => {
-    if (!accessToken) {
+    const token = accessToken;
+    if (!token) {
       setDecorations(null);
       return;
     }
     let mounted = true;
     async function loadDecorations() {
       try {
-        const state = await getDecorationState(accessToken);
+        const state = await getDecorationState(token);
         if (mounted) setDecorations(state);
       } catch {
         if (mounted) setDecorations(null);
