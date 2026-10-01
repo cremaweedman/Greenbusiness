@@ -56,7 +56,7 @@ test("production shell exists", () => {
   assert.match(auth, /server_time/);
   assert.match(auth, /serverClockOffsetMs/);
   assert.match(auth, /Starter varieties/);
-  assert.match(auth, /room-scene/);
+  assert.match(auth, /StarterRoomScene/);\n  assert.equal(fs.existsSync("app/StarterRoomScene.tsx"), true);\n  assert.equal(fs.existsSync("app/gameAssets.ts"), true);
   assert.match(auth, /API offline/);
   assert.match(auth, /credentials: "include"/);
   assert.match(layout, /manifest\.webmanifest/);
