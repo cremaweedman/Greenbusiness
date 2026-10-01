@@ -421,7 +421,7 @@ async def get_player_state(session: AsyncSession, user_id: uuid.UUID) -> PlayerR
         inventory_container_id=inventory.id,
         inventory=await inventory_responses(session, inventory.id),
         inventory_lots=await inventory_lot_responses(session, inventory.id),
-        starter_varieties=starter_variety_responses(),
+        starter_varieties=starter_variety_responses(progression.level),
         cash=state.cash,
         premium_credits=premium_wallet.credits if premium_wallet else 0,
         active_entitlement_keys=active_entitlement_keys,

@@ -16,6 +16,8 @@ type StarterVariety = {
   grow_seconds: number;
   base_yield: number;
   traits: string[];
+  min_level: number;
+  locked: boolean;
 };
 
 type Crop = {
@@ -526,7 +528,7 @@ export default function AuthApp() {
       applyPlayerState(currentPlayer);
       setSocial(currentSocial);
       setNotifications(currentNotifications);
-      setSelectedVariety(currentPlayer.starter_varieties[0]?.key ?? null);
+      setSelectedVariety(currentPlayer.starter_varieties.find((item) => !item.locked)?.key ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
     } finally {
@@ -566,7 +568,7 @@ export default function AuthApp() {
       applyPlayerState(currentPlayer);
       setSocial(currentSocial);
       setNotifications(currentNotifications);
-      setSelectedVariety(currentPlayer.starter_varieties[0]?.key ?? null);
+      setSelectedVariety(currentPlayer.starter_varieties.find((item) => !item.locked)?.key ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Creator access failed.");
     } finally {
@@ -914,12 +916,15 @@ export default function AuthApp() {
                   <button
                     key={variety.key}
                     type="button"
-                    className={selectedVariety === variety.key ? "variety active" : "variety"}
-                    onClick={() => setSelectedVariety(variety.key)}
+                    className={`${selectedVariety === variety.key ? "variety active" : "variety"} ${variety.locked ? "locked" : ""}`}
+                    onClick={() => !variety.locked && setSelectedVariety(variety.key)}
+                    disabled={variety.locked}
                   >
                     <strong>{variety.name}</strong>
                     <span>
-                      {Math.ceil(variety.grow_seconds / 60)} min - Yield {variety.base_yield}
+                      {variety.locked
+                        ? `Unlocks at level ${variety.min_level}`
+                        : `${Math.ceil(variety.grow_seconds / 60)} min - Yield ${variety.base_yield}`}
                     </span>
                   </button>
                 ))}

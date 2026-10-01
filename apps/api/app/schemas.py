@@ -416,6 +416,8 @@ class StarterVarietyResponse(BaseModel):
     grow_seconds: int
     base_yield: int
     traits: list[str]
+    min_level: int
+    locked: bool
 
 
 class CropProductionResponse(BaseModel):

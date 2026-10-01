@@ -13,6 +13,7 @@ class StarterVariety:
     grow_seconds: int
     base_yield: int
     traits: tuple[str, ...]
+    min_level: int
 
     @property
     def item_key(self) -> str:
@@ -43,8 +44,8 @@ def _require_traits(value: Any, key: str) -> tuple[str, ...]:
 def load_starter_varieties() -> tuple[StarterVariety, ...]:
     raw = resources.files("app.game_data").joinpath("starter_varieties.json").read_text()
     records = json.loads(raw)
-    if not isinstance(records, list) or len(records) != 3:
-        raise ValueError("Starter variety data must define exactly 3 records.")
+    if not isinstance(records, list) or not 10 <= len(records) <= 12:
+        raise ValueError("Alpha variety data must define 10-12 records.")
 
     varieties: list[StarterVariety] = []
     seen_keys: set[str] = set()
@@ -62,6 +63,7 @@ def load_starter_varieties() -> tuple[StarterVariety, ...]:
                 grow_seconds=_require_positive_int(record.get("grow_seconds"), "grow_seconds", key),
                 base_yield=_require_positive_int(record.get("base_yield"), "base_yield", key),
                 traits=_require_traits(record.get("traits"), key),
+                min_level=_require_positive_int(record.get("min_level", 1), "min_level", key),
             )
         )
     return tuple(varieties)

@@ -39,7 +39,7 @@ XP_PER_HARVEST_UNIT = 5
 ACTIVE_SLOT_CONSTRAINT = "uq_crop_productions_active_slot"
 
 
-def starter_variety_responses() -> list[StarterVarietyResponse]:
+def starter_variety_responses(player_level: int) -> list[StarterVarietyResponse]:
     return [
         StarterVarietyResponse(
             key=variety.key,
@@ -47,6 +47,8 @@ def starter_variety_responses() -> list[StarterVarietyResponse]:
             grow_seconds=variety.grow_seconds,
             base_yield=variety.base_yield,
             traits=list(variety.traits),
+            min_level=variety.min_level,
+            locked=player_level < variety.min_level,
         )
         for variety in STARTER_VARIETIES
     ]
@@ -225,6 +227,19 @@ async def plant_crop(
             "PRODUCTION_VARIETY_INVALID",
             "Starter variety is not available.",
             status_code=400,
+        )
+
+    progression = await session.scalar(
+        select(Progression).where(Progression.user_id == user_id)
+    )
+    if progression is None:
+        raise AppError("PLAYER_STATE_INCOMPLETE", "Player progression is missing.", status_code=500)
+    if progression.level < variety.min_level:
+        raise AppError(
+            "PRODUCTION_VARIETY_LOCKED",
+            "Variety is not unlocked at the current level.",
+            status_code=403,
+            details={"required_level": variety.min_level, "current_level": progression.level},
         )
 
     slot = await _get_owned_slot(session, user_id, slot_id)

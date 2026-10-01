@@ -4,7 +4,7 @@
 **Purpose:** Single canonical continuation point for any developer, coding agent or future ChatGPT/Work session.  
 **Repository:** cremaweedman/Greenbusiness  
 **Branch:** main  
-**Current state:** Phase 9 is completed and validated through P9-M1. Phase 10 Closed Alpha is ready but not started.
+**Current state:** Phase 9 is completed. Phase 10 Closed Alpha is in progress on `feat/p10-m1-closed-alpha`.
 
 ---
 
@@ -364,7 +364,7 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 10 — Content Completion & Closed Alpha`
 
 ## Current milestone
-`P10-M1 — Content Completion & Closed Alpha — READY, NOT STARTED`
+`P10-M1 — Content Completion & Closed Alpha — IN PROGRESS`
 
 ## Completed
 - research and product reconstruction;
@@ -505,10 +505,14 @@ Future agents/sessions must update this section after meaningful implementation.
 - final P9 Security Scan is green.
 
 ## In progress
-- none.
+- P10 alpha content baseline;
+- fictional variety catalog expanded from 3 to 10 entries;
+- level-gated variety unlocks added through level 16;
+- API/UI expose locked varieties without permitting server-side bypass;
+- closed-alpha operational preparation remains pending before real cohort execution.
 
 ## Next action
-**STOP HERE.** When development resumes, begin P10-M1 Closed Alpha exactly as specified above. Do not start Phase 11 soft launch before alpha acceptance criteria are met.
+**CONTINUE P10-M1.** Complete the remaining alpha content and operational readiness work. Do not start Phase 11 soft launch before real closed-alpha acceptance criteria are met.
 
 Local validation already passed without Docker:
 - `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`

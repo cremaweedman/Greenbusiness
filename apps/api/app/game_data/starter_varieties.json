@@ -1,23 +1,12 @@
 [
-  {
-    "key": "aurora-drift",
-    "name": "Aurora Drift",
-    "grow_seconds": 90,
-    "base_yield": 3,
-    "traits": ["fast", "efficient"]
-  },
-  {
-    "key": "ember-leaf",
-    "name": "Ember Leaf",
-    "grow_seconds": 120,
-    "base_yield": 4,
-    "traits": ["stable", "resilient"]
-  },
-  {
-    "key": "moon-sprout",
-    "name": "Moon Sprout",
-    "grow_seconds": 150,
-    "base_yield": 5,
-    "traits": ["premium", "night"]
-  }
+  {"key":"aurora-drift","name":"Aurora Drift","grow_seconds":90,"base_yield":3,"traits":["fast","efficient"],"min_level":1},
+  {"key":"ember-leaf","name":"Ember Leaf","grow_seconds":120,"base_yield":4,"traits":["stable","resilient"],"min_level":1},
+  {"key":"moon-sprout","name":"Moon Sprout","grow_seconds":150,"base_yield":5,"traits":["premium","night"],"min_level":1},
+  {"key":"velvet-mist","name":"Velvet Mist","grow_seconds":165,"base_yield":5,"traits":["balanced","aromatic"],"min_level":2},
+  {"key":"cinder-bloom","name":"Cinder Bloom","grow_seconds":180,"base_yield":6,"traits":["warm","resilient"],"min_level":3},
+  {"key":"jade-comet","name":"Jade Comet","grow_seconds":210,"base_yield":6,"traits":["efficient","premium"],"min_level":5},
+  {"key":"sunset-veil","name":"Sunset Veil","grow_seconds":240,"base_yield":7,"traits":["balanced","stable"],"min_level":7},
+  {"key":"opal-rush","name":"Opal Rush","grow_seconds":270,"base_yield":8,"traits":["fast","premium"],"min_level":10},
+  {"key":"northstar","name":"Northstar","grow_seconds":300,"base_yield":9,"traits":["night","stable"],"min_level":13},
+  {"key":"quiet-thunder","name":"Quiet Thunder","grow_seconds":330,"base_yield":10,"traits":["resilient","premium"],"min_level":16}
 ]
