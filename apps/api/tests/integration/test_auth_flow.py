@@ -6,6 +6,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import func, select
 
+from app.config import settings
 from app.db.models import (
     AuthSession,
     Business,
@@ -162,8 +163,10 @@ async def test_login_recovers_same_player_state(client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_dev_creator_access_creates_reusable_passwordless_session(client: AsyncClient):
+async def test_dev_creator_access_creates_reusable_passwordless_session(client: AsyncClient, monkeypatch):
     email = "creator@greenbusiness.local"
+    monkeypatch.setattr(settings, "app_env", "test")
+    monkeypatch.setattr(settings, "creator_access_enabled", True)
 
     try:
         first = await client.post("/v1/auth/dev/creator")
