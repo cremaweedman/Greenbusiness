@@ -20,6 +20,8 @@ A phase is complete only when:
 
 ### Product constraints that remain frozen until soft launch
 
+- Runtime presentation is 2D/2.5D isometric. 3D may be used to author source art, but core gameplay must not depend on a real-time 3D renderer.
+
 - Original IP only. Do not copy Weeds names, characters, dialogue, art, UI, music or protected expression.
 - Adult management/tycoon framing.
 - Fictional/regulatory botanical business framing; no real cultivation instructions.
