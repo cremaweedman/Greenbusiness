@@ -610,3 +610,23 @@ Immediate art-production next step:
 5. render and integrate runtime WebP assets.
 
 Do not use independently generated 2D slot states as final production assets.
+
+
+---
+
+## Master art backlog
+
+The canonical visual backlog is now:
+- `docs/art/MASTER_ASSET_CATALOG_V1.md`
+- `art/prompts/MASTER_ASSET_PROMPTS_V1.json`
+
+Current known inventory:
+- 93 total visual assets;
+- 26 P0;
+- 45 P1;
+- 22 P2;
+- 55 3D-first;
+- 20 2D-first;
+- 18 vector-first.
+
+All new visual game-data items must be added to this catalog before production.
