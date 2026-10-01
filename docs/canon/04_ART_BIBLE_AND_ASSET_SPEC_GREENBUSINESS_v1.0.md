@@ -27,7 +27,28 @@ The visual target is:
 
 Internal visual shorthand:
 
-> Cozy premium botanical-management game with modern agrotech presentation.
+> Botanical Workshop Diorama — a stylized 2.5D botanical-business management game where the player's workshop visibly evolves piece by piece.
+
+### 2.1 Canonical visual direction
+
+The approved visual direction combines two principles:
+
+**Botanical Workshop**
+- warm, contemporary, crafted small-business atmosphere;
+- practical modular equipment;
+- stylized 2.5D illustration;
+- matte materials and restrained accents;
+- visible human-scale workspaces;
+- premium through coherence and craft, not luxury.
+
+**Management Diorama**
+- gameplay spaces are composed from reusable visual modules;
+- upgrades materially change the room;
+- production slots remain independent from static backgrounds;
+- progression should be visible without opening a stats screen;
+- environment art supports gameplay state rather than baking it in.
+
+The product should feel like a business the player is physically building, not a futuristic laboratory backdrop.
 
 ## 3. Non-negotiable identity rules
 
@@ -651,3 +672,61 @@ VS-01 is complete when:
 - no art asset breaks accessibility or responsive layout;
 - final runtime bundle impact is measured.
 
+
+
+## 23. Starter Room modular diorama rule
+
+The Starter Room must be built as a layered visual system.
+
+### Static layer
+May contain:
+- room shell;
+- wall/floor surfaces;
+- permanent architecture;
+- non-interactive ambient fixtures.
+
+### Dynamic gameplay layers
+Must remain separate assets:
+- production slots;
+- racks;
+- upgrade equipment;
+- contract/inbox props if their state changes;
+- storage modules if upgraded;
+- temporary state indicators;
+- characters or contact overlays.
+
+### Canonical starter layout
+
+The first room should visually support:
+
+- Storage zone — upper/left side;
+- Contract / inbox anchor — upper/right side;
+- three production-slot positions — central dominant band;
+- Workbench — lower/left;
+- Small management desk — lower/right;
+- visible unused/locked expansion potential.
+
+The room should initially communicate:
+- one functioning small business;
+- low-to-mid budget equipment;
+- organization without polish;
+- clear physical room to improve.
+
+### Progression principle
+
+Major progression should alter the visible workshop through:
+- more capable equipment;
+- cleaner organization;
+- stronger lighting hierarchy;
+- denser but controlled production;
+- improved surfaces;
+- additional modular zones.
+
+The visual progression arc is:
+
+Starter workshop
+→ organized workshop
+→ professional botanical studio
+→ mature botanical business.
+
+Do not jump directly from starter state to futuristic lab aesthetics.
