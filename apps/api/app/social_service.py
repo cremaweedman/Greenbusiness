@@ -73,13 +73,14 @@ async def ensure_social_profile(session: AsyncSession, user_id: uuid.UUID) -> So
         return profile
 
     for _attempt in range(8):
-        profile = SocialProfile(user_id=user_id, friend_code=_friend_code())
-        session.add(profile)
         try:
-            await session.flush()
+            async with session.begin_nested():
+                profile = SocialProfile(user_id=user_id, friend_code=_friend_code())
+                session.add(profile)
+                await session.flush()
             return profile
         except IntegrityError:
-            await session.rollback()
+            continue
     raise AppError("SOCIAL_CODE_FAILED", "Could not allocate a friend code.", status_code=500)
 
 
