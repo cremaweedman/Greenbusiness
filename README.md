@@ -18,6 +18,7 @@ Canonical project repository for GreenBusiness.
 - [2D/2.5D runtime architecture](./docs/art/2D_RUNTIME_ARCHITECTURE_V1.md)
 - [Mobile-first UX](./docs/MOBILE_FIRST_UX_V1.md)
 - [Master Asset Catalog](./docs/art/MASTER_ASSET_CATALOG_V1.md)
+- [Concept Art Master List](./docs/art/CONCEPT_ART_MASTER_LIST_V1.md)
 - [Machine-readable Asset Prompts](./art/prompts/MASTER_ASSET_PROMPTS_V1.json)
 - [Blender tooling](./tools/blender/README.md)
 - [Asset Factory](./tools/asset_factory/README.md)
