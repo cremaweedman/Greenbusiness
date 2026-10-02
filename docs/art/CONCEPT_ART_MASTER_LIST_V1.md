@@ -19,7 +19,7 @@ The current target is **73 concept-art images/boards**, divided into P0/P1/P2 pr
 
 # 0. GLOBAL VISUAL FOUNDATION
 
-**Approved composite reference:** `docs/art/concepts/GB_P0_MASTER_STYLE_BOARD_V1.webp`
+**Approved composite reference:** `docs/art/concepts/GB_P0_MASTER_STYLE_BOARD_V1_FINAL.webp`
 
 This approved board locks the current direction for:
 - Master Style Board;
