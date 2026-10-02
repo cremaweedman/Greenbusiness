@@ -1,0 +1,31 @@
+name: Asset Factory
+
+on:
+  pull_request:
+    paths:
+      - "tools/asset_factory/**"
+      - "art/prompts/MASTER_ASSET_PROMPTS_V1.json"
+      - ".github/workflows/asset-factory.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/asset_factory/**"
+      - "art/prompts/MASTER_ASSET_PROMPTS_V1.json"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        run: python -m unittest discover -s tools/asset_factory/tests -p "test_*.py"
+      - name: Validate ART-2
+        run: python tools/asset_factory/factory.py validate --batch P10-ART-2
+      - name: Verify deterministic plan
+        run: python tools/asset_factory/factory.py plan --batch P10-ART-2 --output /tmp/p10-art2-plan.json
