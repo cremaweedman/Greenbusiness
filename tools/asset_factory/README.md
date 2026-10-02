@@ -26,16 +26,16 @@ Inspect plan:
 python tools/asset_factory/factory.py plan --batch P10-ART-2
 ```
 
-Prepare the complete batch:
+Prepare READY first:
 
 ```bash
-python tools/asset_factory/factory.py prepare --batch P10-ART-2
+python tools/asset_factory/factory.py prepare --batch P10-ART-2 --variant ready
 ```
 
 Default output:
 
 ```text
-art/factory/generated/P10-ART-2/
+art/factory/generated/P10-ART-2-ready/
   jobs.json
   prompts.jsonl
   prompts/
@@ -64,7 +64,16 @@ Production order remains:
 6. approve PLANTED;
 7. export runtime variants and generate the runtime manifest.
 
-The factory records dependency metadata (`depends_on_variant`) so provider workflows can enforce this order.
+The factory enforces dependency metadata (`depends_on_variant`). Preparing `growing` or `planted` requires `--approvals` containing an approved READY identity for every starter crop.
+
+Example after READY approval:
+
+```bash
+python tools/asset_factory/factory.py prepare \
+  --batch P10-ART-2 \
+  --variant growing \
+  --approvals art/factory/generated/P10-ART-2-ready/approvals.json
+```
 
 ## Review sheet
 
@@ -74,9 +83,9 @@ Regenerate for another path:
 
 ```bash
 python tools/asset_factory/factory.py review \
-  --jobs art/factory/generated/P10-ART-2/jobs.json \
+  --jobs art/factory/generated/P10-ART-2-ready/jobs.json \
   --image-root ./images \
-  --output art/factory/generated/P10-ART-2/review.html
+  --output art/factory/generated/P10-ART-2-ready/review.html
 ```
 
 ## Runtime manifest
@@ -100,14 +109,17 @@ Export a ComfyUI workflow in API format and replace the relevant workflow string
 - `__NEGATIVE_PROMPT__`
 - `__SEED__`
 - `__FILENAME_PREFIX__`
+- `__CHECKPOINT__`
 
 Then:
 
 ```bash
 python tools/asset_factory/comfyui_runner.py \
-  --jobs art/factory/generated/P10-ART-2/jobs.json \
-  --workflow path/to/workflow_api.json \
-  --receipts art/factory/generated/P10-ART-2/provider/comfyui \
+  --jobs art/factory/generated/P10-ART-2-ready/jobs.json \
+  --workflow tools/asset_factory/workflows/comfyui_checkpoint_api.template.json \
+  --checkpoint YOUR_APPROVED_CHECKPOINT.safetensors \
+  --variant ready \
+  --receipts art/factory/generated/P10-ART-2-ready/provider/comfyui \
   --wait
 ```
 
@@ -122,3 +134,16 @@ For future 3D-first batches, implement provider adapters that consume the same `
 ## Generated files
 
 Generated images and provider receipts are working artifacts and should not be committed by default. Approved masters/runtime exports are committed through the normal art QA process.
+
+
+## Stage safety
+
+Do not run all ART-2 variants at once in production.
+
+- READY establishes identity.
+- GROWING must inherit an approved READY reference.
+- PLANTED must inherit the same approved READY reference.
+- The CLI blocks dependent stages without the approvals file.
+- The ComfyUI runner can additionally filter with `--variant`.
+
+The baseline ComfyUI template uses standard nodes only. It deliberately does not assume a background-removal custom node; alpha cleanup belongs to the approved post-processing pipeline until that node is standardized.
