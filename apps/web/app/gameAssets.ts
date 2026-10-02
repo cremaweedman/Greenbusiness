@@ -17,13 +17,13 @@ export const gameAssets = {
     boosted: "/assets/slots/gb_slot_starter_boosted_default_v01.svg",
   },
   crops: {
-    "aurora-drift": "/assets/crops/gb_crop_aurora-drift_icon_default_v01.svg",
-    "ember-leaf": "/assets/crops/gb_crop_ember-leaf_icon_default_v01.svg",
-    "moon-sprout": "/assets/crops/gb_crop_moon-sprout_icon_default_v01.svg",
+    "aurora-drift": "/assets/crops/gb_crop_aurora-drift_icon_default_v01.webp",
+    "ember-leaf": "/assets/crops/gb_crop_ember-leaf_icon_default_v01.webp",
+    "moon-sprout": "/assets/crops/gb_crop_moon-sprout_icon_default_v01.webp",
   },
   contacts: {
-    "alex-rowan": "/assets/characters/gb_character_alex-rowan_portrait_default_v01.svg",
-    "mira-vale": "/assets/characters/gb_character_mira-vale_portrait_default_v01.svg",
+    "alex-rowan": "/assets/characters/gb_character_alex-rowan_portrait_default_v01.webp",
+    "mira-vale": "/assets/characters/gb_character_mira-vale_portrait_default_v01.webp",
   },
 } as const;
 
