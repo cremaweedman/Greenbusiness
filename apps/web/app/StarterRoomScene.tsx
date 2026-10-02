@@ -11,6 +11,7 @@ type SceneSlot = {
 
 type StarterRoomSceneProps = {
   slots: SceneSlot[];
+  onSelectSlot?: (slotId: string) => void;
 };
 
 function SceneModule({
@@ -33,7 +34,7 @@ function SceneModule({
   );
 }
 
-export default function StarterRoomScene({ slots }: StarterRoomSceneProps) {
+export default function StarterRoomScene({ slots, onSelectSlot }: StarterRoomSceneProps) {
   return (
     <div className="starter-room-scene" aria-label="Starter workshop visual">
       <div
@@ -63,16 +64,19 @@ export default function StarterRoomScene({ slots }: StarterRoomSceneProps) {
         label="Management desk"
       />
 
+      <div className="scene-expansion-zone" aria-hidden="true" />
       <div className="scene-slot-band" aria-label="Production slot positions">
         {slots.map((slot) => (
-          <div
+          <button
             key={slot.id}
+            type="button"
             className={`scene-slot scene-slot-${slot.slotIndex} ${slot.state}`}
-            aria-label={slot.label}
+            aria-label={`${slot.label}. Open slot controls.`}
+            onClick={() => onSelectSlot?.(slot.id)}
             style={{ backgroundImage: `url("${gameAssets.slots[slot.state]}")` }}
           >
             <span className="scene-slot-placeholder" aria-hidden="true" />
-          </div>
+          </button>
         ))}
       </div>
     </div>

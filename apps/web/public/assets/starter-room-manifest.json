@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "milestone": "P10-ART-1",
+  "runtime": "2d-2.5d-layered",
+  "baselineViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layers": [
+    {
+      "id": "room-shell",
+      "src": "/assets/environment/gb_environment_starter-room_shell_v01.svg",
+      "z": 0
+    },
+    {
+      "id": "storage",
+      "src": "/assets/environment/gb_room_storage_starter_v01.svg",
+      "z": 2,
+      "anchor": [
+        0.14,
+        0.2
+      ]
+    },
+    {
+      "id": "contracts",
+      "src": "/assets/environment/gb_room_contract-anchor_default_v01.svg",
+      "z": 2,
+      "anchor": [
+        0.86,
+        0.2
+      ]
+    },
+    {
+      "id": "workbench",
+      "src": "/assets/environment/gb_room_workbench_starter_v01.svg",
+      "z": 2,
+      "anchor": [
+        0.14,
+        0.82
+      ]
+    },
+    {
+      "id": "desk",
+      "src": "/assets/environment/gb_room_desk_starter_v01.svg",
+      "z": 2,
+      "anchor": [
+        0.86,
+        0.82
+      ]
+    }
+  ],
+  "slots": {
+    "anchors": [
+      [
+        0.18,
+        0.51
+      ],
+      [
+        0.5,
+        0.51
+      ],
+      [
+        0.82,
+        0.51
+      ]
+    ],
+    "states": {
+      "empty": "/assets/slots/gb_slot_starter_empty_default_v01.svg",
+      "planted": "/assets/slots/gb_slot_starter_planted_default_v01.svg",
+      "growing": "/assets/slots/gb_slot_starter_growing_default_v01.svg",
+      "flowering": "/assets/slots/gb_slot_starter_flowering_default_v01.svg",
+      "ready": "/assets/slots/gb_slot_starter_ready_default_v01.svg",
+      "locked": "/assets/slots/gb_slot_starter_locked_default_v01.svg",
+      "attention": "/assets/slots/gb_slot_starter_attention_default_v01.svg",
+      "boosted": "/assets/slots/gb_slot_starter_boosted_default_v01.svg"
+    }
+  }
+}
