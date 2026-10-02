@@ -2,7 +2,7 @@
 
 ## Canonical baseline template
 
-`comfyui_sd15_api.template.json` uses only standard ComfyUI nodes:
+`comfyui_checkpoint_api.template.json` uses only standard ComfyUI nodes:
 
 - CheckpointLoaderSimple
 - CLIPTextEncode
@@ -26,7 +26,7 @@ Example:
 ```bash
 python tools/asset_factory/comfyui_runner.py \
   --jobs art/factory/generated/P10-ART-2-ready/jobs.json \
-  --workflow tools/asset_factory/workflows/comfyui_sd15_api.template.json \
+  --workflow tools/asset_factory/workflows/comfyui_checkpoint_api.template.json \
   --checkpoint your-approved-model.safetensors \
   --variant ready \
   --receipts art/factory/generated/P10-ART-2-ready/provider/comfyui \
