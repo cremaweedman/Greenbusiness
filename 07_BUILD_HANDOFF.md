@@ -680,6 +680,15 @@ Do not generate all remaining crop/decor families before the starter crop style 
 
 ---
 
+## Concept art backlog
+
+Canonical concept-art planning:
+- `docs/art/CONCEPT_ART_MASTER_LIST_V1.md`
+- 73 concept images/boards total;
+- 15 P0 concepts must be approved before large-scale art production;
+- do not create one concept image per runtime asset;
+- do not mass-produce an asset family before its governing concept board is approved.
+
 ## Master art backlog
 
 The canonical visual backlog is now:
