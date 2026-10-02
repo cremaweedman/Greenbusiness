@@ -317,3 +317,20 @@ The approved Starter Slot Master Concept locks the following rules:
 - real-world cultivation measurements are not part of the gameplay art specification.
 
 The approved concept image remains a visual reference; where labels conflict with these rules, this canonical text takes precedence.
+
+
+## P0 #8 slot-states canonical notes
+
+The approved Slot States Board locks:
+- states: EMPTY / PLANTED / GROWING / FLOWERING / READY;
+- one slot represents one plant/crop;
+- same physical slot chassis across all states;
+- canonical GreenBusiness varieties only;
+- slot logical footprint remains 2×1 tiles with bottom-center anchoring;
+- timers and state icons are runtime UI overlays, never baked into production art;
+- READY receives additional runtime feedback (highlight/glow/state treatment) so it reads clearly above FLOWERING;
+- concept-board day counts are placeholders only and do not define economy or timing balance;
+- free rotation is not a canonical core interaction; placement/move may be supported, rotation requires a later explicit design decision;
+- visual upgrade labels do not automatically define gameplay effects until matched to the authoritative upgrade system.
+
+Where any concept-board label conflicts with the rules above, this canonical text takes precedence.
