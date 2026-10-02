@@ -576,6 +576,10 @@ Future agents/sessions must update this section after meaningful implementation.
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
 
 ## In progress
+- P0 concept-art lock complete — 15/15 approved;
+- starter crop family lock complete;
+- next art execution target: ART-2 production renders through Asset Factory;
+
 - P0 #14 Home / Business Screen Concept — approved with canonical UX corrections;
 - P0 #15 Crop Bottom Sheet Concept — current and final P0 concept-art target;
 
@@ -619,7 +623,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - do not continue by replacing its primitives with runtime GLB assets.
 
 ## Next action
-**EXECUTE P10-ART-2 — STARTER CROPS.** Use `tools/asset_factory/factory.py` to prepare the deterministic ART-2 batch, generate the READY candidates first, approve one identity per crop, then derive GROWING and PLANTED from the approved READY references. Do not mass-produce later crops before the three starter families pass mobile readability and style-consistency QA.
+**EXECUTE P10-ART-2 PRODUCTION — STARTER CROPS.** The P0 concept-art lock is complete. Prepare the Asset Factory READY stage, generate production candidates for Aurora Drift, Ember Leaf and Moon Sprout using the approved concept references, approve one production master per crop, then derive GROWING / PLANTED / FLOWERING-compatible runtime states and export optimized mobile assets. Do not expand into P1 concept families until the production starter-crop family is integrated and validated in-room.
 
 Local validation already passed without Docker:
 - `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
