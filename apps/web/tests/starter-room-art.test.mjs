@@ -42,4 +42,11 @@ test("gameplay uses canonical StarterRoomScene instead of realtime 3D spike", ()
   assert.match(authApp, /import StarterRoomScene from "\.\/StarterRoomScene"/);
   assert.doesNotMatch(authApp, /StarterRoom3DScene/);
   assert.match(authApp, /sceneSlotState/);
+  assert.match(authApp, /crop-bottom-sheet/);
+  assert.match(authApp, /mobile-bottom-nav/);
+  assert.match(authApp, /Business/);
+  assert.match(authApp, /Production/);
+  assert.match(authApp, /Missions/);
+  assert.match(authApp, /Club/);
+  assert.match(authApp, /Store/);
 });
