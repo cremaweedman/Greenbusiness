@@ -1331,7 +1331,6 @@ export default function AuthApp() {
             <StarterRoomScene
               onSelectSlot={(slotId) => setSelectedSlotId(slotId)}
               slots={player.slots.map((slot) => {
-                const state = slotState(slot, serverNow);
                 return {
                   id: slot.id,
                   slotIndex: slot.slot_index,
