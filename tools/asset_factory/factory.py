@@ -73,9 +73,17 @@ def validate(catalog: dict[str, Any], batch: dict[str, Any], style: dict[str, An
         errors.append("batch.variants must not be empty")
     if len(keys) != len(set(keys)):
         errors.append("batch variant keys must be unique")
+    variant_key_set = {key for key in keys if key}
     for variant in variants:
         if not variant.get("key") or not variant.get("prompt_suffix"):
             errors.append("every variant needs key + prompt_suffix")
+        dependency = variant.get("depends_on_variant")
+        if dependency and dependency not in variant_key_set:
+            errors.append(
+                f"variant {variant.get('key')} depends on unknown variant {dependency}"
+            )
+        if dependency and dependency == variant.get("key"):
+            errors.append(f"variant {variant.get('key')} cannot depend on itself")
 
     candidates = batch.get("candidates_per_variant", 0)
     if not isinstance(candidates, int) or candidates < 1 or candidates > 16:
