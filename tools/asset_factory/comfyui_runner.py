@@ -44,11 +44,17 @@ def main() -> int:
     p.add_argument("--workflow", required=True)
     p.add_argument("--url", default="http://127.0.0.1:8188")
     p.add_argument("--receipts", required=True)
+    p.add_argument("--checkpoint", required=True)
+    p.add_argument("--variant")
     p.add_argument("--limit", type=int)
     p.add_argument("--wait", action="store_true")
     args = p.parse_args()
 
     jobs = json.loads(Path(args.jobs).read_text(encoding="utf-8"))["jobs"]
+    if args.variant:
+        jobs = [job for job in jobs if job.get("variant") == args.variant]
+        if not jobs:
+            raise SystemExit(f"no jobs found for variant: {args.variant}")
     workflow = json.loads(Path(args.workflow).read_text(encoding="utf-8"))
     receipts = Path(args.receipts)
     receipts.mkdir(parents=True, exist_ok=True)
@@ -61,6 +67,7 @@ def main() -> int:
             "__NEGATIVE_PROMPT__": job.get("negative_prompt", ""),
             "__SEED__": str(job["seed"]),
             "__FILENAME_PREFIX__": Path(job["output_filename"]).stem,
+            "__CHECKPOINT__": args.checkpoint,
         }
         graph = replace(workflow, mapping)
         created = request_json(f"{args.url.rstrip('/')}/prompt", {"prompt": graph})
