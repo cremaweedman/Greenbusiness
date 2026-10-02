@@ -63,11 +63,13 @@ export default function StarterRoomScene({ slots }: StarterRoomSceneProps) {
         label="Management desk"
       />
 
+      <div className="scene-expansion-zone" aria-hidden="true" />
       <div className="scene-slot-band" aria-label="Production slot positions">
         {slots.map((slot) => (
           <div
             key={slot.id}
             className={`scene-slot scene-slot-${slot.slotIndex} ${slot.state}`}
+            role="img"
             aria-label={slot.label}
             style={{ backgroundImage: `url("${gameAssets.slots[slot.state]}")` }}
           >
