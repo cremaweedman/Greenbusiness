@@ -574,6 +574,8 @@ Future agents/sessions must update this section after meaningful implementation.
 - ART-2 batch derives Aurora Drift, Ember Leaf and Moon Sprout into READY/GROWING/PLANTED states;
 - 4 deterministic candidates per state produce 36 reproducible generation jobs;
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
+- checkpoint-agnostic ComfyUI API template uses standard nodes only;
+- stage-gating prevents GROWING/PLANTED preparation until READY identities are explicitly approved;
 
 ## In progress
 - P10-ART-1 production-quality 2.5D Starter Room vertical slice;
@@ -593,7 +595,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - do not continue by replacing its primitives with runtime GLB assets.
 
 ## Next action
-**EXECUTE P10-ART-2 — STARTER CROPS.** Use `tools/asset_factory/factory.py` to prepare the deterministic ART-2 batch, generate the READY candidates first, approve one identity per crop, then derive GROWING and PLANTED from the approved READY references. Do not mass-produce later crops before the three starter families pass mobile readability and style-consistency QA.
+**EXECUTE P10-ART-2.1 — READY IDENTITY LOCK.** Run `python tools/asset_factory/factory.py prepare --batch P10-ART-2 --variant ready`, then use the canonical checkpoint-agnostic ComfyUI workflow template to generate exactly 12 READY candidates (4 each for Aurora Drift, Ember Leaf and Moon Sprout). Approve one identity per crop before preparing GROWING or PLANTED; the factory now blocks those dependent stages without READY approvals.
 
 Local validation already passed without Docker:
 - `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
