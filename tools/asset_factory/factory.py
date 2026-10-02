@@ -133,6 +133,50 @@ def build_jobs(catalog: dict[str, Any], batch: dict[str, Any], style: dict[str, 
     return jobs
 
 
+def filter_jobs(jobs: list[dict[str, Any]], variant: str | None) -> list[dict[str, Any]]:
+    if not variant:
+        return jobs
+    selected = [job for job in jobs if job["variant"] == variant]
+    if not selected:
+        raise FactoryError(f"unknown or empty variant: {variant}")
+    return selected
+
+
+def validate_stage_dependencies(
+    batch: dict[str, Any],
+    jobs: list[dict[str, Any]],
+    variant: str | None,
+    approvals_path: str | None,
+) -> None:
+    if not variant:
+        return
+
+    variant_spec = next((v for v in batch["variants"] if v["key"] == variant), None)
+    if variant_spec is None:
+        raise FactoryError(f"unknown variant: {variant}")
+
+    dependency = variant_spec.get("depends_on_variant")
+    if not dependency:
+        return
+    if not approvals_path:
+        raise FactoryError(
+            f"variant '{variant}' depends on approved '{dependency}' identities; "
+            "pass --approvals"
+        )
+
+    approvals = read_json(Path(approvals_path))
+    missing = []
+    for asset_key in sorted({job["asset_key"] for job in jobs}):
+        family = f"{asset_key}__{dependency}"
+        item = approvals.get(family) or {}
+        if not item.get("approved_job_id") or not item.get("approved_filename"):
+            missing.append(family)
+    if missing:
+        raise FactoryError(
+            f"variant '{variant}' blocked; missing approved dependencies: {', '.join(missing)}"
+        )
+
+
 def make_review_html(batch_id: str, jobs: list[dict[str, Any]], image_root: str = "./images") -> str:
     groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
     for job in jobs:
@@ -186,11 +230,12 @@ def cmd_plan(args: argparse.Namespace) -> int:
     errors = validate(catalog, batch, style)
     if errors:
         raise FactoryError("; ".join(errors))
-    jobs = build_jobs(catalog, batch, style)
+    jobs = filter_jobs(build_jobs(catalog, batch, style), getattr(args, "variant", None))
+    validate_stage_dependencies(batch, jobs, getattr(args, "variant", None), getattr(args, "approvals", None))
     summary = {
         "batch_id": batch["batch_id"],
         "base_assets": len(batch["base_asset_ids"]),
-        "variants": len(batch["variants"]),
+        "variants": 1 if getattr(args, "variant", None) else len(batch["variants"]),
         "candidates_per_variant": batch["candidates_per_variant"],
         "total_jobs": len(jobs),
         "style_id": style["style_id"],
@@ -209,8 +254,10 @@ def cmd_prepare(args: argparse.Namespace) -> int:
     if errors:
         raise FactoryError("; ".join(errors))
 
-    jobs = build_jobs(catalog, batch, style)
-    out = Path(args.output_dir) if args.output_dir else ROOT / "art/factory/generated" / batch["batch_id"]
+    jobs = filter_jobs(build_jobs(catalog, batch, style), args.variant)
+    validate_stage_dependencies(batch, jobs, args.variant, args.approvals)
+    stage = f"{batch['batch_id']}-{args.variant}" if args.variant else batch["batch_id"]
+    out = Path(args.output_dir) if args.output_dir else ROOT / "art/factory/generated" / stage
     out.mkdir(parents=True, exist_ok=True)
     write_json(out / "jobs.json", {"batch": batch, "style": style, "jobs": jobs})
 
@@ -271,6 +318,9 @@ def parser() -> argparse.ArgumentParser:
     for name in ("validate", "plan", "prepare"):
         sp = sub.add_parser(name)
         sp.add_argument("--batch", required=True)
+        if name in ("plan", "prepare"):
+            sp.add_argument("--variant")
+            sp.add_argument("--approvals")
         if name == "plan":
             sp.add_argument("--output")
         if name == "prepare":

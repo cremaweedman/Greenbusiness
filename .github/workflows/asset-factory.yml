@@ -29,3 +29,7 @@ jobs:
         run: python tools/asset_factory/factory.py validate --batch P10-ART-2
       - name: Verify deterministic plan
         run: python tools/asset_factory/factory.py plan --batch P10-ART-2 --output /tmp/p10-art2-plan.json
+      - name: Verify READY stage
+        run: |
+          python tools/asset_factory/factory.py plan --batch P10-ART-2 --variant ready --output /tmp/p10-art2-ready.json
+          python tools/asset_factory/factory.py prepare --batch P10-ART-2 --variant ready --output-dir /tmp/p10-art2-ready

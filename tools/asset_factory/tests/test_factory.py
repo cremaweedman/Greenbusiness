@@ -48,6 +48,36 @@ class AssetFactoryTests(unittest.TestCase):
         jobs = factory.build_jobs(self.catalog, self.batch, self.style)
         self.assertEqual([j["variant"] for j in jobs], ["ready", "ready", "growing", "growing"])
 
+    def test_filter_jobs_by_variant(self):
+        jobs = factory.build_jobs(self.catalog, self.batch, self.style)
+        ready = factory.filter_jobs(jobs, "ready")
+        self.assertEqual(len(ready), 2)
+        self.assertTrue(all(job["variant"] == "ready" for job in ready))
+
+    def test_dependent_stage_requires_approvals(self):
+        jobs = factory.filter_jobs(
+            factory.build_jobs(self.catalog, self.batch, self.style), "growing"
+        )
+        with self.assertRaises(factory.FactoryError):
+            factory.validate_stage_dependencies(self.batch, jobs, "growing", None)
+
+    def test_dependent_stage_accepts_approved_ready(self):
+        jobs = factory.filter_jobs(
+            factory.build_jobs(self.catalog, self.batch, self.style), "growing"
+        )
+        approvals = {
+            "aurora__ready": {
+                "approved_job_id": "TEST__aurora__ready__c01",
+                "approved_filename": "aurora_ready.webp",
+            }
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "approvals.json"
+            path.write_text(json.dumps(approvals), encoding="utf-8")
+            factory.validate_stage_dependencies(
+                self.batch, jobs, "growing", str(path)
+            )
+
     def test_validate_unknown_asset(self):
         bad = dict(self.batch)
         bad["base_asset_ids"] = ["NOPE"]
