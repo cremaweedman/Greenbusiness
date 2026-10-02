@@ -417,7 +417,7 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 10 — Content Completion & Closed Alpha`
 
 ## Current milestone
-`P10-ART-1 — Production Starter Room — FINAL VALIDATION`
+`P10-ART-2 — Starter Crops via Asset Factory — IN PROGRESS`
 
 ## Completed
 - research and product reconstruction;
@@ -576,136 +576,25 @@ Future agents/sessions must update this section after meaningful implementation.
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
 
 ## In progress
-- P10-ART-1 final validation on PR #19;
-- canonical layered 2D/2.5D Starter Room runtime is implemented;
+- P10-ART-2 Starter Crops production;
+- use the approved Aurora Drift / Ember Leaf / Moon Sprout concept family as production references;
+- update/execute Asset Factory with PLANTED / GROWING / FLOWERING / READY state coverage;
+- approve one production master per starter crop before deriving sibling states;
+- integrate approved starter crop runtime assets into the completed Starter Room;
+- validate mobile readability, scale, anchors and payload before expanding into P1 art families.
+
+## Completed — P10-ART-1
+- PR #19 merged to main;
+- canonical layered 2D/2.5D Starter Room replaces the active realtime 3D spike;
 - room shell, storage, contracts station, workbench and desk runtime assets are committed;
-- slot visual states EMPTY / PLANTED / GROWING / FLOWERING / READY / LOCKED / ATTENTION / BOOSTED are committed;
-- gameplay now renders `StarterRoomScene`, not the realtime Three.js spike;
-- authoritative timestamps derive visual PLANTED / GROWING / FLOWERING / READY progression;
-- all three slot positions expose 44px+ touch hotspots;
+- three production slot positions and visual states EMPTY / PLANTED / GROWING / FLOWERING / READY / LOCKED / ATTENTION / BOOSTED are committed;
+- server-authoritative timestamps drive visual PLANTED / GROWING / FLOWERING / READY progression;
+- 390×844 portrait baseline, 360 px support and safe-area handling are implemented;
+- all three slots expose 44 px+ touch hotspots;
 - contextual crop/slot bottom sheet is implemented;
-- canonical mobile bottom navigation is implemented: Business / Production / Missions / Club / Store;
-- Starter Room runtime manifest fixes layers, anchors and 390×844 baseline;
-- automated ART-1 tests verify asset existence, <=2MB room payload and no active 3D renderer dependency;
-- P0 concept-art lock remains complete — 15/15 approved;
-- next milestone after this gate passes: P10-ART-2 Starter Crops production.
+- canonical bottom navigation Business / Production / Missions / Club / Store is implemented;
+- runtime manifest fixes the Starter Room layers and slot anchors;
+- automated tests verify all structural runtime assets exist and the initial Starter Room art payload stays <=2 MB;
+- frontend lint, typecheck, tests, production build, backend tests, compose-smoke and Security Scan passed before merge;
+- P0 concept-art lock remains complete — 15/15 approved.
 
-## Historical experiment
-- the Three.js/React Three Fiber procedural Starter Room spike was implemented and validated as a technical experiment;
-- the spike is not the production target;
-- `docs/art/3D_RUNTIME_ARCHITECTURE_V1.md` is superseded;
-- do not continue by replacing its primitives with runtime GLB assets.
-
-## Next action
-**FINALIZE P10-ART-1.** Merge PR #19 only after frontend CI and Security Scan are green. Once merged, mark P10-ART-1 COMPLETE and advance to P10-ART-2 Starter Crops production using the approved Aurora Drift / Ember Leaf / Moon Sprout concepts and Asset Factory.
-
-Local validation already passed without Docker:
-- `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
-- `python -m ruff check apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
-- `npm run lint`
-- `npm run typecheck`
-- `npm test`
-- `npm run build`
-
-Docker/PostgreSQL validation passed:
-- `docker compose up --build -d`
-- `docker compose exec -T api alembic upgrade head`
-- `docker compose exec -T api pytest -q` (`28 passed`)
-- `docker compose exec -T api ruff check .`
-- `docker compose run --rm web npm run lint`
-- `docker compose run --rm web npm run typecheck`
-- `docker compose run --rm web npm test`
-- `docker compose up --build -d` production web build
-- HTTP smoke passed for `/api/health/live`, `/api/health/ready`, `/api/v1/system/ping`, `/api/v1/platform/readiness`, `/manifest.webmanifest`, `/offline.html` and `/sw.js`.
-
-## Known blockers
-- final commercial product name/trademark clearance not completed;
-- final iOS cannabis-policy framing needs review before iOS release;
-- starter crop production assets remain pending under P10-ART-2; Starter Room structural runtime assets are implemented in PR #19.
-
-## Do not do next
-- do not add Web3;
-- do not add free trading or P2P marketplaces;
-- do not add unrestricted gifting;
-- do not create dozens of varieties;
-- do not build full LiveOps UI;
-- do not optimize scale before measured need.
-
----
-
-# 15. Standard prompt for the next coding agent/session
-
-Use this instruction verbatim or semantically equivalent:
-
-> Continue GreenBusiness from the canonical repository state. Read the canon and `06_IMPLEMENTATION_ROADMAP.md` plus `07_BUILD_HANDOFF.md`. Execute only the current milestone from the Handoff State Block. Do not implement later phases early. Produce production-grade code, migrations, Docker configuration, tests and documentation. Run the relevant test/build checks, fix failures, commit the finished milestone, update the Handoff State Block with completed/in-progress/next action, and stop when that milestone's acceptance criteria are satisfied.
-
----
-
-# 16. Stop conditions
-
-Stop and report rather than silently changing product direction if:
-- canon contradicts implementation;
-- a store/legal constraint invalidates a core mechanic;
-- a migration would destroy existing production data;
-- a security design requires weakening server authority;
-- implementation requires adding real-money transferable assets;
-- current milestone cannot pass its acceptance criteria.
-
-For normal technical choices inside the frozen architecture, make the engineering decision and proceed.
-
-
----
-
-## Art production pipeline decision
-
-VS-01 structural art now follows a hybrid production pipeline:
-
-- structural assets: concept → Tripo/Meshy → Blender canonical master → deterministic 2D renders;
-- portraits/mission/store art: 2D-first;
-- brand/UI icons: vector-first;
-- starter crops: accepted 2D visual direction unless future animation needs justify 3D.
-
-Canonical references:
-- `docs/art/3D_PRODUCTION_PIPELINE_V1.md`
-- `docs/art/3D_ASSET_SOURCE_OF_TRUTH.md`
-- `art/3d/specs/slot_master_v1.json`
-- `tools/blender/greenbusiness_scene_setup.py`
-
-Immediate art-production next step:
-1. run `python tools/asset_factory/factory.py validate --batch P10-ART-2`;
-2. run `python tools/asset_factory/factory.py prepare --batch P10-ART-2`;
-3. generate the 12 READY candidates (4 per starter crop);
-4. approve one READY identity for Aurora Drift, Ember Leaf and Moon Sprout;
-5. derive GROWING, then PLANTED, from those approved references;
-6. export approved runtime WebP/AVIF variants and generate the runtime manifest.
-
-Do not generate all remaining crop/decor families before the starter crop style lock is approved.
-
-
----
-
-## Concept art backlog
-
-Canonical concept-art planning:
-- `docs/art/CONCEPT_ART_MASTER_LIST_V1.md`
-- 73 concept images/boards total;
-- 15 P0 concepts must be approved before large-scale art production;
-- do not create one concept image per runtime asset;
-- do not mass-produce an asset family before its governing concept board is approved.
-
-## Master art backlog
-
-The canonical visual backlog is now:
-- `docs/art/MASTER_ASSET_CATALOG_V1.md`
-- `art/prompts/MASTER_ASSET_PROMPTS_V1.json`
-
-Current known inventory:
-- 93 total visual assets;
-- 26 P0;
-- 45 P1;
-- 22 P2;
-- 55 3D-first;
-- 20 2D-first;
-- 18 vector-first.
-
-All new visual game-data items must be added to this catalog before production.
