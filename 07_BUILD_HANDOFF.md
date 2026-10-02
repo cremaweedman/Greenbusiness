@@ -576,6 +576,9 @@ Future agents/sessions must update this section after meaningful implementation.
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
 
 ## In progress
+- P0 #7 Starter Slot Master Concept — approved with canonical corrections;
+- P0 #8 Slot States Board — current concept-art target;
+
 - P0 #5 Starter Room Hero Concept — next concept-art target using the approved Master Style Board;
 
 - P10-ART-1 production-quality 2.5D Starter Room vertical slice;
