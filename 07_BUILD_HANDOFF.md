@@ -417,7 +417,7 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 10 — Content Completion & Closed Alpha`
 
 ## Current milestone
-`P10-ART-2 — Starter Crops via Asset Factory — IN PROGRESS`
+`P10-ART-1 — Production Starter Room — FINAL VALIDATION`
 
 ## Completed
 - research and product reconstruction;
@@ -576,45 +576,19 @@ Future agents/sessions must update this section after meaningful implementation.
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
 
 ## In progress
-- P0 concept-art lock complete — 15/15 approved;
-- starter crop family lock complete;
-- next art execution target: ART-2 production renders through Asset Factory;
-
-- P0 #14 Home / Business Screen Concept — approved with canonical UX corrections;
-- P0 #15 Crop Bottom Sheet Concept — current and final P0 concept-art target;
-
-- P0 #13 Character Style Board — approved with canonical notes;
-- P0 #14 Home / Business Screen Concept — current concept-art target;
-
-- P0 #12 Starter Crops Comparison Board — approved; starter crop family style lock achieved;
-- P0 #13 Character Style Board — current concept-art target;
-
-- P0 #11 Moon Sprout Concept Sheet — approved with canonical notes;
-- P0 #12 Starter Crops Comparison Board — current concept-art target;
-
-- P0 #10 Ember Leaf Concept Sheet — approved with canonical notes;
-- P0 #11 Moon Sprout Concept Sheet — current concept-art target;
-
-- P0 #9 Aurora Drift Concept Sheet — approved with canonical notes;
-- P0 #10 Ember Leaf Concept Sheet — current concept-art target;
-
-- P0 #8 Slot States Board — approved with canonical notes;
-- P0 #9 Aurora Drift Concept Sheet — current concept-art target;
-
-- P0 #7 Starter Slot Master Concept — approved with canonical corrections;
-- P0 #8 Slot States Board — current concept-art target;
-
-- P0 #5 Starter Room Hero Concept — next concept-art target using the approved Master Style Board;
-
-- P10-ART-1 production-quality 2.5D Starter Room vertical slice;
-- final fixed-camera isometric room composition;
-- deterministic slot/crop state renders;
-- integration of optimized WebP/AVIF/SVG scene assets into the existing Next.js gameplay surface;
-- real invited Closed Alpha cohort execution after the visual vertical slice is credible;
-- alpha economy/pacing validation from measured player behavior;
-- D1 and early D7 cohort observation;
-- return-to-timer and club-adoption analysis;
-- blocker/major feedback triage before Phase 11.
+- P10-ART-1 final validation on PR #19;
+- canonical layered 2D/2.5D Starter Room runtime is implemented;
+- room shell, storage, contracts station, workbench and desk runtime assets are committed;
+- slot visual states EMPTY / PLANTED / GROWING / FLOWERING / READY / LOCKED / ATTENTION / BOOSTED are committed;
+- gameplay now renders `StarterRoomScene`, not the realtime Three.js spike;
+- authoritative timestamps derive visual PLANTED / GROWING / FLOWERING / READY progression;
+- all three slot positions expose 44px+ touch hotspots;
+- contextual crop/slot bottom sheet is implemented;
+- canonical mobile bottom navigation is implemented: Business / Production / Missions / Club / Store;
+- Starter Room runtime manifest fixes layers, anchors and 390×844 baseline;
+- automated ART-1 tests verify asset existence, <=2MB room payload and no active 3D renderer dependency;
+- P0 concept-art lock remains complete — 15/15 approved;
+- next milestone after this gate passes: P10-ART-2 Starter Crops production.
 
 ## Historical experiment
 - the Three.js/React Three Fiber procedural Starter Room spike was implemented and validated as a technical experiment;
@@ -623,7 +597,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - do not continue by replacing its primitives with runtime GLB assets.
 
 ## Next action
-**EXECUTE P10-ART-2 PRODUCTION — STARTER CROPS.** The P0 concept-art lock is complete. Prepare the Asset Factory READY stage, generate production candidates for Aurora Drift, Ember Leaf and Moon Sprout using the approved concept references, approve one production master per crop, then derive GROWING / PLANTED / FLOWERING-compatible runtime states and export optimized mobile assets. Do not expand into P1 concept families until the production starter-crop family is integrated and validated in-room.
+**FINALIZE P10-ART-1.** Merge PR #19 only after frontend CI and Security Scan are green. Once merged, mark P10-ART-1 COMPLETE and advance to P10-ART-2 Starter Crops production using the approved Aurora Drift / Ember Leaf / Moon Sprout concepts and Asset Factory.
 
 Local validation already passed without Docker:
 - `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
@@ -647,7 +621,7 @@ Docker/PostgreSQL validation passed:
 ## Known blockers
 - final commercial product name/trademark clearance not completed;
 - final iOS cannabis-policy framing needs review before iOS release;
-- final art assets for VS-01 are not yet production-complete unless separately committed.
+- starter crop production assets remain pending under P10-ART-2; Starter Room structural runtime assets are implemented in PR #19.
 
 ## Do not do next
 - do not add Web3;
