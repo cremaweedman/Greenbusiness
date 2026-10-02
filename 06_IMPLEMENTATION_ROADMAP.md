@@ -673,7 +673,7 @@ Completed:
 - `docs/art/2D_RUNTIME_ARCHITECTURE_V1.md` is canonical;
 - former 3D runtime architecture marked superseded.
 
-### P10-ART-1 — Production Starter Room
+### P10-ART-1 — Production Starter Room — COMPLETE
 Deliver:
 - portrait-mobile-first composition at 390×844 baseline;
 - 360 px minimum-width pass;
@@ -697,6 +697,16 @@ Gate:
 - frontend lint/typecheck/test/build green;
 - compose-smoke and Security Scan remain green;
 - normal gameplay loop remains intact.
+
+ART-1 validation record:
+- merged through PR #19;
+- active gameplay uses the canonical layered 2D/2.5D Starter Room rather than the realtime 3D spike;
+- room shell, storage, contracts station, workbench, desk and 3 slot anchors are committed;
+- visual slot states include EMPTY / PLANTED / GROWING / FLOWERING / READY plus utility states;
+- 390×844 mobile baseline and 360 px support are implemented;
+- 44 px+ slot hotspots, contextual bottom sheet and canonical bottom navigation are implemented;
+- automated asset existence and <=2 MB initial Starter Room payload gates pass;
+- CI, compose smoke and Security Scan passed before merge.
 
 ### P10-ART-2 — Starter crops
 Add:
