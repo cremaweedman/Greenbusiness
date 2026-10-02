@@ -1327,6 +1327,12 @@ export default function AuthApp() {
 
           <div className="room-board" aria-label="Starter production slots">
             <StarterRoomScene
+              onSelectSlot={(slotId) => {
+                document.getElementById(`slot-card-${slotId}`)?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center",
+                });
+              }}
               slots={player.slots.map((slot) => {
                 const state = slotState(slot, serverNow);
                 return {
@@ -1344,7 +1350,11 @@ export default function AuthApp() {
                 const remaining = slot.crop ? formatRemaining(slot.crop.ready_at, serverNow) : null;
                 const isReady = slotState(slot, serverNow) === "ready";
                 return (
-                  <article key={slot.id} className={`slot-card ${slot.status}`}>
+                  <article
+                    id={`slot-card-${slot.id}`}
+                    key={slot.id}
+                    className={`slot-card ${slot.status}`}
+                  >
                     <div className="slot-head">
                       <span>Slot {slot.slot_index + 1}</span>
                       <strong>{slot.crop ? slot.crop.variety_name : "Available"}</strong>
