@@ -576,6 +576,9 @@ Future agents/sessions must update this section after meaningful implementation.
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
 
 ## In progress
+- P0 #11 Moon Sprout Concept Sheet — approved with canonical notes;
+- P0 #12 Starter Crops Comparison Board — current concept-art target;
+
 - P0 #10 Ember Leaf Concept Sheet — approved with canonical notes;
 - P0 #11 Moon Sprout Concept Sheet — current concept-art target;
 
