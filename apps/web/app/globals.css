@@ -1234,3 +1234,21 @@ input:focus {
     width: 23%;
   }
 }
+
+
+.scene-slot {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+.scene-slot:focus-visible {
+  outline: 3px solid #93cf9f;
+  outline-offset: 2px;
+  border-radius: 14px;
+}
