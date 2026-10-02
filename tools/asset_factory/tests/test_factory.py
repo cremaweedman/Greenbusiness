@@ -54,6 +54,35 @@ class AssetFactoryTests(unittest.TestCase):
         errors = factory.validate(self.catalog, bad, self.style)
         self.assertTrue(any("unknown base asset" in error for error in errors))
 
+    def test_validate_unknown_variant_dependency(self):
+        bad = dict(self.batch)
+        bad["variants"] = [
+            {
+                "key": "growing",
+                "order": 20,
+                "prompt_suffix": "Growing.",
+                "depends_on_variant": "missing",
+            }
+        ]
+        errors = factory.validate(self.catalog, bad, self.style)
+        self.assertTrue(any("depends on unknown variant" in error for error in errors))
+
+    def test_art2_shape_is_four_states_and_48_jobs(self):
+        batch = factory.read_json(
+            Path(__file__).resolve().parents[1] / "batches" / "P10-ART-2.json"
+        )
+        catalog = factory.read_json(factory.DEFAULT_CATALOG)
+        style = factory.read_json(factory.DEFAULT_STYLE)
+        errors = factory.validate(catalog, batch, style)
+        self.assertEqual(errors, [])
+        jobs = factory.build_jobs(catalog, batch, style)
+        self.assertEqual(len(batch["variants"]), 4)
+        self.assertEqual(len(jobs), 48)
+        self.assertEqual(
+            {variant["key"] for variant in batch["variants"]},
+            {"ready", "flowering", "growing", "planted"},
+        )
+
     def test_manifest_shape_via_approvals_contract(self):
         approvals = {
             "aurora__ready": {

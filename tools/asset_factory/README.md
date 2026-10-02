@@ -10,7 +10,7 @@ Do not duplicate the 93-asset catalog.
 - style lock: `tools/asset_factory/config/style.greenbusiness_v1.json`
 - batch definitions: `tools/asset_factory/batches/*.json`
 
-A batch may derive multiple state/candidate jobs from one canonical asset. ART-2 therefore keeps Aurora Drift, Ember Leaf and Moon Sprout as the three canonical crop records and derives READY/GROWING/PLANTED states from them.
+A batch may derive multiple state/candidate jobs from one canonical asset. ART-2 therefore keeps Aurora Drift, Ember Leaf and Moon Sprout as the three canonical crop records and derives READY/FLOWERING/GROWING/PLANTED states from them.
 
 ## ART-2 quick start
 
@@ -46,9 +46,9 @@ art/factory/generated/P10-ART-2/
 ART-2 currently yields:
 
 - 3 starter crop identities
-- 3 states per crop
+- 4 states per crop
 - 4 candidates per state
-- 36 deterministic jobs
+- 48 deterministic jobs
 
 Seeds are derived from stable job IDs, so rerunning the same batch preserves reproducibility.
 
@@ -58,11 +58,13 @@ Production order remains:
 
 1. generate READY candidates;
 2. approve one READY identity per crop;
-3. use the approved READY references when producing GROWING;
-4. approve GROWING;
-5. produce PLANTED;
-6. approve PLANTED;
-7. export runtime variants and generate the runtime manifest.
+3. use the approved READY references when producing FLOWERING;
+4. approve FLOWERING;
+5. derive GROWING from the approved identity;
+6. approve GROWING;
+7. derive PLANTED;
+8. approve PLANTED;
+9. export runtime variants and generate the runtime manifest.
 
 The factory records dependency metadata (`depends_on_variant`) so provider workflows can enforce this order.
 

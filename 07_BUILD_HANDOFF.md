@@ -571,11 +571,16 @@ Future agents/sessions must update this section after meaningful implementation.
 
 - Asset Factory v1 is implemented under `tools/asset_factory/`;
 - canonical 93-asset prompt catalog remains the single source of truth;
-- ART-2 batch derives Aurora Drift, Ember Leaf and Moon Sprout into READY/GROWING/PLANTED states;
-- 4 deterministic candidates per state produce 36 reproducible generation jobs;
+- ART-2 batch derives Aurora Drift, Ember Leaf and Moon Sprout into READY/FLOWERING/GROWING/PLANTED states;
+- 4 deterministic candidates per state produce 48 reproducible generation jobs;
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
 
 ## In progress
+- ART-2 Asset Factory contract upgraded to 4 states / 48 deterministic jobs;
+- FLOWERING is now a first-class production state;
+- CI now validates the Asset Factory batch and unit tests;
+- strict production gate documented in `docs/art/P10_ART2_PRODUCTION_GATE.md`;
+- approved starter concept sheets are not yet committed as repo binaries, so production crop masters must be explicitly approved before ART-2 can close;
 - P10-ART-2 Starter Crops production;
 - use the approved Aurora Drift / Ember Leaf / Moon Sprout concept family as production references;
 - update/execute Asset Factory with PLANTED / GROWING / FLOWERING / READY state coverage;
