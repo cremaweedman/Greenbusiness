@@ -1,0 +1,12 @@
+{
+  "style_id": "greenbusiness_2p5d_mobile_v1",
+  "prompt_suffix": "GreenBusiness canonical style lock: premium stylized 2.5D mobile management-game asset, fixed isometric presentation, clean silhouette, controlled soft shading, consistent forest-green/cream/gold material language, readable at small phone size, centered isolated asset, transparent background, no baked text, original IP. Preserve family identity and anchor consistency across sibling states.",
+  "negative_prompt": "photorealistic, hyperrealistic, cyberpunk, cluttered background, text, logo, watermark, collage, contact sheet, multiple unrelated objects, cropped silhouette, inconsistent camera, tiny unreadable detail",
+  "runtime": {
+    "primary_format": "webp",
+    "opaque_large_format": "avif",
+    "master_format": "png",
+    "mobile_baseline_css": [390, 844],
+    "mobile_width_test_range": [360, 430]
+  }
+}

@@ -417,7 +417,7 @@ Future agents/sessions must update this section after meaningful implementation.
 `Phase 10 — Content Completion & Closed Alpha`
 
 ## Current milestone
-`P10-M1 — Content Completion & Closed Alpha — IN PROGRESS`
+`P10-ART-2 — Starter Crops via Asset Factory — IN PROGRESS`
 
 ## Completed
 - research and product reconstruction;
@@ -569,6 +569,12 @@ Future agents/sessions must update this section after meaningful implementation.
 - final P10 technical-baseline CI is green: backend, frontend and compose-smoke;
 - final P10 technical-baseline Security Scan is green.
 
+- Asset Factory v1 is implemented under `tools/asset_factory/`;
+- canonical 93-asset prompt catalog remains the single source of truth;
+- ART-2 batch derives Aurora Drift, Ember Leaf and Moon Sprout into READY/GROWING/PLANTED states;
+- 4 deterministic candidates per state produce 36 reproducible generation jobs;
+- ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
+
 ## In progress
 - P10-ART-1 production-quality 2.5D Starter Room vertical slice;
 - final fixed-camera isometric room composition;
@@ -587,7 +593,7 @@ Future agents/sessions must update this section after meaningful implementation.
 - do not continue by replacing its primitives with runtime GLB assets.
 
 ## Next action
-**BUILD P10-ART-1 — PRODUCTION 2.5D STARTER ROOM.** Produce the canonical Starter Room through the 3D-master-to-isometric-render pipeline, compose it first for 390×844 portrait mobile, integrate bottom navigation and contextual bottom sheets into Next.js, preserve the existing server-authoritative gameplay loop, and validate 360–430 px phone widths before inviting the Closed Alpha cohort.
+**EXECUTE P10-ART-2 — STARTER CROPS.** Use `tools/asset_factory/factory.py` to prepare the deterministic ART-2 batch, generate the READY candidates first, approve one identity per crop, then derive GROWING and PLANTED from the approved READY references. Do not mass-produce later crops before the three starter families pass mobile readability and style-consistency QA.
 
 Local validation already passed without Docker:
 - `python -m compileall apps\api\app apps\api\tests\integration\test_notifications_accessibility.py`
@@ -662,13 +668,14 @@ Canonical references:
 - `tools/blender/greenbusiness_scene_setup.py`
 
 Immediate art-production next step:
-1. create/import the starter slot base mesh;
-2. clean and normalize it in Blender;
-3. freeze `CAM_SLOT_MASTER` after EMPTY approval;
-4. derive PLANTED/GROWING/READY from the same master;
-5. render and integrate runtime WebP assets.
+1. run `python tools/asset_factory/factory.py validate --batch P10-ART-2`;
+2. run `python tools/asset_factory/factory.py prepare --batch P10-ART-2`;
+3. generate the 12 READY candidates (4 per starter crop);
+4. approve one READY identity for Aurora Drift, Ember Leaf and Moon Sprout;
+5. derive GROWING, then PLANTED, from those approved references;
+6. export approved runtime WebP/AVIF variants and generate the runtime manifest.
 
-Do not use independently generated 2D slot states as final production assets.
+Do not generate all remaining crop/decor families before the starter crop style lock is approved.
 
 
 ---

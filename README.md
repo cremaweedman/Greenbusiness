@@ -20,6 +20,7 @@ Canonical project repository for GreenBusiness.
 - [Master Asset Catalog](./docs/art/MASTER_ASSET_CATALOG_V1.md)
 - [Machine-readable Asset Prompts](./art/prompts/MASTER_ASSET_PROMPTS_V1.json)
 - [Blender tooling](./tools/blender/README.md)
+- [Asset Factory](./tools/asset_factory/README.md)
 
 Structural art is authored 3D-first where useful, then rendered to deterministic 2D/2.5D isometric runtime assets. GreenBusiness remains a web/PWA management game; real-time 3D is explicitly not the primary gameplay renderer.
 
@@ -42,6 +43,17 @@ GreenBusiness targets a **premium mobile-first 2D/2.5D isometric management-game
 - Mobile uses bottom navigation + contextual bottom sheets; persistent desktop sidebars are non-canonical.
 
 See [2D/2.5D Runtime Architecture](./docs/art/2D_RUNTIME_ARCHITECTURE_V1.md). The former [3D Runtime Architecture](./docs/art/3D_RUNTIME_ARCHITECTURE_V1.md) is superseded.
+
+## Asset Factory
+
+The canonical 93-asset catalog can be processed reproducibly through the Asset Factory. ART-2 is defined as 3 starter crops × 3 states × 4 candidates = 36 deterministic generation jobs.
+
+```bash
+python tools/asset_factory/factory.py validate --batch P10-ART-2
+python tools/asset_factory/factory.py prepare --batch P10-ART-2
+```
+
+See [Asset Factory](./tools/asset_factory/README.md).
 
 ## Requirements
 
