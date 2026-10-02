@@ -217,6 +217,8 @@ Section total: **5**
 
 These 15 concepts are the visual lock required before the Asset Factory is allowed to scale production.
 
+**P0 STATUS: COMPLETE — 15/15 APPROVED.**
+
 ## P1 — production expansion
 
 Approx. **35** additional concepts:
@@ -446,3 +448,23 @@ The approved Home / Business Screen Concept locks the visual UI language for mob
 - primary gameplay stats shown at first glance should stay compact, with secondary details progressively disclosed.
 
 Where the concept UI conflicts with canonical product navigation or backend systems, canonical product/backend rules take precedence.
+
+
+## P0 #15 crop-bottom-sheet canonical UX notes
+
+The approved Crop Bottom Sheet Concept locks:
+- crop interaction opens as a contextual mobile bottom sheet over the room;
+- canonical states: collapsed / half-expanded / fully expanded / scrolled;
+- primary hierarchy: crop identity -> growth state/progress -> time/status -> quick actions -> primary CTA;
+- the room should remain visually present behind non-fullscreen sheet states;
+- main loop view must stay compact and thumb-friendly;
+- secondary information is progressively disclosed under Details/expanded states;
+- phenotype/comparison surfaces are non-MVP unless explicitly promoted later;
+- concrete timers, yields, weights, quality values, aromas, effects and difficulty labels in the concept are placeholders only;
+- care/action labels must map to actual server-authoritative gameplay systems and must not introduce unsupported cultivation mechanics;
+- consequential UI, timers, state labels and CTAs remain HTML/CSS/data-driven rather than baked into art.
+
+Recommended MVP information density:
+- collapsed: thumbnail/name/state/time + Open;
+- half: progress, 2–3 key stats, quick actions, primary CTA;
+- expanded: secondary traits/mastery/history/details.
