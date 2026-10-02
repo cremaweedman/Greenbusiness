@@ -10,3 +10,7 @@ tsconfig.tsbuildinfo
 coverage/
 dist/
 .DS_Store
+
+# Asset Factory working outputs
+art/factory/generated/
+art/factory/output/
