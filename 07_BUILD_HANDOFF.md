@@ -576,6 +576,9 @@ Future agents/sessions must update this section after meaningful implementation.
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
 
 ## In progress
+- P0 #14 Home / Business Screen Concept — approved with canonical UX corrections;
+- P0 #15 Crop Bottom Sheet Concept — current and final P0 concept-art target;
+
 - P0 #13 Character Style Board — approved with canonical notes;
 - P0 #14 Home / Business Screen Concept — current concept-art target;
 
