@@ -350,3 +350,19 @@ The approved Aurora Drift Concept Sheet locks:
 - Aurora Drift runtime art must preserve the approved identity when adapted to the canonical starter slot.
 
 Where concept labels conflict with server-authoritative game data, server/canon data takes precedence.
+
+
+## P0 #10 Ember Leaf canonical notes
+
+The approved Ember Leaf Concept Sheet locks:
+- Ember Leaf as the second canonical starter variety;
+- dominant visual palette: deep green base with warm copper, burnt orange, coral-red and restrained dark-magenta/purple accents;
+- silhouette: denser, more energetic and higher-contrast than Aurora Drift while remaining readable at mobile scale;
+- canonical visual stages: PLANTED / GROWING / FLOWERING / READY;
+- multi-angle references, leaf language, flower structure and close-up treatment are approved production references;
+- concept-board timers, day counts, yield, quality, market value, aroma and effect labels are placeholders only and do not define gameplay/economy data;
+- phenotype A/B/C exploration is non-MVP reference material unless promoted by a later design decision;
+- UI cards, timers, badges and stats remain runtime HTML/CSS/data-driven elements;
+- Ember Leaf's warm red family must stay visually separated from the pure/redder system color reserved for errors, danger or destructive actions.
+
+Where concept labels conflict with server-authoritative game data, server/canon data takes precedence.
