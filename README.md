@@ -28,7 +28,7 @@ Structural art is authored 3D-first where useful, then rendered to deterministic
 ## Current development state
 
 **Phase:** Phase 10 — Closed Alpha
-**Milestone:** P10-ART-1 — Production Starter Room — FINAL VALIDATION
+**Milestone:** P10-ART-2 — Starter Crops production
 
 ## Runtime presentation — canonical
 
@@ -48,11 +48,11 @@ See [2D/2.5D Runtime Architecture](./docs/art/2D_RUNTIME_ARCHITECTURE_V1.md). Th
 ## Art status
 
 - P0 concept-art lock: 15/15 approved.
-- Starter Room visual direction: approved; layered 2D/2.5D runtime implemented and under final CI validation.
+- P10-ART-1 Starter Room: COMPLETE — layered 2D/2.5D runtime, modular room assets, interactive slots, mobile bottom sheet/navigation and automated payload gate are merged.
 - Starter Slot / Slot States: approved.
 - Starter crop family (Aurora Drift / Ember Leaf / Moon Sprout): approved.
 - Character style + mobile UI direction: approved.
-- Next execution target after ART-1 gate: P10-ART-2 production-ready starter crops and in-room integration.
+- Next execution target: P10-ART-2 production-ready Aurora Drift / Ember Leaf / Moon Sprout assets and in-room integration.
 
 ## Asset Factory
 
