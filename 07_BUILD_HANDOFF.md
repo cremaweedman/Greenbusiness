@@ -576,6 +576,9 @@ Future agents/sessions must update this section after meaningful implementation.
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
 
 ## In progress
+- P0 #12 Starter Crops Comparison Board — approved; starter crop family style lock achieved;
+- P0 #13 Character Style Board — current concept-art target;
+
 - P0 #11 Moon Sprout Concept Sheet — approved with canonical notes;
 - P0 #12 Starter Crops Comparison Board — current concept-art target;
 
