@@ -15,14 +15,20 @@
       "prompt_suffix": "Render the crop in READY state: visually mature, rewarding and clearly harvestable. This is the identity-defining master state. Maximize silhouette distinction and mobile readability without adding UI symbols or text."
     },
     {
-      "key": "growing",
+      "key": "flowering",
       "order": 20,
+      "depends_on_variant": "ready",
+      "prompt_suffix": "Render the same approved crop identity in FLOWERING state. Preserve the READY state's species identity, palette, camera, lighting, anchor and material language, but reduce floral mass and maturity so it reads as clearly pre-ready at phone size."
+    },
+    {
+      "key": "growing",
+      "order": 30,
       "depends_on_variant": "ready",
       "prompt_suffix": "Render the same approved crop identity in GROWING state. Preserve the READY state's species identity, palette, camera, lighting, anchor and material language, but reduce maturity and visual mass so progress is unmistakable at phone size."
     },
     {
       "key": "planted",
-      "order": 30,
+      "order": 40,
       "depends_on_variant": "ready",
       "prompt_suffix": "Render the same approved crop identity in PLANTED/early state. Preserve species identity, palette, camera, lighting and anchor; use a small early-growth silhouette clearly distinct from EMPTY and from GROWING, readable at phone size."
     }
