@@ -299,3 +299,21 @@ The approved Starter Room Functional Layout defines:
 - consistent lighting reference.
 
 The concept board contains a minor duplicated “5” label in one visual callout. Implementation and all production specs must follow the canonical numbering above.
+
+
+## P0 #7 starter-slot canonical rules
+
+The approved Starter Slot Master Concept locks the following rules:
+- one production slot represents one primary crop/plant;
+- the Starter Room contains three production slots;
+- slot footprint reference: 2×1 logical tiles;
+- canonical anchor: bottom-center;
+- slot family uses the approved black/forest-green frame, warm grow-light language and modular control hardware;
+- cannabis morphology remains recognizable but stylized;
+- visual variety names must use GreenBusiness original canon (Aurora Drift, Ember Leaf, Moon Sprout, etc.), not real-world strain names;
+- visual progression uses EMPTY / PLANTED / GROWING / FLOWERING / READY;
+- FLOWERING is a visual substate derived from server-side growth progress and does not require a new economy/backend phase;
+- consequential UI/status indicators remain HTML/CSS overlays rather than baked into runtime art;
+- real-world cultivation measurements are not part of the gameplay art specification.
+
+The approved concept image remains a visual reference; where labels conflict with these rules, this canonical text takes precedence.
