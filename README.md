@@ -28,7 +28,7 @@ Structural art is authored 3D-first where useful, then rendered to deterministic
 ## Current development state
 
 **Phase:** Phase 10 — Closed Alpha
-**Milestone:** P10-ART-1 — production-quality 2.5D Starter Room vertical slice
+**Milestone:** P10-ART-2 — production starter crops via Asset Factory
 
 ## Runtime presentation — canonical
 
@@ -44,6 +44,15 @@ GreenBusiness targets a **premium mobile-first 2D/2.5D isometric management-game
 - Mobile uses bottom navigation + contextual bottom sheets; persistent desktop sidebars are non-canonical.
 
 See [2D/2.5D Runtime Architecture](./docs/art/2D_RUNTIME_ARCHITECTURE_V1.md). The former [3D Runtime Architecture](./docs/art/3D_RUNTIME_ARCHITECTURE_V1.md) is superseded.
+
+## Art status
+
+- P0 concept-art lock: 15/15 approved.
+- Starter Room visual direction: approved.
+- Starter Slot / Slot States: approved.
+- Starter crop family (Aurora Drift / Ember Leaf / Moon Sprout): approved.
+- Character style + mobile UI direction: approved.
+- Next execution target: production-ready starter crop renders and in-room integration.
 
 ## Asset Factory
 
