@@ -407,3 +407,22 @@ Shared family rules:
 - approved thumbnails, leaf language and mature-plant comparison are valid production references for Asset Factory conditioning.
 
 This approval establishes the starter crop family style lock required before ART-2 mass generation.
+
+
+## P0 #13 character-style canonical notes
+
+The approved Character Style Board locks:
+- stylized-realism character rendering, natural human proportions and warm GreenBusiness lighting;
+- dialogue portraits as the primary MVP character presentation surface;
+- clear mobile-readable facial expressions and restrained contemporary outfits;
+- character accent-color system for portrait borders, message cards and narrative UI;
+- recommended MVP expression set for primary contacts: neutral, happy, concerned, surprised, serious and confident;
+- default outfit first; seasonal/event outfits are optional later content;
+- full turnarounds/pose sets are required only for characters that physically appear in world scenes;
+- exact biographies, roles, heights, quotes and outfit variants shown in the concept board are placeholders unless already supported by canonical GDD/contact data;
+- existing canonical contact identities and narrative roles take precedence over concept-board labels.
+
+Character accent direction:
+- Alex Rowan: earth / forest green;
+- Mira Vale: violet / purple;
+- additional contacts may use amber/gold and cyan/blue families while preserving accessibility and contrast.
