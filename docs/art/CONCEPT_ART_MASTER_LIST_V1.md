@@ -426,3 +426,23 @@ Character accent direction:
 - Alex Rowan: earth / forest green;
 - Mira Vale: violet / purple;
 - additional contacts may use amber/gold and cyan/blue families while preserving accessibility and contrast.
+
+
+## P0 #14 home/business canonical UX notes
+
+The approved Home / Business Screen Concept locks the visual UI language for mobile:
+- dark premium shell with forest-green primary actions and warm grow-room imagery;
+- large mobile-readable cards, clear hierarchy and restrained information density;
+- room-first gameplay presentation;
+- collection, harvest-result and plant-detail visual language are approved references;
+- dialogue portraits and narrative cards follow the approved Character Style Board;
+- canonical bottom navigation remains: Business / Production / Missions / Club / Store;
+- Contacts live under narrative/missions rather than replacing a primary navigation destination;
+- no free P2P marketplace/trading is introduced by this concept;
+- any Market-like surface must represent NPC buyers, contracts, orders or store flows supported by canon;
+- multiple simultaneous grow rooms are not implied by this concept; progression should be interpreted as evolution/expansion of the canonical business location unless later design explicitly changes scope;
+- currencies, prices, €/g values, timers, yields, stats and labels shown in the board are placeholders only;
+- no extra pre-room dashboard tap is required if the canonical room/business view can serve as the landing surface;
+- primary gameplay stats shown at first glance should stay compact, with secondary details progressively disclosed.
+
+Where the concept UI conflicts with canonical product navigation or backend systems, canonical product/backend rules take precedence.
