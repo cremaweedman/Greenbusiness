@@ -334,3 +334,19 @@ The approved Slot States Board locks:
 - visual upgrade labels do not automatically define gameplay effects until matched to the authoritative upgrade system.
 
 Where any concept-board label conflicts with the rules above, this canonical text takes precedence.
+
+
+## P0 #9 Aurora Drift canonical notes
+
+The approved Aurora Drift Concept Sheet locks:
+- Aurora Drift as the first canonical starter variety;
+- dominant visual palette: healthy green, cream/frosted flower mass and restrained amber/orange pistil accents;
+- silhouette: balanced, approachable, medium-density conical plant, readable at mobile scale;
+- canonical visual stages: PLANTED / GROWING / FLOWERING / READY;
+- multi-angle references, leaf language, flower structure and close-up material treatment are approved production references;
+- concept-board timers, day counts, yield, quality, market value, aroma and effect labels are placeholders only and do not define gameplay/economy data;
+- phenotype A/B/C exploration is non-MVP reference material only unless explicitly promoted by a later design decision;
+- UI cards, timers, badges and stats are runtime HTML/CSS/data-driven elements and must not be baked into production assets;
+- Aurora Drift runtime art must preserve the approved identity when adapted to the canonical starter slot.
+
+Where concept labels conflict with server-authoritative game data, server/canon data takes precedence.
