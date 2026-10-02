@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import StarterRoom3DScene from "./StarterRoom3DScene";
+import StarterRoomScene from "./StarterRoomScene";
 
 type Mode = "login" | "register";
 
@@ -374,6 +374,24 @@ function tutorialObjective(player: Player): string {
 function slotState(slot: Slot, now: number): "available" | "planted" | "ready" {
   if (!slot.crop) return "available";
   return new Date(slot.crop.ready_at).getTime() <= now ? "ready" : "planted";
+}
+
+function sceneSlotState(
+  slot: Slot,
+  now: number,
+): "empty" | "planted" | "growing" | "flowering" | "ready" {
+  if (!slot.crop) return "empty";
+
+  const plantedAt = new Date(slot.crop.planted_at).getTime();
+  const readyAt = new Date(slot.crop.ready_at).getTime();
+  if (now >= readyAt) return "ready";
+
+  const duration = Math.max(1, readyAt - plantedAt);
+  const progress = Math.min(1, Math.max(0, (now - plantedAt) / duration));
+
+  if (progress < 0.2) return "planted";
+  if (progress < 0.65) return "growing";
+  return "flowering";
 }
 
 export default function AuthApp() {
@@ -1308,13 +1326,13 @@ export default function AuthApp() {
           </aside>
 
           <div className="room-board" aria-label="Starter production slots">
-            <StarterRoom3DScene
+            <StarterRoomScene
               slots={player.slots.map((slot) => {
                 const state = slotState(slot, serverNow);
                 return {
                   id: slot.id,
                   slotIndex: slot.slot_index,
-                  state: state === "available" ? "empty" : state,
+                  state: sceneSlotState(slot, serverNow),
                   label: `Slot ${slot.slot_index + 1}: ${slot.crop?.variety_name ?? "available"}`,
                 };
               })}
