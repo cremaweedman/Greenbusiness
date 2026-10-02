@@ -387,3 +387,23 @@ Starter trio visual roles are now:
 - Moon Sprout = cool / exotic / sophisticated.
 
 Where concept labels conflict with server-authoritative game data, server/canon data takes precedence.
+
+
+## P0 #12 starter-crops comparison canonical notes
+
+The approved Starter Crops Comparison Board locks the starter family as:
+- Aurora Drift = balanced / classic / approachable;
+- Ember Leaf = warm / intense / energetic;
+- Moon Sprout = cool / exotic / sophisticated.
+
+Shared family rules:
+- same canonical slot chassis;
+- same scale class and anchor behavior;
+- same PLANTED / GROWING / FLOWERING / READY visual progression;
+- same room lighting family;
+- each variety must remain distinguishable by silhouette and color at mobile thumbnail size;
+- room/prop palette remains neutral-warm so crop identity supplies the strongest color differentiation;
+- concept-board tags, aromas, timers and balance descriptors remain placeholders unless separately defined by gameplay canon;
+- approved thumbnails, leaf language and mature-plant comparison are valid production references for Asset Factory conditioning.
+
+This approval establishes the starter crop family style lock required before ART-2 mass generation.
