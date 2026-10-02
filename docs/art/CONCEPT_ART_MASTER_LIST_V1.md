@@ -366,3 +366,24 @@ The approved Ember Leaf Concept Sheet locks:
 - Ember Leaf's warm red family must stay visually separated from the pure/redder system color reserved for errors, danger or destructive actions.
 
 Where concept labels conflict with server-authoritative game data, server/canon data takes precedence.
+
+
+## P0 #11 Moon Sprout canonical notes
+
+The approved Moon Sprout Concept Sheet locks:
+- Moon Sprout as the third canonical starter variety;
+- dominant visual palette: deep cool green base with cyan/blue, violet and restrained magenta highlights;
+- silhouette: cooler, more exotic and visually refined than Aurora Drift and Ember Leaf while remaining mobile-readable;
+- canonical visual stages: PLANTED / GROWING / FLOWERING / READY;
+- multi-angle references, leaf language, flower structure and close-up treatment are approved production references;
+- concept-board timers, day counts, yield, quality, market value, aroma and effect labels are placeholders only and do not define gameplay/economy data;
+- phenotype A/B/C exploration remains non-MVP unless explicitly promoted later;
+- UI cards, timers, badges and stats remain runtime HTML/CSS/data-driven elements;
+- cyan/magenta accents belong to the plant identity only and must not push the overall room into cyberpunk/neon styling.
+
+Starter trio visual roles are now:
+- Aurora Drift = balanced / classic / approachable;
+- Ember Leaf = warm / intense / energetic;
+- Moon Sprout = cool / exotic / sophisticated.
+
+Where concept labels conflict with server-authoritative game data, server/canon data takes precedence.
