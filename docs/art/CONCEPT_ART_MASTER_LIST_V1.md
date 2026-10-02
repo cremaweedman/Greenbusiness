@@ -283,3 +283,19 @@ Approved concept art becomes reference material for:
 - marketing derivatives.
 
 Do not mass-produce a family until its governing concept board is approved.
+
+
+## P0 #6 functional-layout note
+
+The approved Starter Room Functional Layout defines:
+- logical 10×6 placement grid as a reference system, not a rigid art-size constraint;
+- canonical functional numbering: 1 Storage, 2 Growing Slots, 3 Workbench, 4 Desk, 5 Contract Station;
+- three starter growing slots;
+- reserved expansion area;
+- mobile portrait safe-zone framing;
+- interaction/collider zones;
+- L0–L4 scene layering;
+- orthographic isometric camera reference;
+- consistent lighting reference.
+
+The concept board contains a minor duplicated “5” label in one visual callout. Implementation and all production specs must follow the canonical numbering above.
