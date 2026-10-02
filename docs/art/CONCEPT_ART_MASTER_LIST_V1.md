@@ -19,10 +19,21 @@ The current target is **73 concept-art images/boards**, divided into P0/P1/P2 pr
 
 # 0. GLOBAL VISUAL FOUNDATION
 
-1. **Master Style Board** — overall GreenBusiness look, stylization, premium 2.5D quality bar.
-2. **Color & Material Board** — greens, creams, gold accents, woods, metals, plastics/glass.
-3. **Lighting & Isometric Camera Board** — canonical camera, key/fill/rim direction, shadow language.
-4. **Mobile Framing Board** — 390×844 portrait composition, safe areas, object scale, crop behavior.
+**Approved composite reference:** `docs/art/concepts/GB_P0_MASTER_STYLE_BOARD_V1.webp`
+
+This approved board locks the current direction for:
+- Master Style Board;
+- Color & Material Board;
+- Lighting & Isometric Camera Board;
+- Mobile Framing Board.
+
+The visual language is intentionally explicit cannabis cultivation: premium stylized indoor grow-room management, recognizable cannabis plants, warm workshop lighting, mobile-first 2.5D isometric presentation.
+
+
+1. **Master Style Board** — APPROVED — overall GreenBusiness look, stylization, premium 2.5D quality bar.
+2. **Color & Material Board** — APPROVED — greens, creams, gold accents, woods, metals, plastics/glass.
+3. **Lighting & Isometric Camera Board** — APPROVED — canonical camera, key/fill/rim direction, shadow language.
+4. **Mobile Framing Board** — APPROVED — 390×844 portrait composition, safe areas, object scale, crop behavior.
 5. **UI Mood Board** — buttons, cards, bottom sheets, navigation, panel language.
 6. **Iconography Board** — icon weight, geometry, simplification, small-size readability.
 
