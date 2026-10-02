@@ -703,7 +703,7 @@ Add:
 - Aurora Drift;
 - Ember Leaf;
 - Moon Sprout;
-- planted/growing/ready visual states;
+- planted/growing/flowering/ready visual states;
 - consistent crop scale, lighting and anchors.
 
 ### P10-ART-3 — Interaction & feedback
