@@ -576,6 +576,9 @@ Future agents/sessions must update this section after meaningful implementation.
 - ComfyUI API runner, HTML review sheet, approval template, runtime-manifest generation, unit tests and CI are included;
 
 ## In progress
+- P0 #9 Aurora Drift Concept Sheet — approved with canonical notes;
+- P0 #10 Ember Leaf Concept Sheet — current concept-art target;
+
 - P0 #8 Slot States Board — approved with canonical notes;
 - P0 #9 Aurora Drift Concept Sheet — current concept-art target;
 
