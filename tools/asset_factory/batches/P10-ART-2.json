@@ -1,0 +1,30 @@
+{
+  "batch_id": "P10-ART-2",
+  "title": "Starter crops",
+  "base_asset_ids": [
+    "GB-MASTER-CROP-001",
+    "GB-MASTER-CROP-002",
+    "GB-MASTER-CROP-003"
+  ],
+  "candidates_per_variant": 4,
+  "variants": [
+    {
+      "key": "ready",
+      "order": 10,
+      "depends_on_variant": null,
+      "prompt_suffix": "Render the crop in READY state: visually mature, rewarding and clearly harvestable. This is the identity-defining master state. Maximize silhouette distinction and mobile readability without adding UI symbols or text."
+    },
+    {
+      "key": "growing",
+      "order": 20,
+      "depends_on_variant": "ready",
+      "prompt_suffix": "Render the same approved crop identity in GROWING state. Preserve the READY state's species identity, palette, camera, lighting, anchor and material language, but reduce maturity and visual mass so progress is unmistakable at phone size."
+    },
+    {
+      "key": "planted",
+      "order": 30,
+      "depends_on_variant": "ready",
+      "prompt_suffix": "Render the same approved crop identity in PLANTED/early state. Preserve species identity, palette, camera, lighting and anchor; use a small early-growth silhouette clearly distinct from EMPTY and from GROWING, readable at phone size."
+    }
+  ]
+}
