@@ -420,6 +420,7 @@ export default function AuthApp() {
   const [notice, setNotice] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
+  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
 
   const chosenVariety = useMemo(
     () => player?.starter_varieties.find((variety) => variety.key === selectedVariety) ?? null,
@@ -942,10 +943,11 @@ export default function AuthApp() {
 
   if (player && accessToken) {
     const serverNow = now + serverClockOffsetMs;
+    const selectedSceneSlot = player.slots.find((slot) => slot.id === selectedSlotId) ?? null;
 
     return (
       <section className="workspace">
-        <header className="topbar">
+        <header id="business-home" className="topbar">
           <div>
             <p className="eyebrow">STARTER ROOM ONLINE</p>
             <h1>{player.business_name}</h1>
@@ -968,7 +970,7 @@ export default function AuthApp() {
           </div>
         </header>
 
-        <section className="clubhouse-panel" aria-label="Clubhouse social layer">
+        <section id="club" className="clubhouse-panel" aria-label="Clubhouse social layer">
           <div>
             <p className="section-label">Clubhouse</p>
             <h2>Social layer</h2>
@@ -1095,7 +1097,7 @@ export default function AuthApp() {
           </form>
         </section>
 
-        <section className="store-panel" aria-label="Store and entitlements">
+        <section id="store" className="store-panel" aria-label="Store and entitlements">
           <div>
             <p className="section-label">Store</p>
             <h2>Ethical monetization sandbox</h2>
@@ -1325,14 +1327,9 @@ export default function AuthApp() {
             </div>
           </aside>
 
-          <div className="room-board" aria-label="Starter production slots">
+          <div id="production" className="room-board" aria-label="Starter production slots">
             <StarterRoomScene
-              onSelectSlot={(slotId) => {
-                document.getElementById(`slot-card-${slotId}`)?.scrollIntoView({
-                  behavior: "smooth",
-                  block: "center",
-                });
-              }}
+              onSelectSlot={(slotId) => setSelectedSlotId(slotId)}
               slots={player.slots.map((slot) => {
                 const state = slotState(slot, serverNow);
                 return {
@@ -1407,7 +1404,7 @@ export default function AuthApp() {
           </div>
         </div>
 
-        <section className="phone-panel" aria-label="Phone missions and mastery">
+        <section id="missions" className="phone-panel" aria-label="Phone missions and mastery">
           <div className="phone-head">
             <div>
               <p className="section-label">Phone</p>
@@ -1515,6 +1512,94 @@ export default function AuthApp() {
             </div>
           </div>
         </section>
+
+        {selectedSceneSlot && (
+          <aside
+            className="crop-bottom-sheet"
+            role="dialog"
+            aria-label={`Slot ${selectedSceneSlot.slot_index + 1} controls`}
+          >
+            <div className="crop-sheet-handle" aria-hidden="true" />
+            <div className="crop-sheet-head">
+              <div>
+                <span>Slot {selectedSceneSlot.slot_index + 1}</span>
+                <strong>{selectedSceneSlot.crop?.variety_name ?? "Available slot"}</strong>
+              </div>
+              <button
+                type="button"
+                className="sheet-close"
+                aria-label="Close slot controls"
+                onClick={() => setSelectedSlotId(null)}
+              >
+                ×
+              </button>
+            </div>
+
+            {selectedSceneSlot.crop ? (
+              <>
+                <div className="crop-sheet-status">
+                  <span>{sceneSlotState(selectedSceneSlot, serverNow)}</span>
+                  <strong>
+                    {formatRemaining(selectedSceneSlot.crop.ready_at, serverNow)}
+                  </strong>
+                </div>
+                <div className="crop-sheet-actions">
+                  <button
+                    className="secondary"
+                    onClick={() => void runProductionAction(selectedSceneSlot, "care")}
+                    disabled={
+                      actionSlotId === selectedSceneSlot.id ||
+                      Boolean(selectedSceneSlot.crop.cared_at)
+                    }
+                  >
+                    {selectedSceneSlot.crop.cared_at ? "Cared" : "Care"}
+                  </button>
+                  <button
+                    className="primary"
+                    onClick={() => void runProductionAction(selectedSceneSlot, "harvest")}
+                    disabled={
+                      actionSlotId === selectedSceneSlot.id ||
+                      slotState(selectedSceneSlot, serverNow) !== "ready"
+                    }
+                  >
+                    Harvest
+                  </button>
+                </div>
+              </>
+            ) : (
+              <button
+                className="primary crop-sheet-primary"
+                onClick={() => void runProductionAction(selectedSceneSlot, "plant")}
+                disabled={actionSlotId === selectedSceneSlot.id || !selectedVariety}
+              >
+                Plant {chosenVariety?.name ?? "variety"}
+              </button>
+            )}
+          </aside>
+        )}
+
+        <nav className="mobile-bottom-nav" aria-label="Primary navigation">
+          {[
+            ["business-home", "Business"],
+            ["production", "Production"],
+            ["missions", "Missions"],
+            ["club", "Club"],
+            ["store", "Store"],
+          ].map(([target, label]) => (
+            <button
+              key={target}
+              type="button"
+              onClick={() =>
+                document.getElementById(target)?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                })
+              }
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
 
         {(notice || error) && (
           <p className={error ? "error" : "notice"} role={error ? "alert" : "status"}>
